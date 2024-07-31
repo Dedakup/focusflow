@@ -36,7 +36,7 @@ Follow these steps to set up the project on your local machine.
 1. **Clone the Repository**:
 
     ```bash
-    git clone https://github.com/yourusername/focusflow.git
+    git clone https://github.com/dedakup/focusflow.git
     cd focusflow
     ```
 
