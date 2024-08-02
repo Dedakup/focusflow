@@ -6,8 +6,6 @@
 
 **FocusFlow** is a productivity application developed using React and Tailwind CSS during a pair programming session with my college. The application combines a **Pomodoro timer** and a **To-Do list** to help users manage their time efficiently and keep track of their tasks.
 
----
-
 ### Features
 
 #### To-Do List:
@@ -25,8 +23,6 @@
 - Cozy and calming background theme to enhance focus.
 - **Lo-Fi Music**: Built-in lo-fi music player to create a soothing environment for productivity.
 - **Scenic Backgrounds**: Stunning background visuals that change dynamically to match the mood and enhance the overall user experience.
-
----
 
 ## Setup and Installation
 
