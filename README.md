@@ -2,8 +2,8 @@
 
 <img src="./public/FocusFlow-banner.png" alt="Banner" style="width:100%;"/>
 <p align="center">
-  <img src="./public/phone-preview.jpg" alt="Phone Preview" style="height:500px; margin-right: 10px;""/>
-  <img src="./public/desktop-preview.jpg" alt="Desktop Preview" style="height:500px;"/>
+  <img src="./public/phone-preview.jpg" alt="Phone Preview" style="height:350px; margin-right: 10px;""/>
+  <img src="./public/desktop-preview.jpg" alt="Desktop Preview" style="height:350px;"/>
 </p>
 
 
