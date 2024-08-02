@@ -1,6 +1,10 @@
 # FocusFlow: Pomodoro & To-Do List Application
 
 <!-- ![FocusFlow Preview](./path/to/your/image.png) -->
+![Project Banner](./public/FocusFlow-banner.png)
+![Project phone Screenshot](./public/phone-preview.jpg)
+![Project desktop Screenshot](./public/desktop-preview.jpg)
+
 
 ## Overview
 
