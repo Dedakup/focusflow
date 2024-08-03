@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="relative flex flex-col h-screen overflow-hidden">
       {/* Видео-фон */}
-      <VideoBackground/>
+      <VideoBackground />
 
       {/* Верхнее меню */}
       <div className="h-16 bg-gray-800 text-white flex items-center justify-center z-10">
@@ -21,7 +21,7 @@ function App() {
       </div>
 
       {/* Нижнее меню */}
-      <div className="h-16 bg-gray-800 text-white flex items-center justify-center z-10">
+      <div className=" flex items-center justify-center z-10">
         <BottomMenu />
       </div>
     </div>
