@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import YouTube from 'react-youtube';
 import {
     Button,
@@ -29,37 +29,82 @@ import {
     SignalIcon as SignalIconOutline,
 } from '@heroicons/react/24/outline';
 
-const BottomMenu = () => {
-    const videos = [
-        {
-            id: 'dQw4w9WgXcQ',
-            title: 'Never Gonna Give You Up',
-            thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg',
-        },
-        {
-            id: '5NV6Rdv1a3I',
-            title: 'Get Lucky - Daft Punk ft. Pharrell Williams',
-            thumbnail: 'https://img.youtube.com/vi/5NV6Rdv1a3I/0.jpg',
-        },
-        {
-            id: 'tVj0ZTS4WF4',
-            title: 'Happy - Pharrell Williams',
-            thumbnail: 'https://img.youtube.com/vi/tVj0ZTS4WF4/0.jpg',
-        }
-    ];
+// Import MP3 files
+import rainSound from '../assets/sounds/rain-in-forest-birds-nature.mp3';
+import windSound from '../assets/sounds/singing-birds-nature-atmo.mp3';
+import fireplaceSound from '../assets/sounds/soft-rain-ambient.mp3';
 
+import videos from '../assets/musicData';
+
+const BottomMenu = () => {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
     const [volume, setVolume] = useState(100);
     const [selectedVideo, setSelectedVideo] = useState(videos[0]);
-    const [isPlaying, setIsPlaying] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(false);
     const [error, setError] = useState(null);
     const playerRef = useRef(null);
+    const rainAudioRef = useRef(new Audio(rainSound));
+    const windAudioRef = useRef(new Audio(windSound));
+    const fireplaceAudioRef = useRef(new Audio(fireplaceSound));
+    const [ambientSounds, setAmbientSounds] = useState({
+        rain: 0,
+        wind: 0,
+        fireplace: 0,
+    });
+
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (!document.hidden && playerRef.current && isPlaying) {
+                playerRef.current.playVideo();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, [isPlaying]);
+
+    useEffect(() => {
+        // Adjust volume based on ambientSounds state
+        if (rainAudioRef.current) {
+            rainAudioRef.current.volume = ambientSounds.rain / 100;
+            if (ambientSounds.rain > 0) {
+                rainAudioRef.current.play();
+            } else {
+                rainAudioRef.current.pause();
+            }
+        }
+        if (windAudioRef.current) {
+            windAudioRef.current.volume = ambientSounds.wind / 100;
+            if (ambientSounds.wind > 0) {
+                windAudioRef.current.play();
+            } else {
+                windAudioRef.current.pause();
+            }
+        }
+        if (fireplaceAudioRef.current) {
+            fireplaceAudioRef.current.volume = ambientSounds.fireplace / 100;
+            if (ambientSounds.fireplace > 0) {
+                fireplaceAudioRef.current.play();
+            } else {
+                fireplaceAudioRef.current.pause();
+            }
+        }
+    }, [ambientSounds]);
 
     const handlePlayPause = () => {
         if (isPlaying) {
             playerRef.current.pauseVideo();
         } else {
             playerRef.current.playVideo();
+            if (volume === 0) {
+                playerRef.current.mute();
+            } else {
+                playerRef.current.unMute();
+                playerRef.current.setVolume(volume);
+            }
         }
         setIsPlaying(!isPlaying);
     };
@@ -76,15 +121,60 @@ const BottomMenu = () => {
         }
     };
 
+    const handleAmbientSoundChange = (type, newValue) => {
+        const intValue = parseInt(newValue, 10);
+        setAmbientSounds(prev => ({
+            ...prev,
+            [type]: intValue
+        }));
+        // Adjust the volume of the corresponding ambient sound and play/pause based on the value
+        if (type === 'rain' && rainAudioRef.current) {
+            rainAudioRef.current.volume = intValue / 100;
+            if (intValue > 0) {
+                rainAudioRef.current.play();
+            } else {
+                rainAudioRef.current.pause();
+            }
+        } else if (type === 'wind' && windAudioRef.current) {
+            windAudioRef.current.volume = intValue / 100;
+            if (intValue > 0) {
+                windAudioRef.current.play();
+            } else {
+                windAudioRef.current.pause();
+            }
+        } else if (type === 'fireplace' && fireplaceAudioRef.current) {
+            fireplaceAudioRef.current.volume = intValue / 100;
+            if (intValue > 0) {
+                fireplaceAudioRef.current.play();
+            } else {
+                fireplaceAudioRef.current.pause();
+            }
+        }
+    };
+
     const handleVideoSelect = (video) => {
         setSelectedVideo(video);
-        setIsPlaying(true);
+        setIsPlaying(false);
+        if (playerRef.current) {
+            playerRef.current.loadVideoById(video.id);
+            playerRef.current.pauseVideo();
+            if (volume === 0) {
+                playerRef.current.mute();
+            } else {
+                playerRef.current.unMute();
+                playerRef.current.setVolume(volume);
+            }
+        }
     };
 
     const onPlayerReady = (event) => {
         playerRef.current = event.target;
-        event.target.playVideo();
-        event.target.unMute();
+        if (volume === 0) {
+            playerRef.current.mute();
+        } else {
+            playerRef.current.unMute();
+            playerRef.current.setVolume(volume);
+        }
     };
 
     const onPlayerError = (event) => {
@@ -101,18 +191,14 @@ const BottomMenu = () => {
         height: '0',
         width: '0',
         playerVars: {
-            autoplay: 1,
+            autoplay: 0,
             controls: 0,
-            mute: 1, // Starts in mute mode
+            mute: 1,
         },
     };
 
     return (
-        <div
-            className={`fixed bottom-0 left-0 right-0 z-50 flex items-center flex-col md:flex-row transition-all `}
-            style={{ height: 'auto' }}
-        >
-            {/* Alert for errors */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center flex-col md:flex-row transition-all" style={{ height: 'auto' }}>
             {error && (
                 <Alert color="red" onClose={() => setError(null)} className="fixed top-4 right-4 w-1/3">
                     {error}
@@ -121,7 +207,7 @@ const BottomMenu = () => {
 
             {/* Music */}
             <div
-                className={`absolute flex items-center justify-between w-full md:w-auto md:mb-0 duration-500 ${isMenuHidden ? '-translate-y-4 md:translate-y-0' : '-translate-y-20 md:translate-y-0'} z-10`}
+                className={`absolute flex items-center justify-between w-full md:w-auto md:mb-0 duration-500 ${isMenuHidden ? '-translate-y-4 md:translate-y-0' : 'translate-y-0 md:translate-y-0'} z-10`}
             >
                 <div className="flex items-center pl-4 pb-4 md:pl-10 md:pb-0">
                     {selectedVideo && (
@@ -153,7 +239,7 @@ const BottomMenu = () => {
                     </IconButton>
                     <Popover
                         placement="top"
-                        offset={{ mainAxis: 60 }} // Offset 100 units above the element
+                        offset={{ mainAxis: 60 }} 
                     >
                         <PopoverHandler>
                             <IconButton variant="text" className="rounded-full w-24 h-24 group">
@@ -173,7 +259,7 @@ const BottomMenu = () => {
                         <PopoverContent className="w-36 p-4 bg-gray-700 text-white z-50 -rotate-90">
                             <div className="w-full">
                                 <Slider
-                                    value={volume}
+                                    defaultValue={volume} 
                                     onChange={(e) => handleVolumeChange(parseInt(e.target.value, 10))}
                                     min={0}
                                     max={100}
@@ -198,7 +284,7 @@ const BottomMenu = () => {
                 <div className="px-4 md:px-10 flex justify-around space-x-10">
                     <Popover
                         placement="top"
-                        offset={{ mainAxis: 10 }} // Offset 100 units above the element
+                        offset={{ mainAxis: 10 }} 
                     >
                         <PopoverHandler>
                             <Button variant='text' className=" w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
@@ -224,7 +310,7 @@ const BottomMenu = () => {
                     </Popover>
                     <Popover
                         placement="top"
-                        offset={{ mainAxis: 10 }} // Offset 100 units above the element
+                        offset={{ mainAxis: 10 }} 
                     >
                         <PopoverHandler>
                             <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
@@ -233,15 +319,47 @@ const BottomMenu = () => {
                                 <span className='text-white text-sm mt-2'>Sounds</span>
                             </Button>
                         </PopoverHandler>
-                        <PopoverContent className="w-36 h-36 p-4 bg-gray-700 text-white z-50">
-                            <div className="w-full">
-
+                        <PopoverContent className="w-72 p-4 bg-gray-700 text-white z-50">
+                            <div className="w-full space-y-4">
+                                <div>
+                                    <label className="block text-sm">Rain</label>
+                                    <Slider
+                                        defaultValue={ambientSounds.rain}  
+                                        onChange={(e) => handleAmbientSoundChange('rain', parseInt(e.target.value, 10))}
+                                        min={0}
+                                        max={100}
+                                        size='md'
+                                        className="!min-w-10"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm">Wind</label>
+                                    <Slider
+                                        defaultValue={ambientSounds.wind}  
+                                        onChange={(e) => handleAmbientSoundChange('wind', parseInt(e.target.value, 10))}
+                                        min={0}
+                                        max={100}
+                                        size='md'
+                                        className="!min-w-10"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm">Fireplace</label>
+                                    <Slider
+                                        defaultValue={ambientSounds.fireplace}  
+                                        onChange={(e) => handleAmbientSoundChange('fireplace', parseInt(e.target.value, 10))}
+                                        min={0}
+                                        max={100}
+                                        size='md'
+                                        className="!min-w-10"
+                                    />
+                                </div>
                             </div>
                         </PopoverContent>
                     </Popover>
                     <Popover
                         placement="top"
-                        offset={{ mainAxis: 10 }} // Offset 100 units above the element
+                        offset={{ mainAxis: 10 }} 
                     >
                         <PopoverHandler>
                             <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
@@ -261,13 +379,12 @@ const BottomMenu = () => {
 
             {/* YouTube Player */}
             <YouTube
-                videoId={selectedVideo.id} // Ensure selectedVideo.id is a valid YouTube video ID
+                videoId={selectedVideo.id} 
                 opts={opts}
                 onReady={onPlayerReady}
                 onError={onPlayerError}
                 onEnd={onPlayerEnd}
             />
-
         </div>
     );
 };
