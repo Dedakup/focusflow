@@ -4,6 +4,7 @@ import PomodoroTimer from '../../focusflow/src/components/PomodoroTimer';
 import BottomMenu from '../../focusflow/src/components/BottomMenu';
 
 export default function App() {
+
   return (
     <div className="relative flex flex-col h-screen overflow-hidden">
       {/* Видео-фон */}
@@ -15,13 +16,13 @@ export default function App() {
       </div>
 
       {/* Контент с таймером */}
-      <div className="flex-grow relative z-10">
+      <div className="flex-grow relative z-10 ">
         <PomodoroTimer />
       </div>
 
       {/* Нижнее меню */}
       <div className="h-25">
-        <BottomMenu />
+        <BottomMenu/>
       </div>
     </div>
   );
