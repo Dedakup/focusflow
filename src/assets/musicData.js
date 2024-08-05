@@ -21,11 +21,6 @@ const videos = [
         title: 'Happy - Pharrell Williams',
         thumbnail: 'https://img.youtube.com/vi/tVj0ZTS4WF4/0.jpg',
     },
-    {
-        id: 'H4-Mcyh2geo',
-        title: '「AMV」- Superfreak',
-        thumbnail: `https://img.youtube.com/vi/H4-Mcyh2geo/0.jpg`,
-    }
 ];
 
 export default videos;
