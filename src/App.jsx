@@ -1,29 +1,33 @@
-import VideoBackground from '../../focusflow/src/components/VideoBackground';
-import TopMenu from '../../focusflow/src/components/TopMenu';
-import PomodoroTimer from '../../focusflow/src/components/PomodoroTimer';
-import BottomMenu from '../../focusflow/src/components/BottomMenu';
+import React, { useState } from 'react';
+import VideoBackground from './components/VideoBackground';
+import TopMenu from './components/TopMenu';
+import PomodoroTimer from './components/PomodoroTimer';
+import BottomMenu from './components/BottomMenu';
+import backgrounds from './assets/backgrounds';
 
 export default function App() {
+    const [background, setBackground] = useState(backgrounds[0]);
 
-  return (
-    <div className="relative flex flex-col h-screen overflow-hidden">
-      {/* Видео-фон */}
-      <VideoBackground/>
+    const handleBackgroundChange = (newSrc) => {
+        const selectedBackground = backgrounds.find(bg => bg.src === newSrc);
+        setBackground(selectedBackground);
+    };
 
-      {/* Верхнее меню */}
-      <div className="h-25">
-        <TopMenu />
-      </div>
+    return (
+        <div className="relative flex flex-col h-screen overflow-hidden" style={{ color: background.textColor }}>
+            <VideoBackground backgroundSrc={background.src} />
 
-      {/* Контент с таймером */}
-      <div className="flex-grow relative z-10 ">
-        <PomodoroTimer />
-      </div>
+            <div className="h-25">
+                <TopMenu textColor={background.textColor} />
+            </div>
 
-      {/* Нижнее меню */}
-      <div className="h-25">
-        <BottomMenu/>
-      </div>
-    </div>
-  );
+            <div className="flex-grow relative z-10">
+                <PomodoroTimer textColor={background.textColor} />
+            </div>
+
+            <div className="h-25">
+                <BottomMenu onBackgroundChange={handleBackgroundChange} backgrounds={backgrounds} textColor={background.textColor} />
+            </div>
+        </div>
+    );
 }

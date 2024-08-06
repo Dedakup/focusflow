@@ -1,6 +1,6 @@
 import React from 'react';
 
-const VideoBackground = () => {
+const VideoBackground = ({ backgroundSrc }) => {
     return (
         <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-[-1]">
             <video
@@ -9,8 +9,8 @@ const VideoBackground = () => {
                 loop
                 muted
                 playsInline
+                src={backgroundSrc}
             >
-                <source src="../../public/backgrounds/apartment-night-rain.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
         </div>

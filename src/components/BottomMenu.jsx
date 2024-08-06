@@ -29,27 +29,25 @@ import {
     SignalIcon as SignalIconOutline,
 } from '@heroicons/react/24/outline';
 
-// Import MP3 files
 import rainSound from '../assets/sounds/rain-in-forest-birds-nature.mp3';
 import windSound from '../assets/sounds/singing-birds-nature-atmo.mp3';
 import fireplaceSound from '../assets/sounds/soft-rain-ambient.mp3';
-
 import videos from '../assets/musicData';
 
-const BottomMenu = () => {
+const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
     const [volume, setVolume] = useState(100);
     const [selectedVideo, setSelectedVideo] = useState(videos[0]);
     const [isPlaying, setIsPlaying] = useState(false);
     const [error, setError] = useState(null);
     const playerRef = useRef(null);
-    const rainAudioRef = useRef(new Audio(rainSound));
-    const windAudioRef = useRef(new Audio(windSound));
-    const fireplaceAudioRef = useRef(new Audio(fireplaceSound));
+    const rainAudioRef = useRef(null);
+    const windAudioRef = useRef(null);
+    const fireplaceAudioRef = useRef(null);
     const [ambientSounds, setAmbientSounds] = useState({
         rain: 0,
         wind: 0,
-        fireplace: 0,
+        fireplace: 0
     });
 
     useEffect(() => {
@@ -67,30 +65,17 @@ const BottomMenu = () => {
     }, [isPlaying]);
 
     useEffect(() => {
-        // Adjust volume based on ambientSounds state
         if (rainAudioRef.current) {
             rainAudioRef.current.volume = ambientSounds.rain / 100;
-            if (ambientSounds.rain > 0) {
-                rainAudioRef.current.play();
-            } else {
-                rainAudioRef.current.pause();
-            }
+            ambientSounds.rain > 0 ? rainAudioRef.current.play() : rainAudioRef.current.pause();
         }
         if (windAudioRef.current) {
             windAudioRef.current.volume = ambientSounds.wind / 100;
-            if (ambientSounds.wind > 0) {
-                windAudioRef.current.play();
-            } else {
-                windAudioRef.current.pause();
-            }
+            ambientSounds.wind > 0 ? windAudioRef.current.play() : windAudioRef.current.pause();
         }
         if (fireplaceAudioRef.current) {
             fireplaceAudioRef.current.volume = ambientSounds.fireplace / 100;
-            if (ambientSounds.fireplace > 0) {
-                fireplaceAudioRef.current.play();
-            } else {
-                fireplaceAudioRef.current.pause();
-            }
+            ambientSounds.fireplace > 0 ? fireplaceAudioRef.current.play() : fireplaceAudioRef.current.pause();
         }
     }, [ambientSounds]);
 
@@ -122,33 +107,19 @@ const BottomMenu = () => {
     };
 
     const handleAmbientSoundChange = (type, newValue) => {
-        const intValue = parseInt(newValue, 10);
         setAmbientSounds(prev => ({
             ...prev,
-            [type]: intValue
+            [type]: newValue
         }));
-        // Adjust the volume of the corresponding ambient sound and play/pause based on the value
         if (type === 'rain' && rainAudioRef.current) {
-            rainAudioRef.current.volume = intValue / 100;
-            if (intValue > 0) {
-                rainAudioRef.current.play();
-            } else {
-                rainAudioRef.current.pause();
-            }
+            rainAudioRef.current.volume = newValue / 100;
+            newValue > 0 ? rainAudioRef.current.play() : rainAudioRef.current.pause();
         } else if (type === 'wind' && windAudioRef.current) {
-            windAudioRef.current.volume = intValue / 100;
-            if (intValue > 0) {
-                windAudioRef.current.play();
-            } else {
-                windAudioRef.current.pause();
-            }
+            windAudioRef.current.volume = newValue / 100;
+            newValue > 0 ? windAudioRef.current.play() : windAudioRef.current.pause();
         } else if (type === 'fireplace' && fireplaceAudioRef.current) {
-            fireplaceAudioRef.current.volume = intValue / 100;
-            if (intValue > 0) {
-                fireplaceAudioRef.current.play();
-            } else {
-                fireplaceAudioRef.current.pause();
-            }
+            fireplaceAudioRef.current.volume = newValue / 100;
+            newValue > 0 ? fireplaceAudioRef.current.play() : fireplaceAudioRef.current.pause();
         }
     };
 
@@ -165,6 +136,10 @@ const BottomMenu = () => {
                 playerRef.current.setVolume(volume);
             }
         }
+    };
+
+    const handleBackgroundSelect = (background) => {
+        onBackgroundChange(background.src);
     };
 
     const onPlayerReady = (event) => {
@@ -205,10 +180,13 @@ const BottomMenu = () => {
                 </Alert>
             )}
 
+            {/* Hidden audio elements for ambient sounds */}
+            <audio ref={rainAudioRef} src={rainSound} loop style={{ display: 'none' }} />
+            <audio ref={windAudioRef} src={windSound} loop style={{ display: 'none' }} />
+            <audio ref={fireplaceAudioRef} src={fireplaceSound} loop style={{ display: 'none' }} />
+
             {/* Music */}
-            <div
-                className={`absolute flex items-center justify-between w-full md:w-auto md:mb-0 duration-500 ${isMenuHidden ? '-translate-y-4 md:translate-y-0' : 'translate-y-0 md:translate-y-0'} z-10`}
-            >
+            <div className={`absolute flex items-center justify-between w-full md:w-auto md:mb-0 duration-500 ${isMenuHidden ? '-translate-y-4 md:translate-y-0' : 'translate-y-0 md:translate-y-0'} z-10`}>
                 <div className="flex items-center pl-4 pb-4 md:pl-10 md:pb-0">
                     {selectedVideo && (
                         <div className="flex items-center text-left ml-4">
@@ -221,9 +199,7 @@ const BottomMenu = () => {
                         </div>
                     )}
                 </div>
-                <div
-                    className={`flex items-center pr-4 pb-4 md:pr-0 md:pb-0  md:ml-40 space-x-10 duration-500 ${isMenuHidden ? 'translate-y-0 md:translate-y-[300%]' : 'translate-y-0'} z-10`}
-                >
+                <div className={`flex items-center pr-4 pb-4 md:pr-0 md:pb-0  md:ml-40 space-x-10 duration-500 ${isMenuHidden ? 'translate-y-0 md:translate-y-[300%]' : 'translate-y-0'} z-10`}>
                     <IconButton variant="text" className="rounded-full w-24 h-24 group" onClick={handlePlayPause}>
                         {isPlaying ? (
                             <>
@@ -237,10 +213,7 @@ const BottomMenu = () => {
                             </>
                         )}
                     </IconButton>
-                    <Popover
-                        placement="top"
-                        offset={{ mainAxis: 60 }} 
-                    >
+                    <Popover placement="top" offset={{ mainAxis: 60 }}>
                         <PopoverHandler>
                             <IconButton variant="text" className="rounded-full w-24 h-24 group">
                                 {volume === 0 ? (
@@ -259,7 +232,7 @@ const BottomMenu = () => {
                         <PopoverContent className="w-36 p-4 bg-gray-700 text-white z-50 -rotate-90">
                             <div className="w-full">
                                 <Slider
-                                    defaultValue={volume} 
+                                    defaultValue={volume}
                                     onChange={(e) => handleVolumeChange(parseInt(e.target.value, 10))}
                                     min={0}
                                     max={100}
@@ -273,21 +246,11 @@ const BottomMenu = () => {
             </div>
 
             {/* Second Block (Main Menu) */}
-            <div
-                className={`flex items-center justify-center md:justify-end w-full md:w-full transition-all duration-500 md:h-[100px] ${isMenuHidden ? 'opacity-0 translate-y-10' : 'opacity-100 translate-y-0'
-                    }`}
-                style={{
-                    backgroundImage: `linear-gradient(to top, rgba(217, 217, 217, 0.15) 10%, rgba(115, 115, 115, 0))`,
-                }}
-            >
-
+            <div className={`flex items-center justify-center md:justify-end w-full md:w-full transition-all duration-500 md:h-[100px] ${isMenuHidden ? 'opacity-0 translate-y-10' : 'opacity-100 translate-y-0'}`} style={{ backgroundImage: `linear-gradient(to top, rgba(217, 217, 217, 0.15) 10%, rgba(115, 115, 115, 0))` }}>
                 <div className="px-4 md:px-10 flex justify-around space-x-10">
-                    <Popover
-                        placement="top"
-                        offset={{ mainAxis: 10 }} 
-                    >
+                    <Popover placement="top" offset={{ mainAxis: 10 }}>
                         <PopoverHandler>
-                            <Button variant='text' className=" w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
+                            <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
                                 <MusicalNoteIconOutline className="w-6 h-6 text-white group-hover:hidden" />
                                 <MusicalNoteIconSolid className="w-6 h-6 text-white hidden group-hover:block" />
                                 <span className='text-white text-sm mt-2'>Music</span>
@@ -296,11 +259,7 @@ const BottomMenu = () => {
                         <PopoverContent className="w-72 p-4 bg-gray-700 text-white z-50 max-h-60 overflow-auto">
                             <div className="w-full">
                                 {videos.map((video, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-center space-x-4 p-2 cursor-pointer hover:bg-gray-600 rounded-md"
-                                        onClick={() => handleVideoSelect(video)}
-                                    >
+                                    <div key={index} className="flex items-center space-x-4 p-2 cursor-pointer hover:bg-gray-600 rounded-md" onClick={() => handleVideoSelect(video)}>
                                         <img src={video.thumbnail} alt={video.title} className="w-12 h-12 rounded-md" />
                                         <span>{video.title}</span>
                                     </div>
@@ -308,10 +267,7 @@ const BottomMenu = () => {
                             </div>
                         </PopoverContent>
                     </Popover>
-                    <Popover
-                        placement="top"
-                        offset={{ mainAxis: 10 }} 
-                    >
+                    <Popover placement="top" offset={{ mainAxis: 10 }}>
                         <PopoverHandler>
                             <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
                                 <SignalIconOutline className="w-6 h-6 text-white group-hover:hidden" />
@@ -324,7 +280,7 @@ const BottomMenu = () => {
                                 <div>
                                     <label className="block text-sm">Rain</label>
                                     <Slider
-                                        defaultValue={ambientSounds.rain}  
+                                        defaultValue={ambientSounds.rain}
                                         onChange={(e) => handleAmbientSoundChange('rain', parseInt(e.target.value, 10))}
                                         min={0}
                                         max={100}
@@ -335,7 +291,7 @@ const BottomMenu = () => {
                                 <div>
                                     <label className="block text-sm">Wind</label>
                                     <Slider
-                                        defaultValue={ambientSounds.wind}  
+                                        defaultValue={ambientSounds.wind}
                                         onChange={(e) => handleAmbientSoundChange('wind', parseInt(e.target.value, 10))}
                                         min={0}
                                         max={100}
@@ -346,7 +302,7 @@ const BottomMenu = () => {
                                 <div>
                                     <label className="block text-sm">Fireplace</label>
                                     <Slider
-                                        defaultValue={ambientSounds.fireplace}  
+                                        defaultValue={ambientSounds.fireplace}
                                         onChange={(e) => handleAmbientSoundChange('fireplace', parseInt(e.target.value, 10))}
                                         min={0}
                                         max={100}
@@ -357,10 +313,7 @@ const BottomMenu = () => {
                             </div>
                         </PopoverContent>
                     </Popover>
-                    <Popover
-                        placement="top"
-                        offset={{ mainAxis: 10 }} 
-                    >
+                    <Popover placement="top" offset={{ mainAxis: 10 }}>
                         <PopoverHandler>
                             <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
                                 <EyeIconOutline className="w-6 h-6 text-white group-hover:hidden" />
@@ -368,9 +321,29 @@ const BottomMenu = () => {
                                 <span className='text-white text-sm mt-2'>Visuals</span>
                             </Button>
                         </PopoverHandler>
-                        <PopoverContent className="w-36 h-36 p-4 bg-gray-700 text-white z-50">
-                            <div className="w-full">
-
+                        <PopoverContent className="w-72 p-4 bg-gray-700 text-white z-50">
+                            <div className="w-full space-y-4 grid grid-cols">
+                                {backgrounds.map((background, index) => (
+                                    <div
+                                        key={index}
+                                        className="relative cursor-pointer rounded-md overflow-hidden border"
+                                        style={{
+                                            height: '100px',
+                                            transition: 'transform 0.3s, border-color 0.3s',
+                                        }}
+                                        onClick={() => handleBackgroundSelect(background)}
+                                        onMouseEnter={(e) => e.currentTarget.style.borderColor = '#fff'}
+                                        onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
+                                    >
+                                        <video
+                                            src={background.src}
+                                            muted
+                                            autoPlay
+                                            loop
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                        ></video>
+                                    </div>
+                                ))}
                             </div>
                         </PopoverContent>
                     </Popover>
@@ -378,13 +351,7 @@ const BottomMenu = () => {
             </div>
 
             {/* YouTube Player */}
-            <YouTube
-                videoId={selectedVideo.id} 
-                opts={opts}
-                onReady={onPlayerReady}
-                onError={onPlayerError}
-                onEnd={onPlayerEnd}
-            />
+            <YouTube videoId={selectedVideo.id} opts={opts} onReady={onPlayerReady} onError={onPlayerError} onEnd={onPlayerEnd} />
         </div>
     );
 };
