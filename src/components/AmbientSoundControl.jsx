@@ -2,8 +2,10 @@ import React from 'react';
 import { Button, Popover, PopoverHandler, PopoverContent, Slider } from "@material-tailwind/react";
 import {
     SignalIcon as SignalIconSolid,
-    SignalIcon as SignalIconOutline
 } from '@heroicons/react/24/solid';
+import {
+    SignalIcon as SignalIconOutline
+} from '@heroicons/react/24/outline';
 
 const AmbientSoundControl = ({ ambientSounds, handleAmbientSoundChange }) => {
     return (

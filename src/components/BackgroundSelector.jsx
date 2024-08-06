@@ -2,8 +2,10 @@ import React from 'react';
 import { Button, Popover, PopoverHandler, PopoverContent } from "@material-tailwind/react";
 import {
     EyeIcon as EyeIconSolid,
-    EyeIcon as EyeIconOutline
 } from '@heroicons/react/24/solid';
+import {
+    EyeIcon as EyeIconOutline
+} from '@heroicons/react/24/outline';
 
 const BackgroundSelector = ({ backgrounds, handleBackgroundSelect }) => {
     return (

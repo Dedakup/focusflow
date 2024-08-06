@@ -1,9 +1,12 @@
 import React from 'react';
 import { Button, Popover, PopoverHandler, PopoverContent } from "@material-tailwind/react";
 import {
-    MusicalNoteIcon as MusicalNoteIconSolid,
-    MusicalNoteIcon as MusicalNoteIconOutline
+    MusicalNoteIcon as MusicalNoteIconSolid
 } from '@heroicons/react/24/solid';
+
+import {
+    MusicalNoteIcon as MusicalNoteIconOutline
+} from '@heroicons/react/24/outline';
 
 const MusicSelection = ({ videos, handleVideoSelect }) => {
     return (
