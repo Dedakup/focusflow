@@ -1,34 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import YouTube from 'react-youtube';
-import {
-    Button,
-    IconButton,
-    Popover,
-    PopoverHandler,
-    PopoverContent,
-    Slider,
-    Alert,
-} from "@material-tailwind/react";
-import {
-    PlayIcon as PlayIconSolid,
-    PauseIcon as PauseIconSolid,
-    MusicalNoteIcon as MusicalNoteIconSolid,
-    EyeIcon as EyeIconSolid,
-    SpeakerWaveIcon as SpeakerWaveIconSolid,
-    SpeakerXMarkIcon as SpeakerXMarkIconSolid,
-    SignalIcon as SignalIconSolid,
-} from '@heroicons/react/24/solid';
-
-import {
-    PlayIcon as PlayIconOutline,
-    PauseIcon as PauseIconOutline,
-    MusicalNoteIcon as MusicalNoteIconOutline,
-    EyeIcon as EyeIconOutline,
-    SpeakerWaveIcon as SpeakerWaveIconOutline,
-    SpeakerXMarkIcon as SpeakerXMarkIconOutline,
-    SignalIcon as SignalIconOutline,
-} from '@heroicons/react/24/outline';
-
+import MusicControl from './MusicControl';
+import VolumeControl from './VolumeControl';
+import MusicSelection from './MusicSelection';
+import AmbientSoundControl from './AmbientSoundControl';
+import BackgroundSelector from './BackgroundSelector';
+import Alert from "@material-tailwind/react";
 import rainSound from '../assets/sounds/rain-in-forest-birds-nature.mp3';
 import windSound from '../assets/sounds/singing-birds-nature-atmo.mp3';
 import fireplaceSound from '../assets/sounds/soft-rain-ambient.mp3';
@@ -54,9 +31,9 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
     useEffect(() => {
         const handleUserActivity = () => {
             clearTimeout(activityTimer);
-            setIsMenuHidden(false); // Показать меню при активности
+            setIsMenuHidden(false); // Show menu on activity
             activityTimer = setTimeout(() => {
-                setIsMenuHidden(true); // Скрыть меню через 10 секунд неактивности
+                setIsMenuHidden(true); // Hide menu after 6 seconds of inactivity
             }, 6000);
         };
 
@@ -64,7 +41,6 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
         window.addEventListener('scroll', handleUserActivity);
         window.addEventListener('keydown', handleUserActivity);
 
-        // Очистка слушателей и таймера при размонтировании компонента
         return () => {
             clearTimeout(activityTimer);
             window.removeEventListener('mousemove', handleUserActivity);
@@ -120,16 +96,6 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
             ...prev,
             [type]: newValue
         }));
-        if (type === 'rain' && rainAudioRef.current) {
-            rainAudioRef.current.volume = newValue / 100;
-            newValue > 0 ? rainAudioRef.current.play() : rainAudioRef.current.pause();
-        } else if (type === 'wind' && windAudioRef.current) {
-            windAudioRef.current.volume = newValue / 100;
-            newValue > 0 ? windAudioRef.current.play() : windAudioRef.current.pause();
-        } else if (type === 'fireplace' && fireplaceAudioRef.current) {
-            fireplaceAudioRef.current.volume = newValue / 100;
-            newValue > 0 ? fireplaceAudioRef.current.play() : fireplaceAudioRef.current.pause();
-        }
     };
 
     const handleVideoSelect = (video) => {
@@ -194,169 +160,36 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
             <audio ref={windAudioRef} src={windSound} loop style={{ display: 'none' }} />
             <audio ref={fireplaceAudioRef} src={fireplaceSound} loop style={{ display: 'none' }} />
 
-            {/* Music */}
             <div className={`absolute flex items-center justify-between w-full md:w-auto md:mb-0 duration-500 ${isMenuHidden ? '-translate-y-4 md:translate-y-0' : '-translate-y-16 md:translate-y-0'} z-10`}>
-                <div className="flex items-center pl-4 pb-4 md:pl-10 md:pb-0">
-                    {selectedVideo && (
-                        <div className="flex items-center text-left ml-4">
-                            <a href={`https://www.youtube.com/watch?v=${selectedVideo.id}`} target="_blank" rel="noopener noreferrer">
-                                <img src={selectedVideo.thumbnail} alt={selectedVideo.title} className="w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-md" />
-                            </a>
-                            <a href={`https://www.youtube.com/watch?v=${selectedVideo.id}`} target="_blank" rel="noopener noreferrer" className="text-white ml-4 hover:underline">
-                                {selectedVideo.title}
-                            </a>
-                        </div>
-                    )}
-                </div>
-                <div className={`flex items-center pr-4 pb-4 md:pr-0 md:pb-0  md:ml-40 space-x-10 duration-500 ${isMenuHidden ? 'translate-y-0 md:translate-y-[300%]' : 'translate-y-0'} z-10`}>
-                    <IconButton variant="text" className="rounded-full w-24 h-24 group" onClick={handlePlayPause}>
-                        {isPlaying ? (
-                            <>
-                                <PauseIconOutline className="w-6 h-6 text-white group-active:hidden md:group-hover:hidden" />
-                                <PauseIconSolid className="w-6 h-6 text-white hidden group-active:block md:group-hover:block" />
-                            </>
-                        ) : (
-                            <>
-                                <PlayIconOutline className="w-6 h-6 text-white group-active:hidden md:group-hover:hidden" />
-                                <PlayIconSolid className="w-6 h-6 text-white hidden group-active:block md:group-hover:block" />
-                            </>
-                        )}
-                    </IconButton>
-                    <Popover placement="top" offset={{ mainAxis: 60 }}>
-                        <PopoverHandler>
-                            <IconButton variant="text" className="rounded-full w-24 h-24 group">
-                                {volume === 0 ? (
-                                    <>
-                                        <SpeakerXMarkIconOutline className="w-6 h-6 text-white md:group-hover:hidden" />
-                                        <SpeakerXMarkIconSolid className="w-6 h-6 text-white hidden md:group-hover:block" />
-                                    </>
-                                ) : (
-                                    <>
-                                        <SpeakerWaveIconOutline className="w-6 h-6 text-white md:group-hover:hidden" />
-                                        <SpeakerWaveIconSolid className="w-6 h-6 text-white hidden md:group-hover:block" />
-                                    </>
-                                )}
-                            </IconButton>
-                        </PopoverHandler>
-                        <PopoverContent className="w-36 p-4 bg-gray-700 text-white z-50 -rotate-90 ml-8 md:ml-0">
-                            <div className="w-full">
-                                <Slider
-                                    defaultValue={volume}
-                                    onChange={(e) => handleVolumeChange(parseInt(e.target.value, 10))}
-                                    min={0}
-                                    max={100}
-                                    size='md'
-                                    className="!min-w-10"
-                                />
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-                </div>
+                {/* Music Control */}
+                <MusicControl
+                    selectedVideo={selectedVideo}
+                />
+                {/* Volume Control */}
+                <VolumeControl
+                    isPlaying={isPlaying}
+                    handlePlayPause={handlePlayPause}
+                    volume={volume}
+                    handleVolumeChange={handleVolumeChange}
+                />
             </div>
 
-            {/* Second Block (Main Menu) */}
-            <div className={`flex items-center justify-center md:justify-end w-full md:w-full transition-all duration-500 md:h-[100px] ${isMenuHidden ? 'opacity-0 translate-y-10' : 'opacity-100 translate-y-0'}`} style={{ backgroundImage: `linear-gradient(to top, rgba(217, 217, 217, 0.15) 10%, rgba(115, 115, 115, 0))` }}>
-                <div className="px-4 md:px-10 flex justify-around space-x-10">
-                    <Popover placement="top" offset={{ mainAxis: 10 }}>
-                        <PopoverHandler>
-                            <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
-                                <MusicalNoteIconOutline className="w-6 h-6 text-white group-active:hidden md:group-hover:hidden" />
-                                <MusicalNoteIconSolid className="w-6 h-6 text-white hidden group-active:block md:group-hover:block" />
-                                <span className='text-white text-sm mt-2'>Music</span>
-                            </Button>
-                        </PopoverHandler>
-                        <PopoverContent className="w-72 p-4 bg-gray-700 text-white z-50 max-h-60 overflow-auto">
-                            <div className="w-full">
-                                {videos.map((video, index) => (
-                                    <div key={index} className="flex items-center space-x-4 p-2 cursor-pointer hover:bg-gray-600 rounded-md" onClick={() => handleVideoSelect(video)}>
-                                        <img src={video.thumbnail} alt={video.title} className="w-12 h-12 rounded-md" />
-                                        <span>{video.title}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-                    <Popover placement="top" offset={{ mainAxis: 10 }}>
-                        <PopoverHandler>
-                            <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
-                                <SignalIconOutline className="w-6 h-6 text-white group-active:hidden md:group-hover:hidden" />
-                                <SignalIconSolid className="w-6 h-6 text-white hidden group-active:block md:group-hover:block" />
-                                <span className='text-white text-sm mt-2'>Sounds</span>
-                            </Button>
-                        </PopoverHandler>
-                        <PopoverContent className="w-72 p-4 bg-gray-700 text-white z-50">
-                            <div className="w-full space-y-4">
-                                <div>
-                                    <label className="block text-sm">Rain</label>
-                                    <Slider
-                                        defaultValue={ambientSounds.rain}
-                                        onChange={(e) => handleAmbientSoundChange('rain', parseInt(e.target.value, 10))}
-                                        min={0}
-                                        max={100}
-                                        size='md'
-                                        className="!min-w-10"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm">Wind</label>
-                                    <Slider
-                                        defaultValue={ambientSounds.wind}
-                                        onChange={(e) => handleAmbientSoundChange('wind', parseInt(e.target.value, 10))}
-                                        min={0}
-                                        max={100}
-                                        size='md'
-                                        className="!min-w-10"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm">Fireplace</label>
-                                    <Slider
-                                        defaultValue={ambientSounds.fireplace}
-                                        onChange={(e) => handleAmbientSoundChange('fireplace', parseInt(e.target.value, 10))}
-                                        min={0}
-                                        max={100}
-                                        size='md'
-                                        className="!min-w-10"
-                                    />
-                                </div>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-                    <Popover placement="top" offset={{ mainAxis: 10 }}>
-                        <PopoverHandler>
-                            <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
-                                <EyeIconOutline className="w-6 h-6 text-white group-active:hidden md:group-hover:hidden" />
-                                <EyeIconSolid className="w-6 h-6 text-white hidden group-active:block md:group-hover:block" />
-                                <span className='text-white text-sm mt-2'>Visuals</span>
-                            </Button>
-                        </PopoverHandler>
-                        <PopoverContent className="w-72 p-4 bg-gray-700 text-white z-50">
-                            <div className="w-full space-y-4 grid grid-cols">
-                                {backgrounds.map((background, index) => (
-                                    <div
-                                        key={index}
-                                        className="relative cursor-pointer rounded-md overflow-hidden border"
-                                        style={{
-                                            height: '100px',
-                                            transition: 'transform 0.3s, border-color 0.3s',
-                                        }}
-                                        onClick={() => handleBackgroundSelect(background)}
-                                        onMouseEnter={(e) => e.currentTarget.style.borderColor = '#fff'}
-                                        onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
-                                    >
-                                        <video
-                                            src={background.src}
-                                            muted
-                                            autoPlay
-                                            loop
-                                            className="absolute inset-0 w-full h-full object-cover"
-                                        ></video>
-                                    </div>
-                                ))}
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-                </div>
+            <div className={`flex items-center space-x-10 pr-4 md:pr-10 justify-center md:justify-end w-full md:w-full transition-all duration-500 md:h-[100px] ${isMenuHidden ? 'opacity-0 translate-y-10' : 'opacity-100 translate-y-0'}`} style={{ backgroundImage: `linear-gradient(to top, rgba(217, 217, 217, 0.15) 10%, rgba(115, 115, 115, 0))` }}>
+                {/* Music Selection */}
+                <MusicSelection
+                    videos={videos}
+                    handleVideoSelect={handleVideoSelect}
+                />
+                {/* Ambient Sound Control */}
+                <AmbientSoundControl
+                    ambientSounds={ambientSounds}
+                    handleAmbientSoundChange={handleAmbientSoundChange}
+                />
+                {/* Background Selector */}
+                <BackgroundSelector
+                    backgrounds={backgrounds}
+                    handleBackgroundSelect={handleBackgroundSelect}
+                />
             </div>
 
             {/* YouTube Player */}

@@ -2,11 +2,6 @@
 
 const videos = [
     {
-        id: 'TLwhqmf4Td4',
-        title: 'Test',
-        thumbnail: `https://img.youtube.com/vi/TLwhqmf4Td4/0.jpg`,
-    },
-    {
         id: 'dQw4w9WgXcQ',
         title: 'Never Gonna Give You Up',
         thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg',
