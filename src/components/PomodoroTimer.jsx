@@ -21,14 +21,9 @@ const PomodoroTimer = () => {
   const [longBreakTime, setLongBreakTime] = useState(15); // in minutes
 
   const [isVisible, setIsVisible] = useState(true);
-  const [tasks, setTasks] = useState([
-    { id: 1, name: 'Task 1', completed: false, selected: false },
-    { id: 2, name: 'Task 2', completed: false, selected: true },
-    { id: 3, name: 'Task 3', completed: false, selected: false },
-    { id: 4, name: 'Task 4', completed: false, selected: false },
-    { id: 5, name: 'Task 5', completed: false, selected: false },
-  ]);
+  const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
+  const [currentTaskId, setCurrentTaskId] = useState(null); // Store the current task ID
 
   useEffect(() => {
     let interval;
@@ -125,8 +120,8 @@ const PomodoroTimer = () => {
 
   const toggleCompleteTask = (id) => {
     setTasks(
-      tasks.map(
-        (task) => task.id === id && { ...task, completed: !task.completed }
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
       )
     );
   };
@@ -135,30 +130,28 @@ const PomodoroTimer = () => {
     // Implement edit task functionality here
     console.log(`Edit task ${id}`);
   };
-  const handleSelectedTask = (id) => {
-    const selectedTask = tasks.map((task) =>
-      task.id === id
-        ? { ...task, selected: true }
-        : { ...task, selected: false }
-    );
 
-    setTasks(selectedTask);
+  const selectTaskForSession = (id) => {
+    setCurrentTaskId(id);
   };
+
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center z-50">
       <div className="flex items-center">
         {/* Task Popover */}
         <TaskPopover
           tasks={tasks}
+          setTasks={setTasks} // Pass the setTasks function down to the TaskPopover
           newTask={newTask}
           setNewTask={setNewTask}
           addTask={addTask}
           deleteTask={deleteTask}
           toggleCompleteTask={toggleCompleteTask}
           handleEditTask={handleEditTask}
+          selectTaskForSession={selectTaskForSession}
+          currentTaskId={currentTaskId}
           isVisible={isVisible}
           isActive={isActive}
-          handleSelectedTask={handleSelectedTask}
         />
         {/* Timer Circle */}
         <TimerCircle
@@ -183,18 +176,13 @@ const PomodoroTimer = () => {
         />
       </div>
       {/* Current Task Section */}
-      {tasks &&
-        tasks.map(
-          (task) =>
-            task.selected && (
-              <p className="text-lg text-gray-400 mt-[32px]" key={task.id}>
-                <span className="font-semibold text-white capitalize">
-                  Current task :
-                </span>{' '}
-                {task.name}
-              </p>
-            )
-        )}
+      <div className="text-center mt-[32px] mb-2">
+        <span className="text-lg text-white">
+          {currentTaskId
+            ? tasks.find((task) => task.id === currentTaskId)?.name
+            : 'No task selected'}
+        </span>
+      </div>
       {phase === 'work' && (
         <span className="text-sm text-white mt-[8px]">
           {'Breaks until long break: ' + (4 - cycle)}
