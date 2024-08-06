@@ -22,13 +22,10 @@ const PomodoroTimer = () => {
 
     const [isVisible, setIsVisible] = useState(true);
     const [tasks, setTasks] = useState([
-        { id: 1, name: 'Task 1', completed: false },
-        { id: 2, name: 'Task 2', completed: false },
-        { id: 3, name: 'Task 3', completed: false },
-        { id: 4, name: 'Task 4', completed: false },
-        { id: 5, name: 'Task 5', completed: false },
+        
     ]);
     const [newTask, setNewTask] = useState('');
+    const [currentTaskId, setCurrentTaskId] = useState(null); // Store the current task ID
 
     useEffect(() => {
         let interval;
@@ -132,18 +129,25 @@ const PomodoroTimer = () => {
         console.log(`Edit task ${id}`);
     };
 
+    const selectTaskForSession = (id) => {
+        setCurrentTaskId(id);
+    };
+
     return (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-50">
             <div className="flex items-center">
                 {/* Task Popover */}
                 <TaskPopover
                     tasks={tasks}
+                    setTasks={setTasks} // Pass the setTasks function down to the TaskPopover
                     newTask={newTask}
                     setNewTask={setNewTask}
                     addTask={addTask}
                     deleteTask={deleteTask}
                     toggleCompleteTask={toggleCompleteTask}
                     handleEditTask={handleEditTask}
+                    selectTaskForSession={selectTaskForSession}
+                    currentTaskId={currentTaskId}
                     isVisible={isVisible}
                     isActive={isActive}
                 />
@@ -170,7 +174,13 @@ const PomodoroTimer = () => {
                 />
             </div>
             {/* Current Task Section */}
-            <span className='text-lg text-white mt-[32px]'>{'Current task'}</span>
+            <div className="text-center mt-[32px] mb-2">
+                <span className='text-lg text-white'>
+                    {currentTaskId
+                        ? tasks.find(task => task.id === currentTaskId)?.name
+                        : 'No task selected'}
+                </span>
+            </div>
             {
                 phase === 'work' && (
                     <span className="text-sm text-white mt-[8px]">
