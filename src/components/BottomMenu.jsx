@@ -49,20 +49,29 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
         wind: 0,
         fireplace: 0
     });
+    let activityTimer;
 
     useEffect(() => {
-        const handleVisibilityChange = () => {
-            if (!document.hidden && playerRef.current && isPlaying) {
-                playerRef.current.playVideo();
-            }
+        const handleUserActivity = () => {
+            clearTimeout(activityTimer);
+            setIsMenuHidden(false); // Показать меню при активности
+            activityTimer = setTimeout(() => {
+                setIsMenuHidden(true); // Скрыть меню через 10 секунд неактивности
+            }, 6000);
         };
 
-        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('mousemove', handleUserActivity);
+        window.addEventListener('scroll', handleUserActivity);
+        window.addEventListener('keydown', handleUserActivity);
 
+        // Очистка слушателей и таймера при размонтировании компонента
         return () => {
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            clearTimeout(activityTimer);
+            window.removeEventListener('mousemove', handleUserActivity);
+            window.removeEventListener('scroll', handleUserActivity);
+            window.removeEventListener('keydown', handleUserActivity);
         };
-    }, [isPlaying]);
+    }, []);
 
     useEffect(() => {
         if (rainAudioRef.current) {
@@ -186,7 +195,7 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
             <audio ref={fireplaceAudioRef} src={fireplaceSound} loop style={{ display: 'none' }} />
 
             {/* Music */}
-            <div className={`absolute flex items-center justify-between w-full md:w-auto md:mb-0 duration-500 ${isMenuHidden ? '-translate-y-4 md:translate-y-0' : 'translate-y-0 md:translate-y-0'} z-10`}>
+            <div className={`absolute flex items-center justify-between w-full md:w-auto md:mb-0 duration-500 ${isMenuHidden ? '-translate-y-4 md:translate-y-0' : '-translate-y-16 md:translate-y-0'} z-10`}>
                 <div className="flex items-center pl-4 pb-4 md:pl-10 md:pb-0">
                     {selectedVideo && (
                         <div className="flex items-center text-left ml-4">
