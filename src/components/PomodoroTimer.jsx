@@ -1,16 +1,34 @@
 import React, { useState, useEffect } from 'react';
+import TimerCircle from './TimerCircle';
+import SettingsPopover from './SettingsPopover';
+import TaskPopover from './TaskPopover.jsx';
 
 const PomodoroTimer = () => {
-    const numLines = 25;
     const initialRadius = 115;
-    const expandedRadius = 184;
-    const totalTime = 1500; // 25 минут в секундах для рабочего таймера
+    const expandedRadius = 175;
+    const defaultPomodoroTime = 1500; // 25 minutes in seconds
+    const defaultShortBreakTime = 300; // 5 minutes in seconds
+    const defaultLongBreakTime = 900; // 15 minutes in seconds
 
     const [radius, setRadius] = useState(initialRadius);
-    const [timeLeft, setTimeLeft] = useState(totalTime);
+    const [timeLeft, setTimeLeft] = useState(defaultPomodoroTime);
     const [isActive, setIsActive] = useState(false);
     const [cycle, setCycle] = useState(1);
     const [phase, setPhase] = useState('work'); // work, shortBreak, longBreak
+    const [hasStarted, setHasStarted] = useState(false);
+    const [pomodoroTime, setPomodoroTime] = useState(25); // in minutes
+    const [shortBreakTime, setShortBreakTime] = useState(5); // in minutes
+    const [longBreakTime, setLongBreakTime] = useState(15); // in minutes
+
+    const [isVisible, setIsVisible] = useState(true);
+    const [tasks, setTasks] = useState([
+        { id: 1, name: 'Task 1', completed: false },
+        { id: 2, name: 'Task 2', completed: false },
+        { id: 3, name: 'Task 3', completed: false },
+        { id: 4, name: 'Task 4', completed: false },
+        { id: 5, name: 'Task 5', completed: false },
+    ]);
+    const [newTask, setNewTask] = useState('');
 
     useEffect(() => {
         let interval;
@@ -36,60 +54,131 @@ const PomodoroTimer = () => {
         if (phase === 'work') {
             if (cycle < 4) {
                 setPhase('shortBreak');
-                setTimeLeft(300); // 5 минут в секундах
+                setTimeLeft(shortBreakTime * 60); // Convert to seconds
                 setCycle(cycle + 1);
             } else {
                 setPhase('longBreak');
-                setTimeLeft(900); // 15 минут в секундах
+                setTimeLeft(longBreakTime * 60); // Convert to seconds
                 setCycle(1);
             }
         } else {
             setPhase('work');
-            setTimeLeft(totalTime); // 25 минут в секундах
+            setTimeLeft(pomodoroTime * 60); // Convert to seconds
         }
         setIsActive(true);
     };
 
-    const formatTime = (seconds) => {
-        const minutes = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-    };
-
-    const lines = Array.from({ length: numLines }, (_, index) => {
-        const angle = (index * 360) / numLines;
-        const progressIndex = Math.floor(((totalTime - timeLeft) / totalTime) * numLines);
-        const isLineActive = index < progressIndex;
-        const lineWidth = isActive ? '8px' : '4px';
-        const lineHeight = isActive ? '20px' : '10px';
-        const style = {
-            transform: `rotate(${angle}deg) translateY(-${radius}px)`,
-            transformOrigin: 'center',
-            opacity: isLineActive ? '0' : '1',
-            width: lineWidth,
-            height: lineHeight,
-        };
-        return <div key={index} className="absolute bg-slate-300 rounded-full transition-all duration-500" style={style} />;
-    });
-
     const toggleTimer = () => {
+        if (!hasStarted) setHasStarted(true);
         setIsActive(!isActive);
         setRadius(isActive ? initialRadius : expandedRadius);
     };
 
+    const resetTimer = (event) => {
+        event.stopPropagation(); // Prevent the timer from starting
+        setTimeLeft(pomodoroTime * 60);
+        setIsActive(false);
+        setPhase('work');
+        setCycle(1);
+        setHasStarted(false);
+        setRadius(initialRadius); // Reset radius to initial
+    };
+
+    useEffect(() => {
+        if (isActive) {
+            // Start hiding animation
+            const timer = setTimeout(() => {
+                setIsVisible(false); // Hide element after animation completes
+            }, 500); // Animation duration 500ms
+            return () => clearTimeout(timer);
+        } else {
+            // Show element immediately before animation starts
+            setIsVisible(true);
+        }
+    }, [isActive]);
+
+    const handlePomodoroChange = (e) => {
+        setPomodoroTime(e.target.value);
+        if (phase === 'work') {
+            setTimeLeft(e.target.value * 60); // Convert to seconds
+        }
+    };
+
+    const handleShortBreakChange = (e) => {
+        setShortBreakTime(e.target.value);
+    };
+
+    const handleLongBreakChange = (e) => {
+        setLongBreakTime(e.target.value);
+    };
+
+    const addTask = () => {
+        if (newTask.trim() !== '') {
+            setTasks([...tasks, { id: Date.now(), name: newTask, completed: false }]);
+            setNewTask('');
+        }
+    };
+
+    const deleteTask = (id) => {
+        setTasks(tasks.filter(task => task.id !== id));
+    };
+
+    const toggleCompleteTask = (id) => {
+        setTasks(tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task));
+    };
+
+    const handleEditTask = (id) => {
+        // Implement edit task functionality here
+        console.log(`Edit task ${id}`);
+    };
+
     return (
-        <div className="absolute inset-0 flex items-center justify-center">
-            <div 
-                className={`relative flex items-center justify-center transition-all duration-500 cursor-pointer`} 
-                style={{ width: `${radius * 2}px`, height: `${radius * 2}px` }}
-                onClick={toggleTimer}
-            >
-                {lines}
-                <div className="absolute">
-                    <span className="text-4xl text-slate-300">{formatTime(timeLeft)}</span>
-                </div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-50">
+            <div className="flex items-center">
+                {/* Task Popover */}
+                <TaskPopover
+                    tasks={tasks}
+                    newTask={newTask}
+                    setNewTask={setNewTask}
+                    addTask={addTask}
+                    deleteTask={deleteTask}
+                    toggleCompleteTask={toggleCompleteTask}
+                    handleEditTask={handleEditTask}
+                    isVisible={isVisible}
+                    isActive={isActive}
+                />
+                {/* Timer Circle */}
+                <TimerCircle
+                    radius={radius}
+                    timeLeft={timeLeft}
+                    isActive={isActive}
+                    toggleTimer={toggleTimer}
+                    resetTimer={resetTimer}
+                    phase={phase}
+                    hasStarted={hasStarted}
+                />
+                {/* Settings Popover */}
+                <SettingsPopover
+                    isVisible={isVisible}
+                    isActive={isActive}
+                    handlePomodoroChange={handlePomodoroChange}
+                    handleShortBreakChange={handleShortBreakChange}
+                    handleLongBreakChange={handleLongBreakChange}
+                    pomodoroTime={pomodoroTime}
+                    shortBreakTime={shortBreakTime}
+                    longBreakTime={longBreakTime}
+                />
             </div>
-        </div>
+            {/* Current Task Section */}
+            <span className='text-lg text-white mt-[32px]'>{'Current task'}</span>
+            {
+                phase === 'work' && (
+                    <span className="text-sm text-white mt-[8px]">
+                        {'Breaks until long break: ' + (4 - cycle)}
+                    </span>
+                )
+            }
+        </div >
     );
 };
 

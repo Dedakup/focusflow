@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  overflow: hidden;
+}
+
 /* Music Slider */
 .rap-container .rap-controls .rap-slider .rap-progress .rap-pin,
 .rap-container .rap-controls span {
