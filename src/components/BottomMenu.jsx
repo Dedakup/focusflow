@@ -212,13 +212,13 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
                     <IconButton variant="text" className="rounded-full w-24 h-24 group" onClick={handlePlayPause}>
                         {isPlaying ? (
                             <>
-                                <PauseIconOutline className="w-6 h-6 text-white group-hover:hidden" />
-                                <PauseIconSolid className="w-6 h-6 text-white hidden group-hover:block" />
+                                <PauseIconOutline className="w-6 h-6 text-white group-active:hidden md:group-hover:hidden" />
+                                <PauseIconSolid className="w-6 h-6 text-white hidden group-active:block md:group-hover:block" />
                             </>
                         ) : (
                             <>
-                                <PlayIconOutline className="w-6 h-6 text-white group-hover:hidden" />
-                                <PlayIconSolid className="w-6 h-6 text-white hidden group-hover:block" />
+                                <PlayIconOutline className="w-6 h-6 text-white group-active:hidden md:group-hover:hidden" />
+                                <PlayIconSolid className="w-6 h-6 text-white hidden group-active:block md:group-hover:block" />
                             </>
                         )}
                     </IconButton>
@@ -227,18 +227,18 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
                             <IconButton variant="text" className="rounded-full w-24 h-24 group">
                                 {volume === 0 ? (
                                     <>
-                                        <SpeakerXMarkIconOutline className="w-6 h-6 text-white group-hover:hidden" />
-                                        <SpeakerXMarkIconSolid className="w-6 h-6 text-white hidden group-hover:block" />
+                                        <SpeakerXMarkIconOutline className="w-6 h-6 text-white md:group-hover:hidden" />
+                                        <SpeakerXMarkIconSolid className="w-6 h-6 text-white hidden md:group-hover:block" />
                                     </>
                                 ) : (
                                     <>
-                                        <SpeakerWaveIconOutline className="w-6 h-6 text-white group-hover:hidden" />
-                                        <SpeakerWaveIconSolid className="w-6 h-6 text-white hidden group-hover:block" />
+                                        <SpeakerWaveIconOutline className="w-6 h-6 text-white md:group-hover:hidden" />
+                                        <SpeakerWaveIconSolid className="w-6 h-6 text-white hidden md:group-hover:block" />
                                     </>
                                 )}
                             </IconButton>
                         </PopoverHandler>
-                        <PopoverContent className="w-36 p-4 bg-gray-700 text-white z-50 -rotate-90">
+                        <PopoverContent className="w-36 p-4 bg-gray-700 text-white z-50 -rotate-90 ml-8 md:ml-0">
                             <div className="w-full">
                                 <Slider
                                     defaultValue={volume}
@@ -260,8 +260,8 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
                     <Popover placement="top" offset={{ mainAxis: 10 }}>
                         <PopoverHandler>
                             <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
-                                <MusicalNoteIconOutline className="w-6 h-6 text-white group-hover:hidden" />
-                                <MusicalNoteIconSolid className="w-6 h-6 text-white hidden group-hover:block" />
+                                <MusicalNoteIconOutline className="w-6 h-6 text-white group-active:hidden md:group-hover:hidden" />
+                                <MusicalNoteIconSolid className="w-6 h-6 text-white hidden group-active:block md:group-hover:block" />
                                 <span className='text-white text-sm mt-2'>Music</span>
                             </Button>
                         </PopoverHandler>
@@ -279,8 +279,8 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
                     <Popover placement="top" offset={{ mainAxis: 10 }}>
                         <PopoverHandler>
                             <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
-                                <SignalIconOutline className="w-6 h-6 text-white group-hover:hidden" />
-                                <SignalIconSolid className="w-6 h-6 text-white hidden group-hover:block" />
+                                <SignalIconOutline className="w-6 h-6 text-white group-active:hidden md:group-hover:hidden" />
+                                <SignalIconSolid className="w-6 h-6 text-white hidden group-active:block md:group-hover:block" />
                                 <span className='text-white text-sm mt-2'>Sounds</span>
                             </Button>
                         </PopoverHandler>
@@ -325,8 +325,8 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
                     <Popover placement="top" offset={{ mainAxis: 10 }}>
                         <PopoverHandler>
                             <Button variant='text' className="w-20 h-20 flex flex-col rounded-2xl text-white items-center group">
-                                <EyeIconOutline className="w-6 h-6 text-white group-hover:hidden" />
-                                <EyeIconSolid className="w-6 h-6 text-white hidden group-hover:block" />
+                                <EyeIconOutline className="w-6 h-6 text-white group-active:hidden md:group-hover:hidden" />
+                                <EyeIconSolid className="w-6 h-6 text-white hidden group-active:block md:group-hover:block" />
                                 <span className='text-white text-sm mt-2'>Visuals</span>
                             </Button>
                         </PopoverHandler>
