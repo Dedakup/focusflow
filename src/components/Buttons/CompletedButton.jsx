@@ -1,8 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const CompletedButton = ({ toggleCompleteTask, id, completed }) => {
+  const handleClick = () => {
+    if (typeof toggleCompleteTask === 'function') {
+      toggleCompleteTask(id);
+    } else {
+      console.error('toggleCompleteTask is not a function');
+    }
+  };
+
   return (
-    <button onClick={() => toggleCompleteTask(id)} className="z-20">
+    <button onClick={handleClick} className="z-20">
       {completed ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -24,12 +33,22 @@ const CompletedButton = ({ toggleCompleteTask, id, completed }) => {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M19.5 12h-15m15 0c0-4.142-3.358-7.5-7.5-7.5S4.5 7.858 4.5 12s3.358 7.5 7.5 7.5 7.5-3.358 7.5-7.5zm0 0H8.25"
+            d="M19.5 12h-15m15 0c0-4.142-3.358-7.5-7.5-7.5S4.5 7.858 4.5 12s3.358 7.51 7.5 7.5 7.5-3.358 7.5-7.5zm0 0H8.25"
           />
         </svg>
       )}
     </button>
   );
 };
+
+// PropTypes for validation
+CompletedButton.propTypes = {
+  toggleCompleteTask: PropTypes.func.isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  completed: PropTypes.bool.isRequired,
+};
+
+// Removed default props as 'completed' is required
+CompletedButton.defaultProps = {};
 
 export default CompletedButton;

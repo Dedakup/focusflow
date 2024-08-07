@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import TimerCircle from './TimerCircle';
 import SettingsPopover from './SettingsPopover';
-import TaskPopover from './TaskPopover.jsx';
+import TaskPopover from './TaskPopover';
 import { ToastContainer, Zoom, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const data = window.localStorage.getItem('Tasks');
 
 const PomodoroTimer = () => {
   const initialRadius = 115;
@@ -14,30 +12,32 @@ const PomodoroTimer = () => {
   const defaultShortBreakTime = 300; // 5 minutes in seconds
   const defaultLongBreakTime = 900; // 15 minutes in seconds
 
+  // State Initialization
   const [radius, setRadius] = useState(initialRadius);
   const [timeLeft, setTimeLeft] = useState(defaultPomodoroTime);
   const [isActive, setIsActive] = useState(false);
   const [cycle, setCycle] = useState(1);
-  const [phase, setPhase] = useState('work'); // work, shortBreak, longBreak
+  const [phase, setPhase] = useState('work'); // 'work', 'shortBreak', 'longBreak'
   const [hasStarted, setHasStarted] = useState(false);
   const [pomodoroTime, setPomodoroTime] = useState(25); // in minutes
   const [shortBreakTime, setShortBreakTime] = useState(5); // in minutes
   const [longBreakTime, setLongBreakTime] = useState(15); // in minutes
-
   const [isVisible, setIsVisible] = useState(true);
-  const [tasks, setTasks] = useState(
-    // data ? data :
-    JSON.parse(data)
-  );
+  const [tasks, setTasks] = useState(() => {
+    try {
+      return JSON.parse(window.localStorage.getItem('Tasks')) || [];
+    } catch (error) {
+      console.error("Error parsing tasks from localStorage", error);
+      return [];
+    }
+  });
   const [newTask, setNewTask] = useState('');
   const [currentTaskId, setCurrentTaskId] = useState(null); // Store the current task ID
-  const [notification, setNotification] = useState({
-    message: '',
-    type: '',
-  });
+
+  // Notify user when 1 minute is left
   useEffect(() => {
     if (timeLeft === 60) {
-      toast.info('You have 1 minutes left', {
+      toast.info('You have 1 minute left', {
         position: 'top-center',
         transition: Zoom,
       });
@@ -96,15 +96,14 @@ const PomodoroTimer = () => {
     setRadius(initialRadius); // Reset radius to initial
   };
 
+  // Handle visibility transitions based on timer status
   useEffect(() => {
     if (isActive) {
-      // Start hiding animation
       const timer = setTimeout(() => {
         setIsVisible(false); // Hide element after animation completes
       }, 500); // Animation duration 500ms
       return () => clearTimeout(timer);
     } else {
-      // Show element immediately before animation starts
       setIsVisible(true);
     }
   }, [isActive]);
@@ -128,7 +127,7 @@ const PomodoroTimer = () => {
     if (newTask.trim() !== '') {
       setTasks([...tasks, { id: Date.now(), name: newTask, completed: false }]);
       setNewTask('');
-      toast.success(`Task added!`, {
+      toast.success('Task added!', {
         position: 'top-right',
         transition: Zoom,
       });
@@ -137,7 +136,7 @@ const PomodoroTimer = () => {
 
   const deleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
-    toast.error(`Task deleted!`, {
+    toast.error('Task deleted!', {
       position: 'top-right',
       transition: Zoom,
     });
@@ -151,14 +150,10 @@ const PomodoroTimer = () => {
     );
   };
 
-  const handleEditTask = (id) => {
-    // Implement edit task functionality here
-    console.log(`Edit task ${id}`);
-  };
-
   const selectTaskForSession = (id) => {
     setCurrentTaskId(id);
   };
+
   useEffect(() => {
     window.localStorage.setItem('Tasks', JSON.stringify(tasks));
   }, [tasks]);
@@ -170,18 +165,15 @@ const PomodoroTimer = () => {
         <div className="flex items-center">
           {/* Task Popover */}
           <TaskPopover
-            tasks={tasks ? tasks : []}
-            setTasks={setTasks} // Pass the setTasks function down to the TaskPopover
+            tasks={tasks}
+            setTasks={setTasks}
             newTask={newTask}
             setNewTask={setNewTask}
             addTask={addTask}
             deleteTask={deleteTask}
             toggleCompleteTask={toggleCompleteTask}
-            handleEditTask={handleEditTask}
             selectTaskForSession={selectTaskForSession}
             currentTaskId={currentTaskId}
-            isVisible={isVisible}
-            isActive={isActive}
           />
           {/* Timer Circle */}
           <TimerCircle
