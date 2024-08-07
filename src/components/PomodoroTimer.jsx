@@ -4,6 +4,9 @@ import SettingsPopover from './SettingsPopover';
 import TaskPopover from './TaskPopover.jsx';
 import { ToastContainer, Zoom, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+const data = window.localStorage.getItem('Tasks');
+
 const PomodoroTimer = () => {
   const initialRadius = 115;
   const expandedRadius = 175;
@@ -22,7 +25,10 @@ const PomodoroTimer = () => {
   const [longBreakTime, setLongBreakTime] = useState(15); // in minutes
 
   const [isVisible, setIsVisible] = useState(true);
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(
+    // data ? data :
+    JSON.parse(data)
+  );
   const [newTask, setNewTask] = useState('');
   const [currentTaskId, setCurrentTaskId] = useState(null); // Store the current task ID
   const [notification, setNotification] = useState({
@@ -153,6 +159,9 @@ const PomodoroTimer = () => {
   const selectTaskForSession = (id) => {
     setCurrentTaskId(id);
   };
+  useEffect(() => {
+    window.localStorage.setItem('Tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   return (
     <>
@@ -161,7 +170,7 @@ const PomodoroTimer = () => {
         <div className="flex items-center">
           {/* Task Popover */}
           <TaskPopover
-            tasks={tasks}
+            tasks={tasks ? tasks : []}
             setTasks={setTasks} // Pass the setTasks function down to the TaskPopover
             newTask={newTask}
             setNewTask={setNewTask}
