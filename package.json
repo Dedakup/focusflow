@@ -9,13 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react-audio-play": "^1.0.2",
-
     "@fortawesome/fontawesome-free": "^6.6.0",
     "@heroicons/react": "^2.1.5",
     "@material-tailwind/react": "2.1.8",
     "react": "18.2.0",
+    "react-audio-play": "^1.0.2",
     "react-dom": "18.2.0",
+    "react-toastify": "^10.0.5",
     "react-youtube": "^10.1.0"
   },
   "devDependencies": {

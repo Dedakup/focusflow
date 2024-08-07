@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import TimerCircle from './TimerCircle';
 import SettingsPopover from './SettingsPopover';
 import TaskPopover from './TaskPopover.jsx';
-
+import { ToastContainer, Zoom, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const PomodoroTimer = () => {
   const initialRadius = 115;
   const expandedRadius = 175;
@@ -24,8 +25,18 @@ const PomodoroTimer = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
   const [currentTaskId, setCurrentTaskId] = useState(null); // Store the current task ID
-
+  const [notification, setNotification] = useState({
+    message: '',
+    type: '',
+  });
   useEffect(() => {
+    if (timeLeft === 60) {
+      toast.info('You have 1 minutes left', {
+        position: 'top-center',
+        transition: Zoom,
+      });
+    }
+
     let interval;
     if (isActive) {
       interval = setInterval(() => {
@@ -111,11 +122,19 @@ const PomodoroTimer = () => {
     if (newTask.trim() !== '') {
       setTasks([...tasks, { id: Date.now(), name: newTask, completed: false }]);
       setNewTask('');
+      toast.success(`Task added!`, {
+        position: 'top-right',
+        transition: Zoom,
+      });
     }
   };
 
   const deleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
+    toast.error(`Task deleted!`, {
+      position: 'top-right',
+      transition: Zoom,
+    });
   };
 
   const toggleCompleteTask = (id) => {
@@ -136,59 +155,62 @@ const PomodoroTimer = () => {
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center z-50">
-      <div className="flex items-center">
-        {/* Task Popover */}
-        <TaskPopover
-          tasks={tasks}
-          setTasks={setTasks} // Pass the setTasks function down to the TaskPopover
-          newTask={newTask}
-          setNewTask={setNewTask}
-          addTask={addTask}
-          deleteTask={deleteTask}
-          toggleCompleteTask={toggleCompleteTask}
-          handleEditTask={handleEditTask}
-          selectTaskForSession={selectTaskForSession}
-          currentTaskId={currentTaskId}
-          isVisible={isVisible}
-          isActive={isActive}
-        />
-        {/* Timer Circle */}
-        <TimerCircle
-          radius={radius}
-          timeLeft={timeLeft}
-          isActive={isActive}
-          toggleTimer={toggleTimer}
-          resetTimer={resetTimer}
-          phase={phase}
-          hasStarted={hasStarted}
-        />
-        {/* Settings Popover */}
-        <SettingsPopover
-          isVisible={isVisible}
-          isActive={isActive}
-          handlePomodoroChange={handlePomodoroChange}
-          handleShortBreakChange={handleShortBreakChange}
-          handleLongBreakChange={handleLongBreakChange}
-          pomodoroTime={pomodoroTime}
-          shortBreakTime={shortBreakTime}
-          longBreakTime={longBreakTime}
-        />
+    <>
+      <ToastContainer />
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-50">
+        <div className="flex items-center">
+          {/* Task Popover */}
+          <TaskPopover
+            tasks={tasks}
+            setTasks={setTasks} // Pass the setTasks function down to the TaskPopover
+            newTask={newTask}
+            setNewTask={setNewTask}
+            addTask={addTask}
+            deleteTask={deleteTask}
+            toggleCompleteTask={toggleCompleteTask}
+            handleEditTask={handleEditTask}
+            selectTaskForSession={selectTaskForSession}
+            currentTaskId={currentTaskId}
+            isVisible={isVisible}
+            isActive={isActive}
+          />
+          {/* Timer Circle */}
+          <TimerCircle
+            radius={radius}
+            timeLeft={timeLeft}
+            isActive={isActive}
+            toggleTimer={toggleTimer}
+            resetTimer={resetTimer}
+            phase={phase}
+            hasStarted={hasStarted}
+          />
+          {/* Settings Popover */}
+          <SettingsPopover
+            isVisible={isVisible}
+            isActive={isActive}
+            handlePomodoroChange={handlePomodoroChange}
+            handleShortBreakChange={handleShortBreakChange}
+            handleLongBreakChange={handleLongBreakChange}
+            pomodoroTime={pomodoroTime}
+            shortBreakTime={shortBreakTime}
+            longBreakTime={longBreakTime}
+          />
+        </div>
+        {/* Current Task Section */}
+        <div className="text-center mt-[32px] mb-2">
+          <span className="text-lg text-white">
+            {currentTaskId
+              ? tasks.find((task) => task.id === currentTaskId)?.name
+              : 'No task selected'}
+          </span>
+        </div>
+        {phase === 'work' && (
+          <span className="text-sm text-white mt-[8px]">
+            {'Breaks until long break: ' + (4 - cycle)}
+          </span>
+        )}
       </div>
-      {/* Current Task Section */}
-      <div className="text-center mt-[32px] mb-2">
-        <span className="text-lg text-white">
-          {currentTaskId
-            ? tasks.find((task) => task.id === currentTaskId)?.name
-            : 'No task selected'}
-        </span>
-      </div>
-      {phase === 'work' && (
-        <span className="text-sm text-white mt-[8px]">
-          {'Breaks until long break: ' + (4 - cycle)}
-        </span>
-      )}
-    </div>
+    </>
   );
 };
 
