@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import TimerCircle from './TimerCircle';
 import SettingsPopover from './SettingsPopover';
-import TaskPopover from './TaskPopover.jsx';
+import TaskPopover from './TaskPopover';
 import { Alert } from "@material-tailwind/react";
 
 const PomodoroTimer = () => {
     const initialRadius = 115;
     const expandedRadius = 175;
 
-    // Default settings
-    const defaultPomodoroTime = 25; // 25 minutes in minutes
-    const defaultShortBreakTime = 5; // 5 minutes in minutes
-    const defaultLongBreakTime = 15; // 15 minutes in minutes
+    const defaultPomodoroTime = 25; 
+    const defaultShortBreakTime = 5;
+    const defaultLongBreakTime = 15;
 
-    // State initialization
     const [radius, setRadius] = useState(initialRadius);
     const [timeLeft, setTimeLeft] = useState(null); 
     const [isActive, setIsActive] = useState(false);
     const [cycle, setCycle] = useState(1);
-    const [phase, setPhase] = useState('work'); // work, shortBreak, longBreak
+    const [phase, setPhase] = useState('work');
     const [hasStarted, setHasStarted] = useState(false);
     const [pomodoroTime, setPomodoroTime] = useState(null);
     const [shortBreakTime, setShortBreakTime] = useState(null);
@@ -28,27 +26,23 @@ const PomodoroTimer = () => {
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState('');
     const [currentTaskId, setCurrentTaskId] = useState(null); 
-    const [notificationError, setNotificationError] = useState(null);
+    const [notificationMessage, setNotificationMessage] = useState(null);
 
     useEffect(() => {
-        // Load tasks, settings, and current task from local storage on component mount
         const storedTasks = JSON.parse(window.localStorage.getItem('tasks'));
         const storedSettings = JSON.parse(window.localStorage.getItem('pomodoroSettings'));
         const storedCurrentTaskId = JSON.parse(window.localStorage.getItem('currentTaskId'));
 
         if (storedTasks) {
-            console.log("Loading tasks from localStorage", storedTasks);
             setTasks(storedTasks);
         }
 
         if (storedSettings) {
-            console.log("Loading settings from localStorage", storedSettings);
             setPomodoroTime(storedSettings.pomodoroTime || defaultPomodoroTime);
             setShortBreakTime(storedSettings.shortBreakTime || defaultShortBreakTime);
             setLongBreakTime(storedSettings.longBreakTime || defaultLongBreakTime);
             setTimeLeft((storedSettings.pomodoroTime || defaultPomodoroTime) * 60); 
         } else {
-            // If no settings are found in localStorage, set defaults
             setPomodoroTime(defaultPomodoroTime);
             setShortBreakTime(defaultShortBreakTime);
             setLongBreakTime(defaultLongBreakTime);
@@ -56,14 +50,12 @@ const PomodoroTimer = () => {
         }
 
         if (storedCurrentTaskId !== null) {
-            console.log("Loading currentTaskId from localStorage", storedCurrentTaskId);
             setCurrentTaskId(storedCurrentTaskId);
         }
     }, []);
 
     useEffect(() => {
         if (tasks.length > 0) {
-            console.log("Saving tasks to localStorage", tasks);
             window.localStorage.setItem('tasks', JSON.stringify(tasks));
         }
     }, [tasks]);
@@ -75,14 +67,12 @@ const PomodoroTimer = () => {
                 shortBreakTime,
                 longBreakTime,
             };
-            console.log("Saving settings to localStorage", settings);
             window.localStorage.setItem('pomodoroSettings', JSON.stringify(settings));
         }
     }, [pomodoroTime, shortBreakTime, longBreakTime]);
 
     useEffect(() => {
         if (currentTaskId !== null) {
-            console.log("Saving currentTaskId to localStorage", currentTaskId);
             window.localStorage.setItem('currentTaskId', JSON.stringify(currentTaskId));
         }
     }, [currentTaskId]);
@@ -97,7 +87,6 @@ const PomodoroTimer = () => {
                     } else {
                         clearInterval(interval);
                         handlePhaseTransition();
-                        showNotification();
                         return prevTime;
                     }
                 });
@@ -107,17 +96,6 @@ const PomodoroTimer = () => {
         }
         return () => clearInterval(interval);
     }, [isActive, timeLeft]);
-
-    useEffect(() => {
-        // Check for notification permissions
-        if (Notification.permission !== 'granted') {
-            Notification.requestPermission().then(permission => {
-                if (permission !== 'granted') {
-                    setNotificationError("Please enable notifications to get alerts when your timer ends.");
-                }
-            });
-        }
-    }, []);
 
     const handlePhaseTransition = () => {
         if (phase === 'work') {
@@ -134,19 +112,13 @@ const PomodoroTimer = () => {
             setPhase('work');
             setTimeLeft(pomodoroTime * 60);
         }
-        // Keep the timer running during phase transition
         setIsActive(true);
+        showNotification();
     };
 
     const showNotification = () => {
         if (Notification.permission === 'granted') {
-            let notificationMessage = '';
-
-            if (phase === 'work') {
-                notificationMessage = 'Time to take a break!';
-            } else {
-                notificationMessage = 'Break is over! Time to get back to work!';
-            }
+            let notificationMessage = phase === 'work' ? 'Time to take a break!' : 'Break is over! Time to get back to work!';
 
             new Notification('Pomodoro Timer', {
                 body: notificationMessage,
@@ -154,11 +126,28 @@ const PomodoroTimer = () => {
         }
     };
 
-  const toggleTimer = () => {
-    if (!hasStarted) setHasStarted(true);
-    setIsActive(!isActive);
-    setRadius(isActive ? initialRadius : expandedRadius);
-  };
+    const requestNotificationPermission = () => {
+        if (Notification.permission === "denied") {
+            setNotificationMessage("Notifications are blocked. Please enable them in your browser settings.");
+        } else if (Notification.permission !== "granted") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    setNotificationMessage("Notifications are enabled. You'll receive notifications when the timer ends.");
+                } else {
+                    setNotificationMessage("Notifications are blocked. Please enable them in your browser settings.");
+                }
+            });
+        }
+    };
+
+    const toggleTimer = () => {
+        if (!hasStarted) {
+            setHasStarted(true);
+            requestNotificationPermission(); 
+        }
+        setIsActive(!isActive);
+        setRadius(isActive ? initialRadius : expandedRadius);
+    };
 
     const resetTimer = (event) => {
         event.stopPropagation();
@@ -181,6 +170,15 @@ const PomodoroTimer = () => {
         }
     }, [isActive]);
 
+    useEffect(() => {
+        if (notificationMessage) {
+            const timer = setTimeout(() => {
+                setNotificationMessage(null);
+            }, 10000); // Убираем сообщение через 10 секунд
+            return () => clearTimeout(timer);
+        }
+    }, [notificationMessage]);
+
     const handlePomodoroChange = (e) => {
         const newTime = parseInt(e.target.value);
         setPomodoroTime(newTime);
@@ -197,24 +195,16 @@ const PomodoroTimer = () => {
         setLongBreakTime(parseInt(e.target.value));
     };
 
-  const addTask = () => {
-    if (newTask.trim() !== '') {
-      setTasks([...tasks, { id: Date.now(), name: newTask, completed: false }]);
-      setNewTask('');
-      toast.success('Task added!', {
-        position: 'top-right',
-        transition: Zoom,
-      });
-    }
-  };
+    const addTask = () => {
+        if (newTask.trim() !== '') {
+            setTasks([...tasks, { id: Date.now(), name: newTask, completed: false }]);
+            setNewTask('');
+        }
+    };
 
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
-    toast.error('Task deleted!', {
-      position: 'top-right',
-      transition: Zoom,
-    });
-  };
+    const deleteTask = (id) => {
+        setTasks(tasks.filter(task => task.id !== id));
+    };
 
     const toggleCompleteTask = (id) => {
         setTasks(tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task));
@@ -224,19 +214,19 @@ const PomodoroTimer = () => {
         console.log(`Edit task ${id}`);
     };
 
-  const selectTaskForSession = (id) => {
-    setCurrentTaskId(id);
-  };
-
-  useEffect(() => {
-    window.localStorage.setItem('Tasks', JSON.stringify(tasks));
-  }, [tasks]);
+    const selectTaskForSession = (id) => {
+        setCurrentTaskId(id);
+    };
 
     return (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-50">
-            {notificationError && (
-                <Alert color="red" onClose={() => setNotificationError(null)} className="fixed top-4 right-4 w-1/3">
-                    {notificationError}
+            {notificationMessage && (
+                <Alert
+                    color="red"
+                    onClose={() => setNotificationMessage(null)}
+                    className="fixed top-4 right-4 w-1/3"
+                >
+                    {notificationMessage}
                 </Alert>
             )}
             <div className="flex items-center">

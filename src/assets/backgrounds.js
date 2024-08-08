@@ -99,7 +99,7 @@ const backgrounds = [
     { name: 'Astronaut Facing a Black Hole', src: background2, thumbnailSrc: thumbnail4 },
     { name: 'Bart Nirvana', src: background3, thumbnailSrc: thumbnail5 },
     { name: 'Bedroom in Space', src: background4, thumbnailSrc: thumbnail6 },
-    { name: 'Bedroom with Fireplace', src: background5, thumbnailSrc: thumbnail7 },
+    //{ name: 'Bedroom with Fireplace', src: background5, thumbnailSrc: thumbnail7 },
     { name: 'Empty Classroom', src: background6, thumbnailSrc: thumbnail8 },
     { name: 'Futuristic Room Apartment', src: background7, thumbnailSrc: thumbnail9 },
     { name: 'Hacker Desk', src: background8, thumbnailSrc: thumbnail10 },

@@ -30,7 +30,7 @@ const TopMenu = () => {
     }, []);
 
     return (
-        <div className="fixed top-0 left-0 right-0 z-50 h-[105px]">
+        <div className="fixed top-0 left-0 right-0 h-[105px]">
             {/* Logo */}
             <div className="flex items-center h-full px-4 md:px-10">
                 <img src="/Logo.png" alt="logo" className="mr-2 h-42 md:h-42" />

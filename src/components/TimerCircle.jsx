@@ -4,7 +4,7 @@ const TimerCircle = ({ radius, timeLeft, isActive, toggleTimer, resetTimer, phas
     const numLines = 25;
     const lines = Array.from({ length: numLines }, (_, index) => {
         const angle = (index * 360) / numLines;
-        const progressIndex = Math.floor(((1500 - timeLeft) / 1500) * numLines); // assuming 1500 seconds as default
+        const progressIndex = Math.floor(((1500 - timeLeft) / 1500) * numLines); 
         const isLineActive = index < progressIndex;
         const lineWidth = isActive ? '8px' : '4px';
         const lineHeight = isActive ? '20px' : '10px';
@@ -32,7 +32,6 @@ const TimerCircle = ({ radius, timeLeft, isActive, toggleTimer, resetTimer, phas
         >
             {lines}
             <div className="absolute flex flex-col items-center">
-                {/* Show Lightning or Tea Cup Icon */}
                 <div className={`mb-4 transition-all duration-500 ${isActive ? 'transform -translate-y-[40px]' : ''}`}>
                     {phase === 'work' && isActive ? (
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28" strokeWidth="2.5" stroke="currentColor" className="size-8 text-yellow-500">
@@ -52,7 +51,6 @@ const TimerCircle = ({ radius, timeLeft, isActive, toggleTimer, resetTimer, phas
                     ) : null}
                 </div>
                 <span className={`text-white transition-all duration-500 ${isActive ? 'text-6xl' : 'text-4xl'}`}>{formatTime(timeLeft)}</span>
-                {/* Restart Button */}
                 {hasStarted && !isActive && (
                     <button
                         className="mt-6 text-white rounded-full"
