@@ -6,27 +6,30 @@ import BottomMenu from './components/BottomMenu';
 import backgrounds from './assets/backgrounds';
 
 export default function App() {
-    const [background, setBackground] = useState(backgrounds[0]);
+    // Set a fallback value for the background in case backgrounds array is empty
+    const [background, setBackground] = useState(backgrounds[0] || { src: '', name: 'Default' });
 
     const handleBackgroundChange = (newSrc) => {
         const selectedBackground = backgrounds.find(bg => bg.src === newSrc);
-        setBackground(selectedBackground);
+        if (selectedBackground) {
+            setBackground(selectedBackground);
+        }
     };
 
     return (
-        <div className="relative flex flex-col h-screen overflow-hidden" style={{ color: background.textColor }}>
+        <div className="relative flex flex-col h-screen overflow-hidden">
             <VideoBackground backgroundSrc={background.src} />
 
             <div className="h-25">
-                <TopMenu textColor={background.textColor} />
+                <TopMenu />
             </div>
 
             <div className="flex-grow relative z-10">
-                <PomodoroTimer textColor={background.textColor} />
+                <PomodoroTimer />
             </div>
 
             <div className="h-25">
-                <BottomMenu onBackgroundChange={handleBackgroundChange} backgrounds={backgrounds} textColor={background.textColor} />
+                <BottomMenu onBackgroundChange={handleBackgroundChange} backgrounds={backgrounds} />
             </div>
         </div>
     );

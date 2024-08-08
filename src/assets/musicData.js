@@ -1,21 +1,42 @@
 // src/musicData.js
 
+const baseYouTubeThumbnailUrl = 'https://img.youtube.com/vi';
+
 const videos = [
     {
-        id: 'dQw4w9WgXcQ',
-        title: 'Never Gonna Give You Up',
-        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg',
+        id: 'IRp0zhUFi-M',
+        title: 'Lofi Hip Hop Beats 24/7 Radio',
     },
     {
-        id: '5NV6Rdv1a3I',
-        title: 'Get Lucky - Daft Punk ft. Pharrell Williams',
-        thumbnail: 'https://img.youtube.com/vi/5NV6Rdv1a3I/0.jpg',
+        id: 'JWlKA9wmO64',
+        title: 'Japanese Lofi Radio 24/7',
     },
     {
-        id: 'tVj0ZTS4WF4',
-        title: 'Happy - Pharrell Williams',
-        thumbnail: 'https://img.youtube.com/vi/tVj0ZTS4WF4/0.jpg',
+        id: 'unl1zQoWD9A',
+        title: '24/7 Dark Ambient Lofi 🌌 In Memory of Those We Miss',
+    },
+    {
+        id: '8Yqx3we3WJ4',
+        title: 'Space Lofi Hip Hop Radio 24/7 🚀 Chill Lofi Beats To Study, Lofi Sleep Music',
+    },
+    {
+        id: '9ljhQoFsahw',
+        title: 'Lofi Space Station 🚀 Aesthetic Lofi Beats to Chill / Study to 🌌 Lofi Radio',
+    },
+    {
+        id: 'RyA-7mzA2SI',
+        title: 'Rain Sounds & Lofi Music 🌧 Relaxing Lofi Sleep & Study Music 🌧',
+    },
+    {
+        id: 'JQUNIbAT934',
+        title: 'At the Laundry 🔴 Chill Lofi Hip Hop Beats to sleep/ study',
     },
 ];
 
-export default videos;
+// Adding thumbnail URL dynamically to each video object
+const videosWithThumbnails = videos.map(video => ({
+    ...video,
+    thumbnail: `${baseYouTubeThumbnailUrl}/${video.id}/0.jpg`,
+}));
+
+export default videosWithThumbnails;

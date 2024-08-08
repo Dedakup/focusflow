@@ -17,8 +17,8 @@ const BackgroundSelector = ({ backgrounds, handleBackgroundSelect }) => {
                     <span className='text-white text-sm mt-2'>Visuals</span>
                 </Button>
             </PopoverHandler>
-            <PopoverContent className="w-72 p-4 bg-gray-700 text-white z-50">
-                <div className="w-full space-y-4 grid grid-cols">
+            <PopoverContent className="w-72 h-96 overflow-y-auto p-4 bg-gray-700 text-white z-50">
+                <div className="grid grid-cols-1 gap-4">
                     {backgrounds.map((background, index) => (
                         <div
                             key={index}
@@ -31,13 +31,11 @@ const BackgroundSelector = ({ backgrounds, handleBackgroundSelect }) => {
                             onMouseEnter={(e) => e.currentTarget.style.borderColor = '#fff'}
                             onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
                         >
-                            <video
-                                src={background.src}
-                                muted
-                                autoPlay
-                                loop
+                            <img
+                                src={background.thumbnailSrc} // Use JPG image for preview
+                                alt={background.name}
                                 className="absolute inset-0 w-full h-full object-cover"
-                            ></video>
+                            />
                         </div>
                     ))}
                 </div>

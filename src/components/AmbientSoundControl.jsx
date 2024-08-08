@@ -1,11 +1,6 @@
 import React from 'react';
 import { Button, Popover, PopoverHandler, PopoverContent, Slider } from "@material-tailwind/react";
-import {
-    SignalIcon as SignalIconSolid,
-} from '@heroicons/react/24/solid';
-import {
-    SignalIcon as SignalIconOutline
-} from '@heroicons/react/24/outline';
+import { SignalIcon as SignalIconSolid, SignalIcon as SignalIconOutline } from '@heroicons/react/24/outline';
 
 const AmbientSoundControl = ({ ambientSounds, handleAmbientSoundChange }) => {
     return (
@@ -17,41 +12,21 @@ const AmbientSoundControl = ({ ambientSounds, handleAmbientSoundChange }) => {
                     <span className='text-white text-sm mt-2'>Sounds</span>
                 </Button>
             </PopoverHandler>
-            <PopoverContent className="w-72 p-4 bg-gray-700 text-white z-50">
+            <PopoverContent className="w-72 p-4 bg-gray-700 text-white z-50 h-96 overflow-y-auto">
                 <div className="w-full space-y-4">
-                    <div>
-                        <label className="block text-sm">Rain</label>
-                        <Slider
-                            defaultValue={ambientSounds.rain}
-                            onChange={(e) => handleAmbientSoundChange('rain', parseInt(e.target.value, 10))}
-                            min={0}
-                            max={100}
-                            size='md'
-                            className="!min-w-10"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm">Wind</label>
-                        <Slider
-                            defaultValue={ambientSounds.wind}
-                            onChange={(e) => handleAmbientSoundChange('wind', parseInt(e.target.value, 10))}
-                            min={0}
-                            max={100}
-                            size='md'
-                            className="!min-w-10"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm">Fireplace</label>
-                        <Slider
-                            defaultValue={ambientSounds.fireplace}
-                            onChange={(e) => handleAmbientSoundChange('fireplace', parseInt(e.target.value, 10))}
-                            min={0}
-                            max={100}
-                            size='md'
-                            className="!min-w-10"
-                        />
-                    </div>
+                    {ambientSounds.map(sound => (
+                        <div key={sound.id}>
+                            <label className="block text-sm">{sound.label}</label>
+                            <Slider
+                                defaultValue={sound.volume}
+                                onChange={(e) => handleAmbientSoundChange(sound.id, parseInt(e.target.value, 10))}
+                                min={0}
+                                max={100}
+                                size='md'
+                                className="!min-w-10"
+                            />
+                        </div>
+                    ))}
                 </div>
             </PopoverContent>
         </Popover>

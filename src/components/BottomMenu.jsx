@@ -6,9 +6,7 @@ import MusicSelection from './MusicSelection';
 import AmbientSoundControl from './AmbientSoundControl';
 import BackgroundSelector from './BackgroundSelector';
 import Alert from "@material-tailwind/react";
-import rainSound from '../assets/sounds/rain-in-forest-birds-nature.mp3';
-import windSound from '../assets/sounds/singing-birds-nature-atmo.mp3';
-import fireplaceSound from '../assets/sounds/soft-rain-ambient.mp3';
+import { ambientSoundsData } from '../assets/sounds'; // Import sound data
 import videos from '../assets/musicData';
 
 const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
@@ -18,22 +16,17 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [error, setError] = useState(null);
     const playerRef = useRef(null);
-    const rainAudioRef = useRef(null);
-    const windAudioRef = useRef(null);
-    const fireplaceAudioRef = useRef(null);
-    const [ambientSounds, setAmbientSounds] = useState({
-        rain: 0,
-        wind: 0,
-        fireplace: 0
-    });
+    const soundRefs = useRef({});
+    const [ambientSounds, setAmbientSounds] = useState(ambientSoundsData);
+
     let activityTimer;
 
     useEffect(() => {
         const handleUserActivity = () => {
             clearTimeout(activityTimer);
-            setIsMenuHidden(false); // Show menu on activity
+            setIsMenuHidden(false);
             activityTimer = setTimeout(() => {
-                setIsMenuHidden(true); // Hide menu after 6 seconds of inactivity
+                setIsMenuHidden(true);
             }, 6000);
         };
 
@@ -50,24 +43,18 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
     }, []);
 
     useEffect(() => {
-        if (rainAudioRef.current) {
-            rainAudioRef.current.volume = ambientSounds.rain / 100;
-            ambientSounds.rain > 0 ? rainAudioRef.current.play() : rainAudioRef.current.pause();
-        }
-        if (windAudioRef.current) {
-            windAudioRef.current.volume = ambientSounds.wind / 100;
-            ambientSounds.wind > 0 ? windAudioRef.current.play() : windAudioRef.current.pause();
-        }
-        if (fireplaceAudioRef.current) {
-            fireplaceAudioRef.current.volume = ambientSounds.fireplace / 100;
-            ambientSounds.fireplace > 0 ? fireplaceAudioRef.current.play() : fireplaceAudioRef.current.pause();
-        }
+        ambientSounds.forEach(sound => {
+            if (soundRefs.current[sound.id]) {
+                soundRefs.current[sound.id].volume = sound.volume / 100;
+                sound.volume > 0 ? soundRefs.current[sound.id].play() : soundRefs.current[sound.id].pause();
+            }
+        });
     }, [ambientSounds]);
 
-    // Load settings from localStorage on component mount
     useEffect(() => {
         const storedBackground = window.localStorage.getItem('selectedBackground');
         const storedVideo = JSON.parse(window.localStorage.getItem('selectedVideo'));
+        const storedAmbientSounds = JSON.parse(window.localStorage.getItem('ambientSounds'));
 
         if (storedBackground) {
             onBackgroundChange(storedBackground);
@@ -76,7 +63,11 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
         if (storedVideo) {
             setSelectedVideo(storedVideo);
         } else {
-            setSelectedVideo(videos[0]); // Default video
+            setSelectedVideo(videos[0]);
+        }
+
+        if (storedAmbientSounds) {
+            setAmbientSounds(storedAmbientSounds);
         }
     }, [onBackgroundChange]);
 
@@ -84,7 +75,8 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
         if (selectedVideo) {
             window.localStorage.setItem('selectedVideo', JSON.stringify(selectedVideo));
         }
-    }, [selectedVideo]);
+        window.localStorage.setItem('ambientSounds', JSON.stringify(ambientSounds));
+    }, [selectedVideo, ambientSounds]);
 
     const handlePlayPause = () => {
         if (isPlaying) {
@@ -113,11 +105,12 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
         }
     };
 
-    const handleAmbientSoundChange = (type, newValue) => {
-        setAmbientSounds(prev => ({
-            ...prev,
-            [type]: newValue
-        }));
+    const handleAmbientSoundChange = (id, newValue) => {
+        setAmbientSounds(prev =>
+            prev.map(sound =>
+                sound.id === id ? { ...sound, volume: newValue } : sound
+            )
+        );
     };
 
     const handleVideoSelect = (video) => {
@@ -179,9 +172,9 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
             )}
 
             {/* Hidden audio elements for ambient sounds */}
-            <audio ref={rainAudioRef} src={rainSound} loop style={{ display: 'none' }} />
-            <audio ref={windAudioRef} src={windSound} loop style={{ display: 'none' }} />
-            <audio ref={fireplaceAudioRef} src={fireplaceSound} loop style={{ display: 'none' }} />
+            {ambientSounds.map(sound => (
+                <audio key={sound.id} ref={el => soundRefs.current[sound.id] = el} src={sound.src} loop style={{ display: 'none' }} />
+            ))}
 
             <div className={`absolute flex items-center justify-between w-full md:w-auto md:mb-0 duration-500 ${isMenuHidden ? '-translate-y-4 md:translate-y-0' : '-translate-y-16 md:translate-y-0'} z-10`}>
                 {/* Music Control */}
