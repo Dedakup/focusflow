@@ -14,7 +14,7 @@ import videos from '../assets/musicData';
 const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
     const [volume, setVolume] = useState(100);
-    const [selectedVideo, setSelectedVideo] = useState(videos[0]);
+    const [selectedVideo, setSelectedVideo] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [error, setError] = useState(null);
     const playerRef = useRef(null);
@@ -63,6 +63,28 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
             ambientSounds.fireplace > 0 ? fireplaceAudioRef.current.play() : fireplaceAudioRef.current.pause();
         }
     }, [ambientSounds]);
+
+    // Load settings from localStorage on component mount
+    useEffect(() => {
+        const storedBackground = window.localStorage.getItem('selectedBackground');
+        const storedVideo = JSON.parse(window.localStorage.getItem('selectedVideo'));
+
+        if (storedBackground) {
+            onBackgroundChange(storedBackground);
+        }
+
+        if (storedVideo) {
+            setSelectedVideo(storedVideo);
+        } else {
+            setSelectedVideo(videos[0]); // Default video
+        }
+    }, [onBackgroundChange]);
+
+    useEffect(() => {
+        if (selectedVideo) {
+            window.localStorage.setItem('selectedVideo', JSON.stringify(selectedVideo));
+        }
+    }, [selectedVideo]);
 
     const handlePlayPause = () => {
         if (isPlaying) {
@@ -115,6 +137,7 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
 
     const handleBackgroundSelect = (background) => {
         onBackgroundChange(background.src);
+        window.localStorage.setItem('selectedBackground', background.src);
     };
 
     const onPlayerReady = (event) => {
@@ -193,7 +216,7 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
             </div>
 
             {/* YouTube Player */}
-            <YouTube videoId={selectedVideo.id} opts={opts} onReady={onPlayerReady} onError={onPlayerError} onEnd={onPlayerEnd} />
+            <YouTube videoId={selectedVideo?.id} opts={opts} onReady={onPlayerReady} onError={onPlayerError} onEnd={onPlayerEnd} />
         </div>
     );
 };

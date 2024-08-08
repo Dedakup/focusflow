@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-    Typography,
-} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react";
 
 const TopMenu = () => {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
@@ -43,16 +41,6 @@ const TopMenu = () => {
                 >
                     Focus Flow
                 </Typography>
-            </div>
-            {/* Removed Avatar with User Dropdown */}
-            <div
-                className={`flex justify-end items-center transition-all duration-500 absolute top-0 right-0 left-0 px-4 md:px-10 ${isMenuHidden ? 'opacity-0 translate-y-[-100%]' : 'opacity-100 translate-y-0'}`}
-                style={{
-                    height: '110px',
-                    backgroundImage: `linear-gradient(to bottom, rgba(217, 217, 217, 0.15) 10%, rgba(115, 115, 115, 0))`,
-                }}
-            >
-                {/* You can add other elements here if needed */}
             </div>
         </div>
     );
