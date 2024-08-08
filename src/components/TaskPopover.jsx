@@ -3,9 +3,21 @@ import { Popover, PopoverHandler, PopoverContent, IconButton, Input } from '@mat
 import { BoltIcon, CheckCircleIcon, PencilIcon, TrashIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
 
-const TaskPopover = ({ tasks, setTasks, newTask, setNewTask, addTask, deleteTask, toggleCompleteTask, selectTaskForSession, currentTaskId }) => {
-    const [isEditing, setIsEditing] = useState(null); // Track the task being edited
-    const [editTaskName, setEditTaskName] = useState(''); // Store the new task name while editing
+const TaskPopover = ({
+    tasks = [],
+    setTasks,
+    newTask,
+    setNewTask,
+    addTask,
+    deleteTask,
+    toggleCompleteTask,
+    selectTaskForSession,
+    currentTaskId,
+    isActive,
+    isVisible
+}) => {
+    const [isEditing, setIsEditing] = useState(null); 
+    const [editTaskName, setEditTaskName] = useState(''); 
 
     const handlePopoverClick = (event) => {
         event.stopPropagation();
@@ -22,25 +34,25 @@ const TaskPopover = ({ tasks, setTasks, newTask, setNewTask, addTask, deleteTask
     };
 
     const saveEditedTask = (taskId) => {
-        if (editTaskName.trim() === '') return; // Avoid saving empty task names
-        const updatedTasks = tasks.map(task => 
+        if (editTaskName.trim() === '') return; 
+        const updatedTasks = tasks.map(task =>
             task.id === taskId ? { ...task, name: editTaskName } : task
         );
-        setTasks(updatedTasks); // Update the tasks state with the edited task
-        setIsEditing(null); // Exit edit mode
-        setEditTaskName(''); // Clear the input field
+        setTasks(updatedTasks);
+        setIsEditing(null); 
+        setEditTaskName(''); 
     };
 
     const handleEditTaskSubmit = (e, taskId) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Prevent default form submission behavior
+            e.preventDefault();
             saveEditedTask(taskId);
         }
     };
 
     const handleAddTaskSubmit = (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Prevent default form submission behavior
+            e.preventDefault();
             addTask();
         }
     };
@@ -48,7 +60,7 @@ const TaskPopover = ({ tasks, setTasks, newTask, setNewTask, addTask, deleteTask
     return (
         <Popover placement="right" offset={{ mainAxis: 10 }}>
             <PopoverHandler
-                className="flex rounded-full items-center w-[40px] h-[40px] mr-[32px] transition-opacity duration-500"
+                className={`flex rounded-full items-center w-[40px] h-[40px] mr-[32px] transition-opacity duration-500 ${isActive ? 'opacity-0' : 'opacity-100'} ${isVisible ? 'visible' : 'invisible'}`}
                 onClick={handlePopoverClick}
             >
                 <IconButton onClick={handlePopoverClick} variant="text" className="rounded-full w-24 h-24 ml-[32px] transition-opacity duration-500">
