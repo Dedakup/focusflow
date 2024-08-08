@@ -1,4 +1,5 @@
 # FocusFlow: Pomodoro & To-Do List Application
+https://focusflow-zeta.vercel.app/
 
 <img src="./public/FocusFlow-banner.png" alt="Banner" style="width:100%;"/>
 <p align="center">
@@ -10,6 +11,10 @@
 ## Overview
 
 **FocusFlow** is a productivity application developed using React and Tailwind CSS during a pair programming session with my college. The application combines a **Pomodoro timer** and a **To-Do list** to help users manage their time efficiently and keep track of their tasks.
+
+## Live Demo
+
+Check out the live demo of the application [here](https://focusflow-zeta.vercel.app/).
 
 ### Features
 
