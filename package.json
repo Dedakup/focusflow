@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.4",
+    "@material-tailwind/react": "^2.1.9",
     "@tailwindcss/forms": "^0.5.7",
     "@vercel/postgres": "^0.8.0",
     "autoprefixer": "10.4.19",
@@ -17,6 +18,8 @@
     "postcss": "8.4.38",
     "react": "19.0.0-rc-f38c22b244-20240704",
     "react-dom": "19.0.0-rc-f38c22b244-20240704",
+    "react-toastify": "^10.0.5",
+    "react-youtube": "^10.1.0",
     "tailwindcss": "3.4.4",
     "typescript": "5.5.2",
     "use-debounce": "^10.0.1",
@@ -26,7 +29,8 @@
     "@types/bcrypt": "^5.0.2",
     "@types/node": "20.14.8",
     "@types/react": "18.3.3",
-    "@types/react-dom": "18.3.0"
+    "@types/react-dom": "18.3.0",
+    "file-loader": "^6.2.0"
   },
   "engines": {
     "node": ">=20.12.0"

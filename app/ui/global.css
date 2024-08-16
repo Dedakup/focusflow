@@ -2,17 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-input[type='number'] {
-  -moz-appearance: textfield;
-  appearance: textfield;
+/* Global Styles */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* Moved overflow hidden to combine styles */
+  background: #001540;
 }
 
-input[type='number']::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+#root {
+  height: 100%;
 }
 
-input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+/* Music Slider Custom Styles */
+.rap-container .rap-controls .rap-slider .rap-progress .rap-pin,
+.rap-container .rap-controls span {
+  display: none;
+}
+
+.rap-container .rap-slider .rap-progress .rap-pin,
+.rap-container .rap-slider .rap-progress {
+  background-color: rgb(59, 53, 53);
+}
+
+.rap-container .rap-volume .rap-volume-controls .rap-slider .rap-progress .rap-pin {
+  width: 33px;
+  border-radius: 4px;
+  height: 10px;
+  top: -8px;
+  left: -14px;
 }
