@@ -28,7 +28,7 @@ export default function App() {
       handleBackgroundChange(storedBackground);
     }
   }, [handleBackgroundChange]);
-  console.log(backgrounds[0]);
+
   return (
     <div className="relative flex flex-col h-screen overflow-hidden">
       <VideoBackground
@@ -43,7 +43,7 @@ export default function App() {
         <PomodoroTimer />
       </div>
 
-      <div className="h-25" lazy>
+      <div className="h-25">
         <BottomMenu
           onBackgroundChange={handleBackgroundChange}
           backgrounds={backgrounds}

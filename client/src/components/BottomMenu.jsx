@@ -99,6 +99,7 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
   }, [selectedVideo, ambientSounds]);
 
   const handlePlayPause = () => {
+    console.log(isPlaying, playerRef.current);
     if (isPlaying) {
       playerRef.current.pauseVideo();
     } else {
@@ -134,6 +135,7 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
   };
 
   const handleVideoSelect = (video) => {
+    console.log(video, playerRef);
     setSelectedVideo(video);
     setIsPlaying(false);
     if (playerRef.current) {
@@ -190,7 +192,7 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
       className="fixed bottom-0 left-0 right-0 z-50 flex items-center flex-col md:flex-row transition-all"
       style={{ height: 'auto' }}
     >
-      {error && (
+      {/* {error && (
         <Alert
           color="red"
           onClose={() => setError(null)}
@@ -198,7 +200,7 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
         >
           {error}
         </Alert>
-      )}
+      )} */}
 
       {/* Hidden audio elements for ambient sounds */}
       {ambientSounds.map((sound) => (
@@ -219,9 +221,9 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
         } z-10`}
       >
         {/* Music Control */}
-        <Suspense fallback={<Loading />}>
-          <MusicControl selectedVideo={selectedVideo} />
-        </Suspense>
+        {/* <Suspense fallback={<Loading />}> */}
+        <MusicControl selectedVideo={selectedVideo} />
+        {/* </Suspense> */}
         {/* Volume Control */}
         <VolumeControl
           isPlaying={isPlaying}
