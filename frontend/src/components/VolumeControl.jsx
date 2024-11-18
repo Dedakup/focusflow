@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import { IconButton, Popover, PopoverHandler, PopoverContent, Slider } from "@material-tailwind/react";
 import {
     PlayIcon as PlayIconSolid,
@@ -62,5 +63,12 @@ const VolumeControl = ({ isPlaying, handlePlayPause, volume, handleVolumeChange 
         </div>
     );
 };
+
+VolumeControl.propTypes = {
+    isPlaying: PropTypes.bool.isRequired,
+    handlePlayPause: PropTypes.func.isRequired,
+    volume: PropTypes.number.isRequired,
+    handleVolumeChange: PropTypes.func.isRequired
+}
 
 export default VolumeControl;
