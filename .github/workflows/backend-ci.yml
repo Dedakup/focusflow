@@ -1,0 +1,37 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - develop
+      - feature/*
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./backend
+
+      - name: Lint Code
+        run: npm run lint
+        working-directory: ./backend
+
+      - name: Run Tests
+        run: npm test
+        working-directory: ./backend
+
+      - name: Deploy to Staging (Placeholder)
+        run: echo "Deploying backend to staging"
