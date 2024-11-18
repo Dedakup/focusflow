@@ -1,4 +1,4 @@
-name: Frontend CI
+name: Backend CI
 
 on:
   push:
@@ -23,16 +23,15 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-        working-directory: ./frontend
+        working-directory: ./backend
 
       - name: Lint Code
         run: npm run lint
-        working-directory: ./frontend
+        working-directory: ./backend
 
       - name: Run Tests
         run: npm test
-        working-directory: ./frontend
+        working-directory: ./backend
 
-      - name: Build Frontend
-        run: npm run build
-        working-directory: ./frontend
+      - name: Deploy to Staging (Placeholder)
+        run: echo "Deploying backend to staging"
