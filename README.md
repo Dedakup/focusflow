@@ -85,6 +85,14 @@ Follow these steps to set up the project on your local machine.
 
 We welcome contributions! If you'd like to contribute to the project, please fork the repository and use a feature branch. Pull requests are warmly welcome.
 
+# Branch Naming Conventions
+- `main`: Production-ready code.
+- `develop`: Latest integrated development work.
+- `feature/<feature-name>`: For new features.
+- `bugfix/<issue-id>`: For fixing bugs during development.
+- `release/<version>`: For preparing production releases.
+- `hotfix/<issue-id>`: For urgent fixes to production code.
+
 ### Steps to Contribute:
 
 1. Fork the repository.
