@@ -1,0 +1,25 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: devquesting
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: focusflow
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: backend
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+
+functions:
+  getUser:
+    handler: src/handlers/user.getUser
+    events:
+      - http:
+          path: user
+          method: get
+  updateUser:
+    handler: src/handlers/user.updateUser
+    events:
+      - http:
+          path: user
+          method: put
