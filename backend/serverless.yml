@@ -1,25 +1,209 @@
-# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+# FocusFlow Serverless Configuration
+
 org: devquesting
-# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
 app: focusflow
-# "service" is the name of this project. This will also be added to your AWS resource names.
 service: backend
 
 provider:
   name: aws
   runtime: nodejs20.x
   region: us-east-1
+  stage: dev
+  environment:
+    DYNAMODB_TASKS_TABLE: ${self:custom.tableName}
+    DYNAMODB_USERS_TABLE: ${self:custom.usersTableName}
+    S3_ASSETS_BUCKET: ${self:custom.bucketName}
+    ISSUER_URL: "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_kUSQwBwuo"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - !GetAtt TasksTable.Arn
+            - !GetAtt UsersTable.Arn
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+            - s3:DeleteObject
+          Resource: !Join ["/", [!GetAtt AssetsBucket.Arn, "*"]]
+
+custom:
+  tableName: ${sls:stage}-focusflow-tasks
+  usersTableName: ${sls:stage}-focusflow-users
+  bucketName: ${sls:stage}-focusflow-assets
+
+resources:
+  Resources:
+    # DynamoDB Table for Tasks
+    TasksTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: taskId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: taskId
+            KeyType: RANGE
+
+    # DynamoDB Table for Users
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.usersTableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+
+    # S3 Bucket for Assets
+    AssetsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucketName}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders: ["*"]
+              AllowedMethods: [GET, PUT, POST, DELETE, HEAD]
+              AllowedOrigins: ["*"]
+              MaxAge: 3000
+
+    # Cognito User Pool
+    UserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${sls:stage}-focusflow-users
+        AutoVerifiedAttributes:
+          - email
+        UsernameAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: true
+            RequireNumbers: true
+            RequireSymbols: true
+            RequireUppercase: true
+
+    # Cognito User Pool Client
+    UserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${sls:stage}-focusflow-client
+        UserPoolId:
+          Ref: UserPool
+        ExplicitAuthFlows:
+          - ALLOW_USER_SRP_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+        GenerateSecret: false
 
 functions:
-  getUser:
-    handler: src/handlers/user.getUser
+  # Task Management
+  createTask:
+    handler: src/handlers/task.createTask
     events:
       - http:
-          path: user
+          path: tasks
+          method: post
+          cors: true
+  getTasks:
+    handler: src/handlers/task.getTasks
+    events:
+      - http:
+          path: tasks
           method: get
-  updateUser:
-    handler: src/handlers/user.updateUser
+          cors: true
+  updateTask:
+    handler: src/handlers/task.updateTask
     events:
       - http:
-          path: user
+          path: tasks/{taskId}
           method: put
+          cors: true
+  deleteTask:
+    handler: src/handlers/task.deleteTask
+    events:
+      - http:
+          path: tasks/{taskId}
+          method: delete
+          cors: true
+
+  # Pomodoro Timer
+  manageTimer:
+    handler: src/handlers/timer.manageTimer
+    events:
+      - http:
+          path: timer
+          method: post
+          cors: true
+
+  # User Preferences
+  updatePreferences:
+    handler: src/handlers/preferences.updatePreferences
+    events:
+      - http:
+          path: preferences
+          method: put
+          cors: true
+
+  # Music Player
+  getMusic:
+    handler: src/handlers/music.getMusic
+    events:
+      - http:
+          path: music
+          method: get
+          cors: true
+
+  # Background Management
+  updateBackground:
+    handler: src/handlers/background.updateBackground
+    events:
+      - http:
+          path: backgrounds
+          method: put
+          cors: true
+
+  # Authentication
+  login:
+    handler: src/handlers/auth.login
+    events:
+      - http:
+          path: auth/login
+          method: post
+          cors: true
+  signup:
+    handler: src/handlers/auth.signup
+    events:
+      - http:
+          path: auth/signup
+          method: post
+          cors: true
+  verifyToken:
+    handler: src/handlers/auth.verifyToken
+    events:
+      - http:
+          path: auth/verify
+          method: post
+          cors: true
+
+
+# Custom Authorizer
+  auth:
+    handler: src/handlers/auth.authorize
