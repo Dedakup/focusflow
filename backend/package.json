@@ -8,11 +8,15 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.1692.0",
     "dotenv": "^16.4.5",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^7.4.3",
+    "jwk-to-pem": "^1.2.6",
+    "request": "^2.88.2",
+    "serverless-webpack": "^5.15.0",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
