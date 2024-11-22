@@ -4,16 +4,22 @@ org: devquesting
 app: focusflow
 service: backend
 
+plugins:
+  - serverless-offline
+
+
 provider:
   name: aws
   runtime: nodejs20.x
   region: us-east-1
   stage: dev
   environment:
+    AUTH0_DOMAIN: your-auth0-domain.auth0.com
+    AUTH0_AUDIENCE: focusflow-audience
+    AUTH0_ISSUER: https://dev-6zeb418i7xs8g1lc.us.auth0.com/
     DYNAMODB_TASKS_TABLE: ${self:custom.tableName}
     DYNAMODB_USERS_TABLE: ${self:custom.usersTableName}
     S3_ASSETS_BUCKET: ${self:custom.bucketName}
-    ISSUER_URL: "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_kUSQwBwuo"
   iam:
     role:
       statements:
@@ -34,6 +40,10 @@ provider:
             - s3:GetObject
             - s3:DeleteObject
           Resource: !Join ["/", [!GetAtt AssetsBucket.Arn, "*"]]
+        - Effect: Allow
+          Action:
+            - cognito-idp:SignUp
+          Resource: '*'
 
 custom:
   tableName: ${sls:stage}-focusflow-tasks
@@ -84,87 +94,88 @@ resources:
               AllowedOrigins: ["*"]
               MaxAge: 3000
 
-    # Cognito User Pool
-    UserPool:
-      Type: AWS::Cognito::UserPool
-      Properties:
-        UserPoolName: ${sls:stage}-focusflow-users
-        AutoVerifiedAttributes:
-          - email
-        UsernameAttributes:
-          - email
-        Policies:
-          PasswordPolicy:
-            MinimumLength: 8
-            RequireLowercase: true
-            RequireNumbers: true
-            RequireSymbols: true
-            RequireUppercase: true
-
-    # Cognito User Pool Client
-    UserPoolClient:
-      Type: AWS::Cognito::UserPoolClient
-      Properties:
-        ClientName: ${sls:stage}-focusflow-client
-        UserPoolId:
-          Ref: UserPool
-        ExplicitAuthFlows:
-          - ALLOW_USER_SRP_AUTH
-          - ALLOW_REFRESH_TOKEN_AUTH
-        GenerateSecret: false
-
 functions:
   # Task Management
   createTask:
-    handler: src/handlers/task.createTask
+    handler: src/handlers/task/createTask.createTask
     events:
       - http:
           path: tasks
           method: post
           cors: true
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            authorizerResultTtlInSeconds: 300
+            name: auth0Authorizer
   getTasks:
-    handler: src/handlers/task.getTasks
+    handler: src/handlers/task/getTasks.getTasks
     events:
       - http:
           path: tasks
           method: get
           cors: true
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            authorizerResultTtlInSeconds: 300
+            name: auth0Authorizer
   updateTask:
-    handler: src/handlers/task.updateTask
+    handler: src/handlers/task/updateTask.updateTask
     events:
       - http:
           path: tasks/{taskId}
           method: put
           cors: true
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            authorizerResultTtlInSeconds: 300
+            name: auth0Authorizer
   deleteTask:
-    handler: src/handlers/task.deleteTask
+    handler: src/handlers/task/deleteTask.deleteTask
     events:
       - http:
           path: tasks/{taskId}
           method: delete
           cors: true
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            authorizerResultTtlInSeconds: 300
+            name: auth0Authorizer
 
   # Pomodoro Timer
   manageTimer:
-    handler: src/handlers/timer.manageTimer
+    handler: src/handlers/timer/manageTimer.manageTimer
     events:
       - http:
           path: timer
           method: post
           cors: true
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            authorizerResultTtlInSeconds: 300
+            name: auth0Authorizer
 
   # User Preferences
   updatePreferences:
-    handler: src/handlers/preferences.updatePreferences
+    handler: src/handlers/preferences/updatePreferences.updatePreferences
     events:
       - http:
           path: preferences
           method: put
           cors: true
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            authorizerResultTtlInSeconds: 300
+            name: auth0Authorizer
 
   # Music Player
   getMusic:
-    handler: src/handlers/music.getMusic
+    handler: src/handlers/music/getMusic.getMusic
     events:
       - http:
           path: music
@@ -173,37 +184,17 @@ functions:
 
   # Background Management
   updateBackground:
-    handler: src/handlers/background.updateBackground
+    handler: src/handlers/background/updateBackground.updateBackground
     events:
       - http:
           path: backgrounds
           method: put
           cors: true
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            authorizerResultTtlInSeconds: 300
+            name: auth0Authorizer
 
-  # Authentication
-  login:
-    handler: src/handlers/auth.login
-    events:
-      - http:
-          path: auth/login
-          method: post
-          cors: true
-  signup:
-    handler: src/handlers/auth.signup
-    events:
-      - http:
-          path: auth/signup
-          method: post
-          cors: true
-  verifyToken:
-    handler: src/handlers/auth.verifyToken
-    events:
-      - http:
-          path: auth/verify
-          method: post
-          cors: true
-
-
-# Custom Authorizer
-  auth:
-    handler: src/handlers/auth.authorize
+  auth0Authorizer:
+    handler: src/handlers/auth/auth.auth0Authorizer

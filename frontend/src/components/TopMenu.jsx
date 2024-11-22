@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Typography } from "@material-tailwind/react";
+import LogoutButton from "./LogoutButton";
 
 const TopMenu = () => {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
+
 
     // Timer for tracking user activity
     let activityTimer;
@@ -30,8 +32,9 @@ const TopMenu = () => {
     }, []);
 
     return (
-        <div className="fixed top-0 left-0 right-0 h-[105px]">
+        <div className="fixed top-0 left-0 right-0 h-[105px] z-50">
             {/* Logo */}
+            <div className="flex items-center justify-between h-full px-4 md:px-10">
             <div className="flex items-center h-full px-4 md:px-10">
                 <img src="/Logo.png" alt="logo" className="mr-2 h-42 md:h-42" />
                 <Typography
@@ -41,6 +44,8 @@ const TopMenu = () => {
                 >
                     Focus Flow
                 </Typography>
+                </div>
+                <LogoutButton />
             </div>
         </div>
     );

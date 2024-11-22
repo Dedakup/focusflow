@@ -10,10 +10,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
     "@fortawesome/fontawesome-free": "^6.6.0",
     "@heroicons/react": "^2.1.5",
     "@material-tailwind/react": "2.1.8",
     "@mui/icons-material": "^6.1.7",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
     "prop-types": "^15.8.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
