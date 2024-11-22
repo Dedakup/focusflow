@@ -4,8 +4,10 @@ import TopMenu from "../components/TopMenu";
 import PomodoroTimer from "../components/PomodoroTimer";
 import BottomMenu from "../components/BottomMenu";
 import backgrounds from "../assets/backgrounds";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Dashboard = () => {
+    const { isAuthenticated, isLoading } = useAuth0();
 
     // Set a fallback value for the background in case backgrounds array is empty
     const [background, setBackground] = useState(
@@ -30,7 +32,12 @@ const Dashboard = () => {
         }
     }, [handleBackgroundChange]);
 
+    if (isLoading) {
+        return <div>Loading ...</div>;
+    }
+
     return (
+        isAuthenticated && (
         <div className="relative flex flex-col h-screen overflow-hidden">
             <VideoBackground
                 backgroundSrc={!background.src ? backgrounds[0] : background.src}
@@ -51,6 +58,7 @@ const Dashboard = () => {
                 />
             </div>
         </div>
+        )
     );
 };
 
