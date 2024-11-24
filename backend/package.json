@@ -12,13 +12,8 @@
   "dependencies": {
     "aws-sdk": "^2.1692.0",
     "dotenv": "^16.4.5",
-    "joi": "^17.13.3",
-    "jsonwebtoken": "^7.4.3",
-    "jwk-to-pem": "^1.2.6",
-    "jwks-rsa": "^3.1.0",
-    "request": "^2.88.2",
-    "serverless-webpack": "^5.15.0",
-    "uuid": "^11.0.3"
+    "prop-types": "^15.8.1",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "eslint": "^9.15.0",
