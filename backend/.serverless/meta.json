@@ -1,0 +1,1897 @@
+{
+  "D:\\Projects\\Portfolio_Projects\\focusflow\\FocusFlow\\backend": {
+    "versionSfCore": null,
+    "versionFramework": "4.4.11",
+    "isWithinCompose": false,
+    "isCompose": false,
+    "composeOrgName": null,
+    "composeResolverProviders": {
+      "default-aws-credential-resolver": "<REDACTED>",
+      "self": {
+        "instance": {
+          "credentials": "<REDACTED>",
+          "serviceConfigFile": {
+            "org": "devquesting",
+            "app": "focusflow",
+            "service": "backend",
+            "plugins": [
+              "serverless-offline"
+            ],
+            "provider": {
+              "name": "aws",
+              "runtime": "nodejs20.x",
+              "region": "us-east-1",
+              "stage": "dev",
+              "environment": {
+                "AUTH0_DOMAIN": "dev-6zeb418i7xs8g1lc.us.auth0.com",
+                "AUTH0_AUDIENCE": "focusflow-audience",
+                "AUTH0_ISSUER": "https://dev-6zeb418i7xs8g1lc.us.auth0.com/",
+                "DYNAMODB_TASKS_TABLE": "dev-focusflow-tasks",
+                "DYNAMODB_USERS_TABLE": "dev-focusflow-users",
+                "S3_ASSETS_BUCKET": "dev-focusflow-assets"
+              },
+              "iam": {
+                "role": {
+                  "statements": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "dynamodb:PutItem",
+                        "dynamodb:GetItem",
+                        "dynamodb:UpdateItem",
+                        "dynamodb:DeleteItem",
+                        "dynamodb:Scan",
+                        "dynamodb:Query"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:PutObject",
+                        "s3:GetObject",
+                        "s3:DeleteObject"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "cognito-idp:SignUp"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "lambda:InvokeFunction"
+                      ],
+                      "Resource": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-auth0Authenticator"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "cors": {
+                "allowedOrigins": [
+                  "http://localhost:5173"
+                ],
+                "allowedMethods": [
+                  "GET",
+                  "POST",
+                  "PUT",
+                  "DELETE",
+                  "OPTIONS"
+                ],
+                "allowedHeaders": [
+                  "Authorization",
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": "<REDACTED>"
+              },
+              "versionFunctions": true,
+              "AwshttpApi": null
+            },
+            "custom": {
+              "tableName": "dev-focusflow-tasks",
+              "usersTableName": "dev-focusflow-users",
+              "bucketName": "dev-focusflow-assets"
+            },
+            "resources": {
+              "Resources": {
+                "TasksTable": {
+                  "Type": "AWS::DynamoDB::Table",
+                  "Properties": {
+                    "TableName": "dev-focusflow-tasks",
+                    "BillingMode": "PAY_PER_REQUEST",
+                    "AttributeDefinitions": [
+                      {
+                        "AttributeName": "userId",
+                        "AttributeType": "S"
+                      },
+                      {
+                        "AttributeName": "taskId",
+                        "AttributeType": "S"
+                      }
+                    ],
+                    "KeySchema": [
+                      {
+                        "AttributeName": "userId",
+                        "KeyType": "HASH"
+                      },
+                      {
+                        "AttributeName": "taskId",
+                        "KeyType": "RANGE"
+                      }
+                    ]
+                  }
+                },
+                "UsersTable": {
+                  "Type": "AWS::DynamoDB::Table",
+                  "Properties": {
+                    "TableName": "dev-focusflow-users",
+                    "BillingMode": "PAY_PER_REQUEST",
+                    "AttributeDefinitions": [
+                      {
+                        "AttributeName": "userId",
+                        "AttributeType": "S"
+                      }
+                    ],
+                    "KeySchema": [
+                      {
+                        "AttributeName": "userId",
+                        "KeyType": "HASH"
+                      }
+                    ]
+                  }
+                },
+                "AssetsBucket": {
+                  "Type": "AWS::S3::Bucket",
+                  "Properties": {
+                    "BucketName": "dev-focusflow-assets",
+                    "CorsConfiguration": {
+                      "CorsRules": [
+                        {
+                          "AllowedHeaders": [
+                            "*"
+                          ],
+                          "AllowedMethods": [
+                            "GET",
+                            "PUT",
+                            "POST",
+                            "DELETE",
+                            "HEAD"
+                          ],
+                          "AllowedOrigins": [
+                            "*"
+                          ],
+                          "MaxAge": 3000
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "functions": {
+              "createTask": {
+                "handler": "src/handlers/task/createTask.createTask",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks",
+                      "method": "post",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "allowCredentials": "<REDACTED>",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-createTask"
+              },
+              "getTask": {
+                "handler": "src/handlers/task/getTask.getTasks",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks",
+                      "method": "get",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      },
+                      "allowCredentials": "<REDACTED>"
+                    }
+                  }
+                ],
+                "name": "backend-dev-getTask"
+              },
+              "updateTask": {
+                "handler": "src/handlers/task/updateTask.updateTask",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks/{taskId}",
+                      "method": "put",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      },
+                      "allowCredentials": "<REDACTED>"
+                    }
+                  }
+                ],
+                "name": "backend-dev-updateTask"
+              },
+              "deleteTask": {
+                "handler": "src/handlers/task/deleteTask.deleteTask",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks/{taskId}",
+                      "method": "delete",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      },
+                      "allowCredentials": "<REDACTED>"
+                    }
+                  }
+                ],
+                "name": "backend-dev-deleteTask"
+              },
+              "manageTimer": {
+                "handler": "src/handlers/timer/manageTimer.manageTimer",
+                "events": [
+                  {
+                    "http": {
+                      "path": "timer",
+                      "method": "post",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-manageTimer"
+              },
+              "updatePreferences": {
+                "handler": "src/handlers/preferences/updatePreferences.updatePreferences",
+                "events": [
+                  {
+                    "http": {
+                      "path": "preferences",
+                      "method": "put",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-updatePreferences"
+              },
+              "getMusic": {
+                "handler": "src/handlers/music/getMusic.getMusic",
+                "events": [
+                  {
+                    "http": {
+                      "path": "music",
+                      "method": "get",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-getMusic"
+              },
+              "updateBackground": {
+                "handler": "src/handlers/background/updateBackground.updateBackground",
+                "events": [
+                  {
+                    "http": {
+                      "path": "backgrounds",
+                      "method": "put",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-updateBackground"
+              },
+              "auth0Authorizer": {
+                "handler": "src/handlers/auth/index.handler",
+                "events": [
+                  {
+                    "http": {
+                      "path": "auth/validate",
+                      "method": "post",
+                      "cors": true
+                    }
+                  }
+                ],
+                "name": "backend-dev-auth0Authorizer"
+              }
+            }
+          },
+          "configFileDirPath": "D:\\Projects\\Portfolio_Projects\\focusflow\\FocusFlow\\backend",
+          "config": {
+            "type": "self"
+          },
+          "options": {},
+          "stage": "dev",
+          "dashboard": {
+            "aws": {
+              "accessKeyId": "<REDACTED>",
+              "secretAccessKey": "<REDACTED>",
+              "sessionToken": "<REDACTED>",
+              "$source": {
+                "CREDENTIALS_CODE": "<REDACTED>"
+              }
+            },
+            "params": null,
+            "accessKey": "<REDACTED>"
+          },
+          "logger": {
+            "namespace": "s:core:resolver:self",
+            "prefix": null,
+            "prefixColor": null
+          },
+          "_credentialsPromise": "<REDACTED>"
+        },
+        "resolvers": {}
+      },
+      "aws": {
+        "instance": {
+          "credentials": "<REDACTED>",
+          "serviceConfigFile": {
+            "org": "devquesting",
+            "app": "focusflow",
+            "service": "backend",
+            "plugins": [
+              "serverless-offline"
+            ],
+            "provider": {
+              "name": "aws",
+              "runtime": "nodejs20.x",
+              "region": "us-east-1",
+              "stage": "dev",
+              "environment": {
+                "AUTH0_DOMAIN": "dev-6zeb418i7xs8g1lc.us.auth0.com",
+                "AUTH0_AUDIENCE": "focusflow-audience",
+                "AUTH0_ISSUER": "https://dev-6zeb418i7xs8g1lc.us.auth0.com/",
+                "DYNAMODB_TASKS_TABLE": "dev-focusflow-tasks",
+                "DYNAMODB_USERS_TABLE": "dev-focusflow-users",
+                "S3_ASSETS_BUCKET": "dev-focusflow-assets"
+              },
+              "iam": {
+                "role": {
+                  "statements": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "dynamodb:PutItem",
+                        "dynamodb:GetItem",
+                        "dynamodb:UpdateItem",
+                        "dynamodb:DeleteItem",
+                        "dynamodb:Scan",
+                        "dynamodb:Query"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:PutObject",
+                        "s3:GetObject",
+                        "s3:DeleteObject"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "cognito-idp:SignUp"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "lambda:InvokeFunction"
+                      ],
+                      "Resource": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-auth0Authenticator"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "cors": {
+                "allowedOrigins": [
+                  "http://localhost:5173"
+                ],
+                "allowedMethods": [
+                  "GET",
+                  "POST",
+                  "PUT",
+                  "DELETE",
+                  "OPTIONS"
+                ],
+                "allowedHeaders": [
+                  "Authorization",
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": "<REDACTED>"
+              },
+              "versionFunctions": true,
+              "AwshttpApi": null
+            },
+            "custom": {
+              "tableName": "dev-focusflow-tasks",
+              "usersTableName": "dev-focusflow-users",
+              "bucketName": "dev-focusflow-assets"
+            },
+            "resources": {
+              "Resources": {
+                "TasksTable": {
+                  "Type": "AWS::DynamoDB::Table",
+                  "Properties": {
+                    "TableName": "dev-focusflow-tasks",
+                    "BillingMode": "PAY_PER_REQUEST",
+                    "AttributeDefinitions": [
+                      {
+                        "AttributeName": "userId",
+                        "AttributeType": "S"
+                      },
+                      {
+                        "AttributeName": "taskId",
+                        "AttributeType": "S"
+                      }
+                    ],
+                    "KeySchema": [
+                      {
+                        "AttributeName": "userId",
+                        "KeyType": "HASH"
+                      },
+                      {
+                        "AttributeName": "taskId",
+                        "KeyType": "RANGE"
+                      }
+                    ]
+                  }
+                },
+                "UsersTable": {
+                  "Type": "AWS::DynamoDB::Table",
+                  "Properties": {
+                    "TableName": "dev-focusflow-users",
+                    "BillingMode": "PAY_PER_REQUEST",
+                    "AttributeDefinitions": [
+                      {
+                        "AttributeName": "userId",
+                        "AttributeType": "S"
+                      }
+                    ],
+                    "KeySchema": [
+                      {
+                        "AttributeName": "userId",
+                        "KeyType": "HASH"
+                      }
+                    ]
+                  }
+                },
+                "AssetsBucket": {
+                  "Type": "AWS::S3::Bucket",
+                  "Properties": {
+                    "BucketName": "dev-focusflow-assets",
+                    "CorsConfiguration": {
+                      "CorsRules": [
+                        {
+                          "AllowedHeaders": [
+                            "*"
+                          ],
+                          "AllowedMethods": [
+                            "GET",
+                            "PUT",
+                            "POST",
+                            "DELETE",
+                            "HEAD"
+                          ],
+                          "AllowedOrigins": [
+                            "*"
+                          ],
+                          "MaxAge": 3000
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "functions": {
+              "createTask": {
+                "handler": "src/handlers/task/createTask.createTask",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks",
+                      "method": "post",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "allowCredentials": "<REDACTED>",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-createTask"
+              },
+              "getTask": {
+                "handler": "src/handlers/task/getTask.getTasks",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks",
+                      "method": "get",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      },
+                      "allowCredentials": "<REDACTED>"
+                    }
+                  }
+                ],
+                "name": "backend-dev-getTask"
+              },
+              "updateTask": {
+                "handler": "src/handlers/task/updateTask.updateTask",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks/{taskId}",
+                      "method": "put",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      },
+                      "allowCredentials": "<REDACTED>"
+                    }
+                  }
+                ],
+                "name": "backend-dev-updateTask"
+              },
+              "deleteTask": {
+                "handler": "src/handlers/task/deleteTask.deleteTask",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks/{taskId}",
+                      "method": "delete",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      },
+                      "allowCredentials": "<REDACTED>"
+                    }
+                  }
+                ],
+                "name": "backend-dev-deleteTask"
+              },
+              "manageTimer": {
+                "handler": "src/handlers/timer/manageTimer.manageTimer",
+                "events": [
+                  {
+                    "http": {
+                      "path": "timer",
+                      "method": "post",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-manageTimer"
+              },
+              "updatePreferences": {
+                "handler": "src/handlers/preferences/updatePreferences.updatePreferences",
+                "events": [
+                  {
+                    "http": {
+                      "path": "preferences",
+                      "method": "put",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-updatePreferences"
+              },
+              "getMusic": {
+                "handler": "src/handlers/music/getMusic.getMusic",
+                "events": [
+                  {
+                    "http": {
+                      "path": "music",
+                      "method": "get",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-getMusic"
+              },
+              "updateBackground": {
+                "handler": "src/handlers/background/updateBackground.updateBackground",
+                "events": [
+                  {
+                    "http": {
+                      "path": "backgrounds",
+                      "method": "put",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-updateBackground"
+              },
+              "auth0Authorizer": {
+                "handler": "src/handlers/auth/index.handler",
+                "events": [
+                  {
+                    "http": {
+                      "path": "auth/validate",
+                      "method": "post",
+                      "cors": true
+                    }
+                  }
+                ],
+                "name": "backend-dev-auth0Authorizer"
+              }
+            }
+          },
+          "configFileDirPath": "D:\\Projects\\Portfolio_Projects\\focusflow\\FocusFlow\\backend",
+          "config": {
+            "type": "aws"
+          },
+          "options": {},
+          "stage": "dev",
+          "dashboard": {
+            "aws": {
+              "accessKeyId": "<REDACTED>",
+              "secretAccessKey": "<REDACTED>",
+              "sessionToken": "<REDACTED>",
+              "$source": {
+                "CREDENTIALS_CODE": "<REDACTED>"
+              }
+            },
+            "params": null,
+            "accessKey": "<REDACTED>"
+          },
+          "logger": {
+            "namespace": "s:core:resolver:aws",
+            "prefix": null,
+            "prefixColor": null
+          },
+          "_credentialsPromise": "<REDACTED>",
+          "isDefaultConfig": true
+        },
+        "resolvers": {}
+      },
+      "sls": {
+        "instance": {
+          "credentials": "<REDACTED>",
+          "serviceConfigFile": {
+            "org": "devquesting",
+            "app": "focusflow",
+            "service": "backend",
+            "plugins": [
+              "serverless-offline"
+            ],
+            "provider": {
+              "name": "aws",
+              "runtime": "nodejs20.x",
+              "region": "us-east-1",
+              "stage": "dev",
+              "environment": {
+                "AUTH0_DOMAIN": "dev-6zeb418i7xs8g1lc.us.auth0.com",
+                "AUTH0_AUDIENCE": "focusflow-audience",
+                "AUTH0_ISSUER": "https://dev-6zeb418i7xs8g1lc.us.auth0.com/",
+                "DYNAMODB_TASKS_TABLE": "dev-focusflow-tasks",
+                "DYNAMODB_USERS_TABLE": "dev-focusflow-users",
+                "S3_ASSETS_BUCKET": "dev-focusflow-assets"
+              },
+              "iam": {
+                "role": {
+                  "statements": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "dynamodb:PutItem",
+                        "dynamodb:GetItem",
+                        "dynamodb:UpdateItem",
+                        "dynamodb:DeleteItem",
+                        "dynamodb:Scan",
+                        "dynamodb:Query"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:PutObject",
+                        "s3:GetObject",
+                        "s3:DeleteObject"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "cognito-idp:SignUp"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "lambda:InvokeFunction"
+                      ],
+                      "Resource": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-auth0Authenticator"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "cors": {
+                "allowedOrigins": [
+                  "http://localhost:5173"
+                ],
+                "allowedMethods": [
+                  "GET",
+                  "POST",
+                  "PUT",
+                  "DELETE",
+                  "OPTIONS"
+                ],
+                "allowedHeaders": [
+                  "Authorization",
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": "<REDACTED>"
+              },
+              "versionFunctions": true,
+              "AwshttpApi": null
+            },
+            "custom": {
+              "tableName": "dev-focusflow-tasks",
+              "usersTableName": "dev-focusflow-users",
+              "bucketName": "dev-focusflow-assets"
+            },
+            "resources": {
+              "Resources": {
+                "TasksTable": {
+                  "Type": "AWS::DynamoDB::Table",
+                  "Properties": {
+                    "TableName": "dev-focusflow-tasks",
+                    "BillingMode": "PAY_PER_REQUEST",
+                    "AttributeDefinitions": [
+                      {
+                        "AttributeName": "userId",
+                        "AttributeType": "S"
+                      },
+                      {
+                        "AttributeName": "taskId",
+                        "AttributeType": "S"
+                      }
+                    ],
+                    "KeySchema": [
+                      {
+                        "AttributeName": "userId",
+                        "KeyType": "HASH"
+                      },
+                      {
+                        "AttributeName": "taskId",
+                        "KeyType": "RANGE"
+                      }
+                    ]
+                  }
+                },
+                "UsersTable": {
+                  "Type": "AWS::DynamoDB::Table",
+                  "Properties": {
+                    "TableName": "dev-focusflow-users",
+                    "BillingMode": "PAY_PER_REQUEST",
+                    "AttributeDefinitions": [
+                      {
+                        "AttributeName": "userId",
+                        "AttributeType": "S"
+                      }
+                    ],
+                    "KeySchema": [
+                      {
+                        "AttributeName": "userId",
+                        "KeyType": "HASH"
+                      }
+                    ]
+                  }
+                },
+                "AssetsBucket": {
+                  "Type": "AWS::S3::Bucket",
+                  "Properties": {
+                    "BucketName": "dev-focusflow-assets",
+                    "CorsConfiguration": {
+                      "CorsRules": [
+                        {
+                          "AllowedHeaders": [
+                            "*"
+                          ],
+                          "AllowedMethods": [
+                            "GET",
+                            "PUT",
+                            "POST",
+                            "DELETE",
+                            "HEAD"
+                          ],
+                          "AllowedOrigins": [
+                            "*"
+                          ],
+                          "MaxAge": 3000
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "functions": {
+              "createTask": {
+                "handler": "src/handlers/task/createTask.createTask",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks",
+                      "method": "post",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "allowCredentials": "<REDACTED>",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-createTask"
+              },
+              "getTask": {
+                "handler": "src/handlers/task/getTask.getTasks",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks",
+                      "method": "get",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      },
+                      "allowCredentials": "<REDACTED>"
+                    }
+                  }
+                ],
+                "name": "backend-dev-getTask"
+              },
+              "updateTask": {
+                "handler": "src/handlers/task/updateTask.updateTask",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks/{taskId}",
+                      "method": "put",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      },
+                      "allowCredentials": "<REDACTED>"
+                    }
+                  }
+                ],
+                "name": "backend-dev-updateTask"
+              },
+              "deleteTask": {
+                "handler": "src/handlers/task/deleteTask.deleteTask",
+                "events": [
+                  {
+                    "http": {
+                      "path": "tasks/{taskId}",
+                      "method": "delete",
+                      "cors": {
+                        "origin": "http://localhost:5173",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      },
+                      "allowCredentials": "<REDACTED>"
+                    }
+                  }
+                ],
+                "name": "backend-dev-deleteTask"
+              },
+              "manageTimer": {
+                "handler": "src/handlers/timer/manageTimer.manageTimer",
+                "events": [
+                  {
+                    "http": {
+                      "path": "timer",
+                      "method": "post",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-manageTimer"
+              },
+              "updatePreferences": {
+                "handler": "src/handlers/preferences/updatePreferences.updatePreferences",
+                "events": [
+                  {
+                    "http": {
+                      "path": "preferences",
+                      "method": "put",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-updatePreferences"
+              },
+              "getMusic": {
+                "handler": "src/handlers/music/getMusic.getMusic",
+                "events": [
+                  {
+                    "http": {
+                      "path": "music",
+                      "method": "get",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-getMusic"
+              },
+              "updateBackground": {
+                "handler": "src/handlers/background/updateBackground.updateBackground",
+                "events": [
+                  {
+                    "http": {
+                      "path": "backgrounds",
+                      "method": "put",
+                      "cors": {
+                        "origin": "*",
+                        "headers": [
+                          "Content-Type",
+                          "Authorization",
+                          "X-Requested-With",
+                          "X-Amz-Date",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent"
+                        ]
+                      },
+                      "authorizer": {
+                        "type": "REQUEST",
+                        "identitySource": "method.request.header.Authorization",
+                        "name": "auth0Authorizer"
+                      }
+                    }
+                  }
+                ],
+                "name": "backend-dev-updateBackground"
+              },
+              "auth0Authorizer": {
+                "handler": "src/handlers/auth/index.handler",
+                "events": [
+                  {
+                    "http": {
+                      "path": "auth/validate",
+                      "method": "post",
+                      "cors": true
+                    }
+                  }
+                ],
+                "name": "backend-dev-auth0Authorizer"
+              }
+            }
+          },
+          "configFileDirPath": "D:\\Projects\\Portfolio_Projects\\focusflow\\FocusFlow\\backend",
+          "config": {
+            "type": "sls"
+          },
+          "options": {},
+          "stage": "dev",
+          "dashboard": {
+            "aws": {
+              "accessKeyId": "<REDACTED>",
+              "secretAccessKey": "<REDACTED>",
+              "sessionToken": "<REDACTED>",
+              "$source": {
+                "CREDENTIALS_CODE": "<REDACTED>"
+              }
+            },
+            "params": null,
+            "accessKey": "<REDACTED>"
+          },
+          "logger": {
+            "namespace": "s:core:resolver:sls",
+            "prefix": null,
+            "prefixColor": null
+          },
+          "_credentialsPromise": "<REDACTED>"
+        },
+        "resolvers": {}
+      }
+    },
+    "composeServiceName": null,
+    "servicePath": "D:\\Projects\\Portfolio_Projects\\focusflow\\FocusFlow\\backend",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "org": "devquesting",
+      "app": "focusflow",
+      "service": "backend",
+      "plugins": [
+        "serverless-offline"
+      ],
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs20.x",
+        "region": "us-east-1",
+        "stage": "dev",
+        "environment": {
+          "AUTH0_DOMAIN": "dev-6zeb418i7xs8g1lc.us.auth0.com",
+          "AUTH0_AUDIENCE": "focusflow-audience",
+          "AUTH0_ISSUER": "https://dev-6zeb418i7xs8g1lc.us.auth0.com/",
+          "DYNAMODB_TASKS_TABLE": "dev-focusflow-tasks",
+          "DYNAMODB_USERS_TABLE": "dev-focusflow-users",
+          "S3_ASSETS_BUCKET": "dev-focusflow-assets"
+        },
+        "iam": {
+          "role": {
+            "statements": [
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "dynamodb:PutItem",
+                  "dynamodb:GetItem",
+                  "dynamodb:UpdateItem",
+                  "dynamodb:DeleteItem",
+                  "dynamodb:Scan",
+                  "dynamodb:Query"
+                ],
+                "Resource": "*"
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "s3:PutObject",
+                  "s3:GetObject",
+                  "s3:DeleteObject"
+                ],
+                "Resource": "*"
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "cognito-idp:SignUp"
+                ],
+                "Resource": "*"
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "lambda:InvokeFunction"
+                ],
+                "Resource": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-auth0Authenticator"
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "sts:AssumeRole"
+                ]
+              }
+            ]
+          }
+        },
+        "cors": {
+          "allowedOrigins": [
+            "http://localhost:5173"
+          ],
+          "allowedMethods": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "OPTIONS"
+          ],
+          "allowedHeaders": [
+            "Authorization",
+            "Content-Type",
+            "X-Amz-Date",
+            "X-Api-Key",
+            "X-Amz-Security-Token",
+            "X-Amz-User-Agent"
+          ],
+          "allowCredentials": "<REDACTED>"
+        },
+        "versionFunctions": true,
+        "AwshttpApi": null
+      },
+      "custom": {
+        "tableName": "dev-focusflow-tasks",
+        "usersTableName": "dev-focusflow-users",
+        "bucketName": "dev-focusflow-assets"
+      },
+      "resources": {
+        "Resources": {
+          "TasksTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "dev-focusflow-tasks",
+              "BillingMode": "PAY_PER_REQUEST",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "userId",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "taskId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "userId",
+                  "KeyType": "HASH"
+                },
+                {
+                  "AttributeName": "taskId",
+                  "KeyType": "RANGE"
+                }
+              ]
+            }
+          },
+          "UsersTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "dev-focusflow-users",
+              "BillingMode": "PAY_PER_REQUEST",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "userId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "userId",
+                  "KeyType": "HASH"
+                }
+              ]
+            }
+          },
+          "AssetsBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketName": "dev-focusflow-assets",
+              "CorsConfiguration": {
+                "CorsRules": [
+                  {
+                    "AllowedHeaders": [
+                      "*"
+                    ],
+                    "AllowedMethods": [
+                      "GET",
+                      "PUT",
+                      "POST",
+                      "DELETE",
+                      "HEAD"
+                    ],
+                    "AllowedOrigins": [
+                      "*"
+                    ],
+                    "MaxAge": 3000
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "functions": {
+        "createTask": {
+          "handler": "src/handlers/task/createTask.createTask",
+          "events": [
+            {
+              "http": {
+                "path": "tasks",
+                "method": "post",
+                "cors": {
+                  "origin": "http://localhost:5173",
+                  "allowCredentials": "<REDACTED>",
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Requested-With",
+                    "X-Amz-Date",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent"
+                  ]
+                },
+                "authorizer": {
+                  "type": "REQUEST",
+                  "identitySource": "method.request.header.Authorization",
+                  "name": "auth0Authorizer"
+                }
+              }
+            }
+          ],
+          "name": "backend-dev-createTask"
+        },
+        "getTask": {
+          "handler": "src/handlers/task/getTask.getTasks",
+          "events": [
+            {
+              "http": {
+                "path": "tasks",
+                "method": "get",
+                "cors": {
+                  "origin": "http://localhost:5173",
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Requested-With",
+                    "X-Amz-Date",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent"
+                  ]
+                },
+                "authorizer": {
+                  "type": "REQUEST",
+                  "identitySource": "method.request.header.Authorization",
+                  "name": "auth0Authorizer"
+                },
+                "allowCredentials": "<REDACTED>"
+              }
+            }
+          ],
+          "name": "backend-dev-getTask"
+        },
+        "updateTask": {
+          "handler": "src/handlers/task/updateTask.updateTask",
+          "events": [
+            {
+              "http": {
+                "path": "tasks/{taskId}",
+                "method": "put",
+                "cors": {
+                  "origin": "http://localhost:5173",
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Requested-With",
+                    "X-Amz-Date",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent"
+                  ]
+                },
+                "authorizer": {
+                  "type": "REQUEST",
+                  "identitySource": "method.request.header.Authorization",
+                  "name": "auth0Authorizer"
+                },
+                "allowCredentials": "<REDACTED>"
+              }
+            }
+          ],
+          "name": "backend-dev-updateTask"
+        },
+        "deleteTask": {
+          "handler": "src/handlers/task/deleteTask.deleteTask",
+          "events": [
+            {
+              "http": {
+                "path": "tasks/{taskId}",
+                "method": "delete",
+                "cors": {
+                  "origin": "http://localhost:5173",
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Requested-With",
+                    "X-Amz-Date",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent"
+                  ]
+                },
+                "authorizer": {
+                  "type": "REQUEST",
+                  "identitySource": "method.request.header.Authorization",
+                  "name": "auth0Authorizer"
+                },
+                "allowCredentials": "<REDACTED>"
+              }
+            }
+          ],
+          "name": "backend-dev-deleteTask"
+        },
+        "manageTimer": {
+          "handler": "src/handlers/timer/manageTimer.manageTimer",
+          "events": [
+            {
+              "http": {
+                "path": "timer",
+                "method": "post",
+                "cors": {
+                  "origin": "*",
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Requested-With",
+                    "X-Amz-Date",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent"
+                  ]
+                },
+                "authorizer": {
+                  "type": "REQUEST",
+                  "identitySource": "method.request.header.Authorization",
+                  "name": "auth0Authorizer"
+                }
+              }
+            }
+          ],
+          "name": "backend-dev-manageTimer"
+        },
+        "updatePreferences": {
+          "handler": "src/handlers/preferences/updatePreferences.updatePreferences",
+          "events": [
+            {
+              "http": {
+                "path": "preferences",
+                "method": "put",
+                "cors": {
+                  "origin": "*",
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Requested-With",
+                    "X-Amz-Date",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent"
+                  ]
+                },
+                "authorizer": {
+                  "type": "REQUEST",
+                  "identitySource": "method.request.header.Authorization",
+                  "name": "auth0Authorizer"
+                }
+              }
+            }
+          ],
+          "name": "backend-dev-updatePreferences"
+        },
+        "getMusic": {
+          "handler": "src/handlers/music/getMusic.getMusic",
+          "events": [
+            {
+              "http": {
+                "path": "music",
+                "method": "get",
+                "cors": {
+                  "origin": "*",
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Requested-With",
+                    "X-Amz-Date",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent"
+                  ]
+                }
+              }
+            }
+          ],
+          "name": "backend-dev-getMusic"
+        },
+        "updateBackground": {
+          "handler": "src/handlers/background/updateBackground.updateBackground",
+          "events": [
+            {
+              "http": {
+                "path": "backgrounds",
+                "method": "put",
+                "cors": {
+                  "origin": "*",
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Requested-With",
+                    "X-Amz-Date",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent"
+                  ]
+                },
+                "authorizer": {
+                  "type": "REQUEST",
+                  "identitySource": "method.request.header.Authorization",
+                  "name": "auth0Authorizer"
+                }
+              }
+            }
+          ],
+          "name": "backend-dev-updateBackground"
+        },
+        "auth0Authorizer": {
+          "handler": "src/handlers/auth/index.handler",
+          "events": [
+            {
+              "http": {
+                "path": "auth/validate",
+                "method": "post",
+                "cors": true
+              }
+            }
+          ],
+          "name": "backend-dev-auth0Authorizer"
+        }
+      }
+    },
+    "serviceRawFile": "# FocusFlow Serverless Configuration\n\norg: devquesting\napp: focusflow\nservice: backend\n\nplugins:\n  - serverless-offline\n\nprovider:\n  name: aws\n  runtime: nodejs20.x\n  region: us-east-1\n  stage: dev\n  environment:\n    AUTH0_DOMAIN: dev-6zeb418i7xs8g1lc.us.auth0.com\n    AUTH0_AUDIENCE: focusflow-audience\n    AUTH0_ISSUER: https://dev-6zeb418i7xs8g1lc.us.auth0.com/\n    DYNAMODB_TASKS_TABLE: dev-focusflow-tasks\n    DYNAMODB_USERS_TABLE: dev-focusflow-users\n    S3_ASSETS_BUCKET: dev-focusflow-assets \n  iam:\n    role:\n      statements:\n        - Effect: Allow\n          Action:\n            - dynamodb:PutItem\n            - dynamodb:GetItem\n            - dynamodb:UpdateItem\n            - dynamodb:DeleteItem\n            - dynamodb:Scan\n            - dynamodb:Query\n          Resource: \"*\"\n        - Effect: Allow\n          Action:\n            - s3:PutObject\n            - s3:GetObject\n            - s3:DeleteObject\n          Resource: \"*\"\n        - Effect: Allow\n          Action:\n            - cognito-idp:SignUp\n          Resource: \"*\"\n        - Effect: Allow\n          Action:\n            - lambda:InvokeFunction\n          Resource:\n            - arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-auth0Authenticator\n        - Effect: Allow\n          Action:\n            - sts:AssumeRole\n  AwshttpApi:\n  cors:\n    allowedOrigins:\n      - http://localhost:5173\n    allowedMethods:\n      - GET\n      - POST\n      - PUT\n      - DELETE\n      - OPTIONS\n    allowedHeaders:\n      - Authorization\n      - Content-Type\n      - X-Amz-Date\n      - X-Api-Key\n      - X-Amz-Security-Token\n      - X-Amz-User-Agent\n    allowCredentials: true\n\ncustom:\n  tableName: ${sls:stage}-focusflow-tasks\n  usersTableName: ${sls:stage}-focusflow-users\n  bucketName: ${sls:stage}-focusflow-assets\n\nresources:\n  Resources:\n    # DynamoDB Table for Tasks\n    TasksTable:\n      Type: AWS::DynamoDB::Table\n      Properties:\n        TableName: ${self:custom.tableName}\n        BillingMode: PAY_PER_REQUEST\n        AttributeDefinitions:\n          - AttributeName: userId\n            AttributeType: S\n          - AttributeName: taskId\n            AttributeType: S\n        KeySchema:\n          - AttributeName: userId\n            KeyType: HASH\n          - AttributeName: taskId\n            KeyType: RANGE\n\n    # DynamoDB Table for Users\n    UsersTable:\n      Type: AWS::DynamoDB::Table\n      Properties:\n        TableName: ${self:custom.usersTableName}\n        BillingMode: PAY_PER_REQUEST\n        AttributeDefinitions:\n          - AttributeName: userId\n            AttributeType: S\n        KeySchema:\n          - AttributeName: userId\n            KeyType: HASH\n\n    # S3 Bucket for Assets\n    AssetsBucket:\n      Type: AWS::S3::Bucket\n      Properties:\n        BucketName: ${self:custom.bucketName}\n        CorsConfiguration:\n          CorsRules:\n            - AllowedHeaders: [\"*\"]\n              AllowedMethods: [GET, PUT, POST, DELETE, HEAD]\n              AllowedOrigins: [\"*\"]\n              MaxAge: 3000\n\nfunctions:\n  # Task Management\n  createTask:\n    handler: src/handlers/task/createTask.createTask\n    events:\n      - http:\n          path: tasks\n          method: post\n          cors:\n            origin: \"http://localhost:5173\"\n            allowCredentials: true\n            headers:\n              - Content-Type\n              - Authorization\n              - X-Requested-With\n              - X-Amz-Date\n              - X-Api-Key\n              - X-Amz-Security-Token\n              - X-Amz-User-Agent\n          authorizer:\n            type: REQUEST\n            identitySource: method.request.header.Authorization\n            name: auth0Authorizer\n  getTask:\n    handler: src/handlers/task/getTask.getTasks\n    events:\n      - http:\n          path: tasks\n          method: get\n          cors:\n            origin: \"http://localhost:5173\" # Use '*' for all origins or specify 'http://localhost:5173' for development\n            headers:\n              - Content-Type\n              - Authorization\n              - X-Requested-With\n              - X-Amz-Date\n              - X-Api-Key\n              - X-Amz-Security-Token\n              - X-Amz-User-Agent\n          authorizer:\n            type: REQUEST\n            identitySource: method.request.header.Authorization\n            name: auth0Authorizer\n          allowCredentials: true\n  updateTask:\n    handler: src/handlers/task/updateTask.updateTask\n    events:\n      - http:\n          path: tasks/{taskId}\n          method: put\n          cors:\n            origin: \"http://localhost:5173\" # Use '*' for all origins or specify 'http://localhost:5173' for development\n            headers:\n              - Content-Type\n              - Authorization\n              - X-Requested-With\n              - X-Amz-Date\n              - X-Api-Key\n              - X-Amz-Security-Token\n              - X-Amz-User-Agent\n          authorizer:\n            type: REQUEST\n            identitySource: method.request.header.Authorization\n            name: auth0Authorizer\n          allowCredentials: true\n  deleteTask:\n    handler: src/handlers/task/deleteTask.deleteTask\n    events:\n      - http:\n          path: tasks/{taskId}\n          method: delete\n          cors:\n            origin: \"http://localhost:5173\" # Use '*' for all origins or specify 'http://localhost:5173' for development\n            headers:\n              - Content-Type\n              - Authorization\n              - X-Requested-With\n              - X-Amz-Date\n              - X-Api-Key\n              - X-Amz-Security-Token\n              - X-Amz-User-Agent\n          authorizer:\n            type: REQUEST\n            identitySource: method.request.header.Authorization\n            name: auth0Authorizer\n          allowCredentials: true\n  # Pomodoro Timer\n  manageTimer:\n    handler: src/handlers/timer/manageTimer.manageTimer\n    events:\n      - http:\n          path: timer\n          method: post\n          cors:\n            origin: \"*\" # Use '*' for all origins or specify 'http://localhost:5173' for development\n            headers:\n              - Content-Type\n              - Authorization\n              - X-Requested-With\n              - X-Amz-Date\n              - X-Api-Key\n              - X-Amz-Security-Token\n              - X-Amz-User-Agent\n          authorizer:\n            type: REQUEST\n            identitySource: method.request.header.Authorization\n            name: auth0Authorizer\n\n  # User Preferences\n  updatePreferences:\n    handler: src/handlers/preferences/updatePreferences.updatePreferences\n    events:\n      - http:\n          path: preferences\n          method: put\n          cors:\n            origin: \"*\" # Use '*' for all origins or specify 'http://localhost:5173' for development\n            headers:\n              - Content-Type\n              - Authorization\n              - X-Requested-With\n              - X-Amz-Date\n              - X-Api-Key\n              - X-Amz-Security-Token\n              - X-Amz-User-Agent\n          authorizer:\n            type: REQUEST\n            identitySource: method.request.header.Authorization\n            name: auth0Authorizer\n\n  # Music Player\n  getMusic:\n    handler: src/handlers/music/getMusic.getMusic\n    events:\n      - http:\n          path: music\n          method: get\n          cors:\n            origin: \"*\" # Use '*' for all origins or specify 'http://localhost:5173' for development\n            headers:\n              - Content-Type\n              - Authorization\n              - X-Requested-With\n              - X-Amz-Date\n              - X-Api-Key\n              - X-Amz-Security-Token\n              - X-Amz-User-Agent\n\n  # Background Management\n  updateBackground:\n    handler: src/handlers/background/updateBackground.updateBackground\n    events:\n      - http:\n          path: backgrounds\n          method: put\n          cors:\n            origin: \"*\" # Use '*' for all origins or specify 'http://localhost:5173' for development\n            headers:\n              - Content-Type\n              - Authorization\n              - X-Requested-With\n              - X-Amz-Date\n              - X-Api-Key\n              - X-Amz-Security-Token\n              - X-Amz-User-Agent\n          authorizer:\n            type: REQUEST\n            identitySource: method.request.header.Authorization\n            name: auth0Authorizer\n\n  auth0Authorizer:\n    handler: src/handlers/auth/index.handler\n    events:\n      - http:\n          path: auth/validate\n          method: post\n          cors: true\n",
+    "command": [
+      "print"
+    ],
+    "options": {},
+    "error": null,
+    "params": {},
+    "machineId": "6fcc864d3669b1e7a19c8b076386e97f",
+    "stage": "dev",
+    "accessKeyV2": "<REDACTED>",
+    "accessKeyV1": "<REDACTED>",
+    "orgId": "a00e51c8-04d8-4141-a358-fe9649ff9764",
+    "orgName": "devquesting",
+    "userId": "4g9dD64cGTjcqpfG9h",
+    "dashboard": {
+      "isEnabledForService": true,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": {
+        "providers": true,
+        "monitoring": false
+      },
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": "p5lvl4hDnczWh3Vp91",
+      "serviceProvider": {
+        "accessKeyId": "<REDACTED>",
+        "secretAccessKey": "<REDACTED>",
+        "sessionToken": "<REDACTED>",
+        "$source": {
+          "CREDENTIALS_CODE": "<REDACTED>"
+        }
+      },
+      "instanceParameters": null
+    },
+    "userName": "devquesting",
+    "subscription": null,
+    "userEmail": "dev.dav.kup@gmail.com",
+    "serviceProviderAwsRegion": "us-east-1",
+    "serviceProviderAwsCredentials": "<REDACTED>",
+    "serviceProviderAwsAccountId": "274552760074",
+    "projectType": "traditional",
+    "versionSf": "4.4.11",
+    "serviceProviderAwsCfStackName": "backend-dev",
+    "integrations": {},
+    "serviceUniqueId": "arn:aws:cloudformation:us-east-1:274552760074:stack/backend-dev/80499180-a60f-11ef-b8d5-124d3fdcb0b3",
+    "serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:274552760074:stack/backend-dev/80499180-a60f-11ef-b8d5-124d3fdcb0b3",
+    "serviceProviderAwsCfStackCreated": "2024-11-19T00:44:57.988Z",
+    "serviceProviderAwsCfStackUpdated": "2024-11-23T20:03:51.449Z",
+    "serviceProviderAwsCfStackStatus": "UPDATE_ROLLBACK_COMPLETE",
+    "serviceProviderAwsCfStackOutputs": [
+      {
+        "OutputKey": "ManageTimerLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-manageTimer:11",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-backend-dev-ManageTimerLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "GetTasksLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-getTasks:11",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-backend-dev-GetTasksLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "DeleteTaskLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-deleteTask:11",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-backend-dev-DeleteTaskLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "UpdateTaskLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-updateTask:11",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-backend-dev-UpdateTaskLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "UpdatePreferencesLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-updatePreferences:11",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-backend-dev-UpdatePreferencesLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "GetMusicLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-getMusic:11",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-backend-dev-GetMusicLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "CreateTaskLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-createTask:11",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-backend-dev-CreateTaskLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "Auth0AuthorizerLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-auth0Authorizer:7",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-backend-dev-Auth0AuthorizerLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "UpdateBackgroundLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-updateBackground:11",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-backend-dev-UpdateBackgroundLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ServiceEndpoint",
+        "OutputValue": "https://b94obf2k3g.execute-api.us-east-1.amazonaws.com/dev",
+        "Description": "URL of the service endpoint",
+        "ExportName": "sls-backend-dev-ServiceEndpoint"
+      },
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
+        "ExportName": "sls-backend-dev-ServerlessDeploymentBucketName"
+      }
+    ]
+  }
+}

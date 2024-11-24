@@ -7,48 +7,67 @@ service: backend
 plugins:
   - serverless-offline
 
-
 provider:
   name: aws
   runtime: nodejs20.x
   region: us-east-1
   stage: dev
   environment:
-    AUTH0_DOMAIN: your-auth0-domain.auth0.com
+    AUTH0_DOMAIN: dev-6zeb418i7xs8g1lc.us.auth0.com
     AUTH0_AUDIENCE: focusflow-audience
     AUTH0_ISSUER: https://dev-6zeb418i7xs8g1lc.us.auth0.com/
-    DYNAMODB_TASKS_TABLE: ${self:custom.tableName}
-    DYNAMODB_USERS_TABLE: ${self:custom.usersTableName}
-    S3_ASSETS_BUCKET: ${self:custom.bucketName}
+    DYNAMODB_TASKS_TABLE: dev-focusflow-tasks
+    DYNAMODB_USERS_TABLE: dev-focusflow-users
+    S3_ASSETS_BUCKET: dev-focusflow-assets 
   iam:
     role:
       statements:
         - Effect: Allow
           Action:
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
             - dynamodb:PutItem
+            - dynamodb:GetItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
-          Resource:
-            - !GetAtt TasksTable.Arn
-            - !GetAtt UsersTable.Arn
+            - dynamodb:Scan
+            - dynamodb:Query
+          Resource: "*"
         - Effect: Allow
           Action:
             - s3:PutObject
             - s3:GetObject
             - s3:DeleteObject
-          Resource: !Join ["/", [!GetAtt AssetsBucket.Arn, "*"]]
+          Resource: "*"
         - Effect: Allow
           Action:
-            - cognito-idp:SignUp
-          Resource: '*'
+            - lambda:InvokeFunction
+          Resource:
+            - arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-auth0Authenticator
+        - Effect: Allow
+          Action:
+            - sts:AssumeRole
+  AwshttpApi:
+  cors:
+    allowedOrigins:
+      - http://localhost:5173
+    allowedMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allowedHeaders:
+      - Authorization
+      - Content-Type
+      - X-Amz-Date
+      - X-Api-Key
+      - X-Amz-Security-Token
+      - X-Amz-User-Agent
+    allowCredentials: true
 
 custom:
   tableName: ${sls:stage}-focusflow-tasks
   usersTableName: ${sls:stage}-focusflow-users
-  bucketName: ${sls:stage}-focusflow-assets
+  bucketName: ${sls:stage}-focusflow-assets-${aws:accountId}
 
 resources:
   Resources:
@@ -102,49 +121,84 @@ functions:
       - http:
           path: tasks
           method: post
-          cors: true
+          cors:
+            origin: "http://localhost:5173"
+            allowCredentials: true
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Requested-With
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
           authorizer:
             type: REQUEST
             identitySource: method.request.header.Authorization
-            authorizerResultTtlInSeconds: 300
             name: auth0Authorizer
-  getTasks:
-    handler: src/handlers/task/getTasks.getTasks
+  getTask:
+    handler: src/handlers/task/getTask.getTasks
     events:
       - http:
           path: tasks
           method: get
-          cors: true
+          cors:
+            origin: "http://localhost:5173" # Use '*' for all origins or specify 'http://localhost:5173' for development
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Requested-With
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
           authorizer:
             type: REQUEST
             identitySource: method.request.header.Authorization
-            authorizerResultTtlInSeconds: 300
             name: auth0Authorizer
+          allowCredentials: true
   updateTask:
     handler: src/handlers/task/updateTask.updateTask
     events:
       - http:
           path: tasks/{taskId}
           method: put
-          cors: true
+          cors:
+            origin: "http://localhost:5173" # Use '*' for all origins or specify 'http://localhost:5173' for development
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Requested-With
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
           authorizer:
             type: REQUEST
             identitySource: method.request.header.Authorization
-            authorizerResultTtlInSeconds: 300
             name: auth0Authorizer
+          allowCredentials: true
   deleteTask:
     handler: src/handlers/task/deleteTask.deleteTask
     events:
       - http:
           path: tasks/{taskId}
           method: delete
-          cors: true
+          cors:
+            origin: "http://localhost:5173" # Use '*' for all origins or specify 'http://localhost:5173' for development
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Requested-With
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
           authorizer:
             type: REQUEST
             identitySource: method.request.header.Authorization
-            authorizerResultTtlInSeconds: 300
             name: auth0Authorizer
-
+          allowCredentials: true
   # Pomodoro Timer
   manageTimer:
     handler: src/handlers/timer/manageTimer.manageTimer
@@ -152,11 +206,19 @@ functions:
       - http:
           path: timer
           method: post
-          cors: true
+          cors:
+            origin: "*" # Use '*' for all origins or specify 'http://localhost:5173' for development
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Requested-With
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
           authorizer:
             type: REQUEST
             identitySource: method.request.header.Authorization
-            authorizerResultTtlInSeconds: 300
             name: auth0Authorizer
 
   # User Preferences
@@ -166,11 +228,19 @@ functions:
       - http:
           path: preferences
           method: put
-          cors: true
+          cors:
+            origin: "*" # Use '*' for all origins or specify 'http://localhost:5173' for development
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Requested-With
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
           authorizer:
             type: REQUEST
             identitySource: method.request.header.Authorization
-            authorizerResultTtlInSeconds: 300
             name: auth0Authorizer
 
   # Music Player
@@ -180,7 +250,16 @@ functions:
       - http:
           path: music
           method: get
-          cors: true
+          cors:
+            origin: "*" # Use '*' for all origins or specify 'http://localhost:5173' for development
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Requested-With
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
 
   # Background Management
   updateBackground:
@@ -189,12 +268,25 @@ functions:
       - http:
           path: backgrounds
           method: put
-          cors: true
+          cors:
+            origin: "*" # Use '*' for all origins or specify 'http://localhost:5173' for development
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Requested-With
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
           authorizer:
             type: REQUEST
             identitySource: method.request.header.Authorization
-            authorizerResultTtlInSeconds: 300
             name: auth0Authorizer
 
   auth0Authorizer:
-    handler: src/handlers/auth/auth.auth0Authorizer
+    handler: src/handlers/auth/index.handler
+    events:
+      - http:
+          path: auth/validate
+          method: post
+          cors: true
