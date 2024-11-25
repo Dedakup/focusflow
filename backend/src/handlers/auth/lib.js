@@ -4,6 +4,7 @@ const jwksClient = require('jwks-rsa');
 const jwt = require('jsonwebtoken');
 const util = require('util');
 
+//generating IAM policy
 const getPolicyDocument = (effect, resource) => {
     const policyDocument = {
         Version: '2012-10-17', // default version
@@ -41,7 +42,6 @@ const jwtOptions = {
 };
 
 module.exports.authenticate = (params) => {
-    console.log(params);
     const token = getToken(params);
 
     const decoded = jwt.decode(token, { complete: true });
@@ -51,20 +51,20 @@ module.exports.authenticate = (params) => {
 
     const getSigningKey = util.promisify(client.getSigningKey);
     return getSigningKey(decoded.header.kid)
-        .then((key) => {
+        .then((key) => { //veridy token
             const signingKey = key.publicKey || key.rsaPublicKey;
             return jwt.verify(token, signingKey, jwtOptions);
         })
-        .then((decoded)=> ({
+        .then((decoded) => ({ //reurn policy document
             principalId: decoded.sub,
             policyDocument: getPolicyDocument('Allow', params.methodArn),
             context: { scope: decoded.scope }
         }));
 }
 
- const client = jwksClient({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 10, // Default value
-        jwksUri: process.env.JWKS_URI
-  });
+const client = jwksClient({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 10, // Default value
+    jwksUri: process.env.JWKS_URI
+});

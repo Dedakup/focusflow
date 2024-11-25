@@ -1,7 +1,6 @@
 const db = require('../../utils/db');
 
 module.exports.getTasks = async (event) => {
-    console.log("Starting getTasks handler");
 
     // Get userId from query string parameters
     const userId = event.queryStringParameters?.userId;
@@ -19,20 +18,16 @@ module.exports.getTasks = async (event) => {
 
     // DynamoDB query parameters
     const params = {
-        TableName: process.env.DYNAMODB_TASKS_TABLE, // Ensure the environment variable is correct
-        KeyConditionExpression: 'userId = :userId', // Query based on the partition key
+        TableName: process.env.DYNAMODB_TASKS_TABLE,
+        KeyConditionExpression: "userId = :userId",
         ExpressionAttributeValues: {
-            ':userId': userId, // Pass the userId to the query
+            ":userId": userId,
         },
-    };
+    }
 
-    console.log("UserId:", userId);
-    console.log("DynamoDB params:", params);
-
+    //query data
     try {
-        console.log("Attempting DynamoDB query...");
         const result = await db.query(params);
-        console.log("Query result:", result);
 
         return {
             statusCode: 200,

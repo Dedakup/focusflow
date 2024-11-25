@@ -1,9 +1,9 @@
 const db = require('../../utils/db');
+const { createTaskParams } = require("../../layers/models/taskParams");
 
 module.exports.createTask = async (event) => {
-    // Log the received body
-    console.log("Received event body:", event.body);
 
+    // parse api request
     let taskData;
     try {
         taskData = JSON.parse(event.body);
@@ -18,6 +18,7 @@ module.exports.createTask = async (event) => {
         };
     }
 
+    //dave data
     const { userId, taskId, title, description, dueDate } = taskData;
 
     // Validate required fields
@@ -36,6 +37,7 @@ module.exports.createTask = async (event) => {
         };
     }
 
+    //generate model params
     const params = {
         TableName: process.env.DYNAMODB_TASKS_TABLE,
         Item: {
@@ -49,11 +51,12 @@ module.exports.createTask = async (event) => {
         },
     };
 
+    //add data to the database
     try {
         const result = await db.put(params);
-        console.log("DynamoDB PUT Success:", result);
         return {
             statusCode: 201,
+            //send cors headers
             headers: {
                 'Access-Control-Allow-Origin': 'http://localhost:5173',
                 'Access-Control-Allow-Credentials': true,
@@ -70,5 +73,5 @@ module.exports.createTask = async (event) => {
             },
             body: JSON.stringify({ error: error.message }),
         };
-    }    
+    }
 };

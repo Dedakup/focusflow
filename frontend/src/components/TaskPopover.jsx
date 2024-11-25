@@ -50,6 +50,12 @@ const TaskPopover = ({ isActive, isVisible }) => {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [shouldRefetch, setShouldRefetch] = useState(true);
 
+    const handlePopoverClose = () => {
+        setIsPopoverOpen(false); // Close the popover
+        setIsEditing(null); // Reset the editing state
+        setEditTaskName(""); // Clear the task name input
+    };
+
     /**
      * Fetches tasks from the API
      * 
@@ -68,6 +74,7 @@ const TaskPopover = ({ isActive, isVisible }) => {
         try {
             const token = await getAccessTokenSilently({ audience: "focusflow-audience" });
 
+            //get tasks send userid and token
             const response = await fetch(`${API_BASE_URL}/tasks?userId=${user.sub}`, {
                 method: "GET",
                 headers: {
@@ -91,7 +98,7 @@ const TaskPopover = ({ isActive, isVisible }) => {
         }
     };
 
-    // Effect hooks
+    // Request new task data only when following params change
     useEffect(() => {
         if (isPopoverOpen && user?.sub && shouldRefetch) {
             fetchTasks();
@@ -107,14 +114,35 @@ const TaskPopover = ({ isActive, isVisible }) => {
      * @throws {Error} When the API request fails
      */
     const handleAddTask = async () => {
+        //check user
+        if (!user?.sub) {
+            toast.error("User not authenticated");
+            return;
+        }
+        //check if task empty
         if (newTask.trim() === "") {
             toast.warn("Task name cannot be empty");
             return;
         }
 
-        try {
-            const token = await getAccessTokenSilently({ audience: "focusflow-audience" });
+        //task value to add it imidietly into ui until db load
+        const tempTaskId = crypto.randomUUID();
 
+        // Add task to local state immediately
+        const tempTask = {
+            taskId: tempTaskId,
+            title: newTask,
+            status: "pending",
+            userId: user.sub
+        };
+        setTasks(prev => [...prev, tempTask]);
+        setNewTask("");
+
+        //send task to the server
+        try {
+            //get token
+            const token = await getAccessTokenSilently({ audience: "focusflow-audience" });
+            //send add request with token and tasks body
             const response = await fetch(`${API_BASE_URL}/tasks`, {
                 method: "POST",
                 headers: {
@@ -123,54 +151,70 @@ const TaskPopover = ({ isActive, isVisible }) => {
                 },
                 body: JSON.stringify({
                     userId: user.sub,
-                    taskId: crypto.randomUUID(),
+                    taskId: tempTaskId,
                     title: newTask,
                     description: "Optional description",
                     dueDate: new Date().toISOString(),
                 }),
             });
 
-            if (response.ok) {
-                const createdTask = await response.json();
-                setTasks((prev) => [...prev, createdTask]);
-                setNewTask("");
-                setShouldRefetch(true);
-                toast.success("Task added successfully");
-            } else {
+            if (!response.ok) {
+                // Remove the temporary task if the API call fails
+                setTasks(prev => prev.filter(task => task.taskId !== tempTaskId));
                 const errorData = await response.json();
                 toast.error(`Failed to add task: ${errorData.message || "Unknown error"}`);
             }
         } catch (error) {
+            // Remove the temporary task if the API call fails
+            setTasks(prev => prev.filter(task => task.taskId !== tempTaskId));
             console.error("Error adding task:", error);
             toast.error("Failed to add task. Please try again.");
         }
     };
 
     /**
-     * Handles deleting a task
-     * 
-     * @async
-     * @function handleDeleteTask
-     * @param {string} taskId - ID of the task to delete
-     * @throws {Error} When the API request fails
-     */
+ * Handles deleting a task
+ * 
+ * @async
+ * @function handleDeleteTask
+ * @param {string} taskId - ID of the task to delete
+ * @throws {Error} When the API request fails
+ */
+
+
     const handleDeleteTask = async (taskId) => {
+        const previousTasks = [...tasks]; // Save current state
+        setTasks((prevTasks) => prevTasks.filter((task) => task.taskId !== taskId)); // Optimistic update
+
         try {
-            const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+            const token = await getAccessTokenSilently({ audience: "focusflow-audience" });
+            const userId = user?.sub; // Retrieve the authenticated user's ID
+
+            if (!userId) {
+                throw new Error("User not authenticated");
+            }
+
+            const response = await fetch(`${API_BASE_URL}/tasks/${taskId}?userId=${userId}`, {
                 method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
 
-            if (response.ok) {
-                setTasks((prev) => prev.filter((task) => task.id !== taskId));
-                toast.success("Task deleted successfully");
-            } else {
-                toast.error("Failed to delete task");
+            if (!response.ok) {
+                const errorDetails = await response.text();
+                console.error("API Error Response:", errorDetails);
+                throw new Error("Failed to delete task");
             }
+
+            toast.success("Task deleted successfully");
         } catch (error) {
-            toast.error("Failed to delete task");
             console.error("Error deleting task:", error);
+            setTasks(previousTasks); // Revert to previous state
+            toast.error("Failed to delete task. Please try again.");
         }
     };
+
 
     /**
      * Toggles the completion status of a task
@@ -181,101 +225,70 @@ const TaskPopover = ({ isActive, isVisible }) => {
      * @throws {Error} When the API request fails
      */
     const toggleCompleteTask = async (taskId) => {
-        const taskToToggle = tasks.find((task) => task.id === taskId);
+        const taskToToggle = tasks.find((task) => task.taskId === taskId);
         if (!taskToToggle) return;
 
-        try {
-            const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ completed: !taskToToggle.completed }),
-            });
-
-            if (response.ok) {
-                const updatedTask = await response.json();
-                setTasks((prev) =>
-                    prev.map((task) => (task.id === taskId ? updatedTask : task))
-                );
-                toast.success("Task updated successfully");
-            } else {
-                toast.error("Failed to update task");
-            }
-        } catch (error) {
-            toast.error("Failed to update task");
-            console.error("Error updating task:", error);
-        }
+        await handleUpdateTask(taskId, { status: taskToToggle.status === "completed" ? "pending" : "completed" });
     };
 
     /**
-     * Handles editing a task
-     * 
-     * @function handleEditTask
-     * @param {Object} task - Task object to edit
-     */
-    const handleEditTask = (task) => {
-        setIsEditing(task.id);
-        setEditTaskName(task.name);
-    };
+ * Handles updating a task
+ * 
+ * @async
+ * @function handleUpdateTask
+ * @param {string} taskId - ID of the task to update
+ * @param {Object} updatedFields - Fields to update (e.g., title, status)
+ * @throws {Error} When the API request fails
+ */
+    const handleUpdateTask = async (taskId, updatedFields) => {
+        const previousTasks = [...tasks];
 
-    /**
-     * Handles changes in the edit task input
-     * 
-     * @function handleEditTaskChange
-     * @param {Event} e - Input change event
-     */
-    const handleEditTaskChange = (e) => {
-        setEditTaskName(e.target.value);
-    };
-
-    /**
-     * Saves the edited task
-     * 
-     * @async
-     * @function saveEditedTask
-     * @param {string} taskId - ID of the task being edited
-     * @throws {Error} When the API request fails
-     */
-    const saveEditedTask = async (taskId) => {
-        if (editTaskName.trim() === "") return;
+        // Optimistically update the local state with the updated fields
+        setTasks((prevTasks) =>
+            prevTasks.map((task) =>
+                task.taskId === taskId ? { ...task, ...updatedFields } : task
+            )
+        );
 
         try {
+            const token = await getAccessTokenSilently({ audience: "focusflow-audience" });
+
             const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: editTaskName }),
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    taskId,
+                    userId: user.sub, // Ensure userId is sent
+                    ...updatedFields, // Send only fields that need to be updated
+                }),
             });
 
-            if (response.ok) {
-                const updatedTask = await response.json();
-                setTasks((prev) =>
-                    prev.map((task) => (task.id === taskId ? updatedTask : task))
-                );
-                setIsEditing(null);
-                setEditTaskName("");
-                setShouldRefetch(true);
-                toast.success("Task updated successfully");
-            } else {
-                toast.error("Failed to update task");
+            if (!response.ok) {
+                const errorDetails = await response.json();
+                console.error("API Error Response:", errorDetails);
+                throw new Error(errorDetails.error || "Failed to update task");
             }
+
+            // Merge API response with the existing task data
+            const { updatedTask } = await response.json();
+
+            setTasks((prevTasks) =>
+                prevTasks.map((task) =>
+                    task.taskId === taskId ? { ...task, ...updatedTask } : task
+                )
+            );
+            toast.success("Task updated successfully");
         } catch (error) {
-            toast.error("Failed to update task");
             console.error("Error updating task:", error);
+            setTasks(previousTasks); // Revert to previous state if API call fails
+            toast.error("Failed to update task. Please try again.");
         }
     };
 
-    /**
-     * Handles the submission of an edited task
-     * 
-     * @function handleEditTaskSubmit
-     * @param {Event} e - Keydown event
-     * @param {string} taskId - ID of the task being edited
-     */
-    const handleEditTaskSubmit = (e, taskId) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            saveEditedTask(taskId);
-        }
-    };
+
 
     /**
      * Handles the submission of a new task
@@ -290,12 +303,20 @@ const TaskPopover = ({ isActive, isVisible }) => {
         }
     };
 
+    // Reset editing state when popover closes
+    useEffect(() => {
+        if (!isPopoverOpen) {
+            setIsEditing(null);
+        }
+    }, [isPopoverOpen]);
+
     return (
         <Popover
             placement="right"
             offset={{ mainAxis: 10 }}
             open={isPopoverOpen}
             handler={setIsPopoverOpen}
+            onClose={handlePopoverClose} // Reset state when the popover closes
         >
             <PopoverHandler
                 className={`flex rounded-full items-center w-[40px] h-[40px] mr-[32px] transition-opacity duration-500 ${isActive ? "opacity-0" : "opacity-100"
@@ -323,13 +344,14 @@ const TaskPopover = ({ isActive, isVisible }) => {
                     </div>
 
                     <div className="flex-grow overflow-y-auto space-y-2">
-                        {isLoading ? (
+                        {isLoading ? ( //during load
                             <div className="flex justify-center items-center h-full">
                                 <div>Loading tasks...</div>
                             </div>
-                        ) : tasks.length === 0 ? (
+                        ) : tasks.length === 0 ? ( //if there is 0 tasks
                             <div className="text-center text-gray-400">No tasks available</div>
                         ) : (
+                            //rendering tasks
                             tasks.map((task) => (
                                 <div key={task.taskId} className="flex items-center justify-between">
                                     <button onClick={() => toggleCompleteTask(task.taskId)}>
@@ -343,15 +365,31 @@ const TaskPopover = ({ isActive, isVisible }) => {
                                         <input
                                             type="text"
                                             value={editTaskName}
-                                            onChange={handleEditTaskChange}
-                                            onKeyDown={(e) => handleEditTaskSubmit(e, task.taskId)}
+                                            onChange={(e) => setEditTaskName(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    handleUpdateTask(task.taskId, { title: editTaskName });
+                                                    setIsEditing(null);
+                                                }
+                                            }}
                                             autoFocus
-                                            className="flex-1 bg-gray-600 text-white"
+                                            className="flex-1 bg-gray-600 text-white px-2 py-1 rounded"
                                         />
                                     ) : (
-                                        <span className="text-gray-200 flex-1 truncate">{task.title}</span>
+                                        <span
+                                            onDoubleClick={() => {
+                                                setIsEditing(task.taskId);
+                                                setEditTaskName(task.title);
+                                            }}
+                                            className="text-gray-200 flex-1 truncate cursor-pointer"
+                                        >
+                                            {task.title}
+                                        </span>
                                     )}
-                                    <button onClick={() => handleEditTask(task)}>
+                                    <button onClick={() => {
+                                        setIsEditing(task.taskId);
+                                        setEditTaskName(task.title);
+                                    }}>
                                         <PencilIcon className="w-5 h-5" />
                                     </button>
                                     <button onClick={() => handleDeleteTask(task.taskId)}>
