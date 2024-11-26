@@ -14,7 +14,7 @@ const HomePage = () => {
     }, [isAuthenticated, navigate]);
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-800">
+        <div className="flex flex-col items-center justify-center h-screen">
             <h1 className="text-2xl font-bold mb-4 text-center">Home Page</h1>
             {!isAuthenticated && <LoginButton />}
         </div>

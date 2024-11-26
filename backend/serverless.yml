@@ -18,7 +18,7 @@ provider:
     AUTH0_ISSUER: https://dev-6zeb418i7xs8g1lc.us.auth0.com/
     DYNAMODB_TASKS_TABLE: dev-focusflow-tasks
     DYNAMODB_USERS_TABLE: dev-focusflow-users
-    S3_ASSETS_BUCKET: dev-focusflow-assets 
+    S3_ASSETS_BUCKET: dev-focusflow-assets
   iam:
     role:
       statements:
@@ -42,27 +42,6 @@ provider:
             - lambda:InvokeFunction
           Resource:
             - arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-auth0Authenticator
-        - Effect: Allow
-          Action:
-            - sts:AssumeRole
-  AwshttpApi:
-  cors:
-    allowedOrigins:
-      - http://localhost:5173
-    allowedMethods:
-      - GET
-      - POST
-      - PUT
-      - DELETE
-      - OPTIONS
-    allowedHeaders:
-      - Authorization
-      - Content-Type
-      - X-Amz-Date
-      - X-Api-Key
-      - X-Amz-Security-Token
-      - X-Amz-User-Agent
-    allowCredentials: true
 
 custom:
   tableName: ${sls:stage}-focusflow-tasks
@@ -93,6 +72,18 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.usersTableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+
+    UserBackgroundsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: dev-user-backgrounds
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: userId
@@ -142,21 +133,11 @@ functions:
       - http:
           path: tasks
           method: get
-          cors:
-            origin: "http://localhost:5173" # Use '*' for all origins or specify 'http://localhost:5173' for development
-            headers:
-              - Content-Type
-              - Authorization
-              - X-Requested-With
-              - X-Amz-Date
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
+          cors: true
           authorizer:
             type: REQUEST
             identitySource: method.request.header.Authorization
             name: auth0Authorizer
-          allowCredentials: true
   updateTask:
     handler: src/handlers/task/updateTask.updateTask
     events:
@@ -261,23 +242,45 @@ functions:
               - X-Amz-Security-Token
               - X-Amz-User-Agent
 
-  # Background Management
-  updateBackground:
-    handler: src/handlers/background/updateBackground.updateBackground
+  initializeBackgrounds:
+    handler: src/handlers/backgrounds/initializeBackgrounds.initializeBackgrounds
     events:
       - http:
-          path: backgrounds
-          method: put
-          cors:
-            origin: "*" # Use '*' for all origins or specify 'http://localhost:5173' for development
-            headers:
-              - Content-Type
-              - Authorization
-              - X-Requested-With
-              - X-Amz-Date
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
+          path: backgrounds/{userId}/initialize
+          method: post
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            name: auth0Authorizer
+
+  getBackgrounds:
+    handler: src/handlers/backgrounds/getBackgrounds.getBackgrounds
+    events:
+      - http:
+          path: backgrounds/{userId}
+          method: get
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            name: auth0Authorizer
+
+  addBackground:
+    handler: src/handlers/backgrounds/addBackground.addBackground
+    events:
+      - http:
+          path: backgrounds/{userId}
+          method: post
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            name: auth0Authorizer
+
+  deleteBackground:
+    handler: src/handlers/backgrounds/deleteBackground.deleteBackground
+    events:
+      - http:
+          path: backgrounds/{userId}
+          method: delete
           authorizer:
             type: REQUEST
             identitySource: method.request.header.Authorization

@@ -23,17 +23,14 @@
             {
               "Effect": "Allow",
               "Action": [
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "dynamodb:GetItem",
                 "dynamodb:PutItem",
+                "dynamodb:GetItem",
                 "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem"
+                "dynamodb:DeleteItem",
+                "dynamodb:Scan",
+                "dynamodb:Query"
               ],
-              "Resource": [
-                "arn:aws:dynamodb:us-east-1:274552760074:table/dev-focusflow-tasks",
-                "arn:aws:dynamodb:us-east-1:274552760074:table/dev-focusflow-users"
-              ]
+              "Resource": "*"
             },
             {
               "Effect": "Allow",
@@ -41,13 +38,6 @@
                 "s3:PutObject",
                 "s3:GetObject",
                 "s3:DeleteObject"
-              ],
-              "Resource": "arn:aws:cloudformation:us-east-1:274552760074:stack/backend-dev/80499180-a60f-11ef-b8d5-124d3fdcb0b3"
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "cognito-idp:SignUp"
               ],
               "Resource": "*"
             },
@@ -57,39 +47,11 @@
                 "lambda:InvokeFunction"
               ],
               "Resource": "arn:aws:lambda:us-east-1:274552760074:function:backend-dev-auth0Authenticator"
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "sts:AssumeRole"
-              ]
             }
           ]
         }
       },
-      "cors": {
-        "allowedOrigins": [
-          "http://localhost:5173"
-        ],
-        "allowedMethods": [
-          "GET",
-          "POST",
-          "PUT",
-          "DELETE",
-          "OPTIONS"
-        ],
-        "allowedHeaders": [
-          "Authorization",
-          "Content-Type",
-          "X-Amz-Date",
-          "X-Api-Key",
-          "X-Amz-Security-Token",
-          "X-Amz-User-Agent"
-        ],
-        "allowCredentials": true
-      },
       "versionFunctions": true,
-      "AwshttpApi": null,
       "compiledCloudFormationTemplate": {
         "AWSTemplateFormatVersion": "2010-09-09",
         "Description": "The AWS CloudFormation template for this Serverless application",
@@ -140,6 +102,30 @@
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
               "LogGroupName": "/aws/lambda/backend-dev-updateBackground"
+            }
+          },
+          "InitializeBackgroundsLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-dev-initializeBackgrounds"
+            }
+          },
+          "GetBackgroundsLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-dev-getBackgrounds"
+            }
+          },
+          "AddBackgroundLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-dev-addBackground"
+            }
+          },
+          "DeleteBackgroundLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-dev-deleteBackground"
             }
           },
           "Auth0AuthorizerLogGroup": {
@@ -214,12 +200,6 @@
                       },
                       {
                         "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][2]"
-                      },
-                      {
-                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][3]"
-                      },
-                      {
-                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][4]"
                       }
                     ]
                   }
@@ -246,7 +226,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
-                "S3Key": "serverless/backend/dev/1732392193211-2024-11-23T20:03:13.211Z/backend.zip"
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
               },
               "Handler": "src/handlers/task/createTask.createTask",
               "Runtime": "nodejs20.x",
@@ -279,7 +259,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
-                "S3Key": "serverless/backend/dev/1732392193211-2024-11-23T20:03:13.211Z/backend.zip"
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
               },
               "Handler": "src/handlers/task/getTask.getTasks",
               "Runtime": "nodejs20.x",
@@ -312,7 +292,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
-                "S3Key": "serverless/backend/dev/1732392193211-2024-11-23T20:03:13.211Z/backend.zip"
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
               },
               "Handler": "src/handlers/task/updateTask.updateTask",
               "Runtime": "nodejs20.x",
@@ -345,7 +325,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
-                "S3Key": "serverless/backend/dev/1732392193211-2024-11-23T20:03:13.211Z/backend.zip"
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
               },
               "Handler": "src/handlers/task/deleteTask.deleteTask",
               "Runtime": "nodejs20.x",
@@ -378,7 +358,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
-                "S3Key": "serverless/backend/dev/1732392193211-2024-11-23T20:03:13.211Z/backend.zip"
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
               },
               "Handler": "src/handlers/timer/manageTimer.manageTimer",
               "Runtime": "nodejs20.x",
@@ -411,7 +391,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
-                "S3Key": "serverless/backend/dev/1732392193211-2024-11-23T20:03:13.211Z/backend.zip"
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
               },
               "Handler": "src/handlers/preferences/updatePreferences.updatePreferences",
               "Runtime": "nodejs20.x",
@@ -444,7 +424,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
-                "S3Key": "serverless/backend/dev/1732392193211-2024-11-23T20:03:13.211Z/backend.zip"
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
               },
               "Handler": "src/handlers/music/getMusic.getMusic",
               "Runtime": "nodejs20.x",
@@ -477,7 +457,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
-                "S3Key": "serverless/backend/dev/1732392193211-2024-11-23T20:03:13.211Z/backend.zip"
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
               },
               "Handler": "src/handlers/background/updateBackground.updateBackground",
               "Runtime": "nodejs20.x",
@@ -505,12 +485,144 @@
               "UpdateBackgroundLogGroup"
             ]
           },
+          "InitializeBackgroundsLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
+              },
+              "Handler": "src/handlers/backgrounds.initializeBackgrounds",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "backend-dev-initializeBackgrounds",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "AUTH0_DOMAIN": "dev-6zeb418i7xs8g1lc.us.auth0.com",
+                  "AUTH0_AUDIENCE": "focusflow-audience",
+                  "AUTH0_ISSUER": "https://dev-6zeb418i7xs8g1lc.us.auth0.com/",
+                  "DYNAMODB_TASKS_TABLE": "dev-focusflow-tasks",
+                  "DYNAMODB_USERS_TABLE": "dev-focusflow-users",
+                  "S3_ASSETS_BUCKET": "dev-focusflow-assets"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "InitializeBackgroundsLogGroup"
+            ]
+          },
+          "GetBackgroundsLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
+              },
+              "Handler": "src/handlers/backgrounds.getBackgrounds",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "backend-dev-getBackgrounds",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "AUTH0_DOMAIN": "dev-6zeb418i7xs8g1lc.us.auth0.com",
+                  "AUTH0_AUDIENCE": "focusflow-audience",
+                  "AUTH0_ISSUER": "https://dev-6zeb418i7xs8g1lc.us.auth0.com/",
+                  "DYNAMODB_TASKS_TABLE": "dev-focusflow-tasks",
+                  "DYNAMODB_USERS_TABLE": "dev-focusflow-users",
+                  "S3_ASSETS_BUCKET": "dev-focusflow-assets"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetBackgroundsLogGroup"
+            ]
+          },
+          "AddBackgroundLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
+              },
+              "Handler": "src/handlers/backgrounds.addBackground",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "backend-dev-addBackground",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "AUTH0_DOMAIN": "dev-6zeb418i7xs8g1lc.us.auth0.com",
+                  "AUTH0_AUDIENCE": "focusflow-audience",
+                  "AUTH0_ISSUER": "https://dev-6zeb418i7xs8g1lc.us.auth0.com/",
+                  "DYNAMODB_TASKS_TABLE": "dev-focusflow-tasks",
+                  "DYNAMODB_USERS_TABLE": "dev-focusflow-users",
+                  "S3_ASSETS_BUCKET": "dev-focusflow-assets"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "AddBackgroundLogGroup"
+            ]
+          },
+          "DeleteBackgroundLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
+              },
+              "Handler": "src/handlers/backgrounds.deleteBackground",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "backend-dev-deleteBackground",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "AUTH0_DOMAIN": "dev-6zeb418i7xs8g1lc.us.auth0.com",
+                  "AUTH0_AUDIENCE": "focusflow-audience",
+                  "AUTH0_ISSUER": "https://dev-6zeb418i7xs8g1lc.us.auth0.com/",
+                  "DYNAMODB_TASKS_TABLE": "dev-focusflow-tasks",
+                  "DYNAMODB_USERS_TABLE": "dev-focusflow-users",
+                  "S3_ASSETS_BUCKET": "dev-focusflow-assets"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "DeleteBackgroundLogGroup"
+            ]
+          },
           "Auth0AuthorizerLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-be0e5fd9-feac",
-                "S3Key": "serverless/backend/dev/1732392193211-2024-11-23T20:03:13.211Z/backend.zip"
+                "S3Key": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z/backend.zip"
               },
               "Handler": "src/handlers/auth/index.handler",
               "Runtime": "nodejs20.x",
@@ -538,94 +650,134 @@
               "Auth0AuthorizerLogGroup"
             ]
           },
-          "CreateTaskLambdaVersionk30cu9y50e5sOq8XtrIxMTWLhghYgNRK8RgZoEYIGYw": {
+          "CreateTaskLambdaVersionr31iKEaiHMFRxy2aZBdCT4aQ6iyyp6mgZqib90wJWM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateTaskLambdaFunction"
               },
-              "CodeSha256": "Jcet10Z89nGzu6mC/UrlkPreS1d8bEjBJqk3tXxQijQ="
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
             }
           },
-          "GetTaskLambdaVersiongXM56yZkGsQlnDb6WDCtOEDbduxrzUj1n6drT1Ds": {
+          "GetTaskLambdaVersion4NXsS0xIRDAAK02feRxKAow7h27Q3PYvYRqY4x2M": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetTaskLambdaFunction"
               },
-              "CodeSha256": "Jcet10Z89nGzu6mC/UrlkPreS1d8bEjBJqk3tXxQijQ="
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
             }
           },
-          "UpdateTaskLambdaVersionLVQNXG4ycaaTjNA87jUZHr5KUky8EK3SL1Nnqxf8": {
+          "UpdateTaskLambdaVersionCPysptk9GVB6lyGbEYT2wJYoVwf6S47pClfrggVecoE": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdateTaskLambdaFunction"
               },
-              "CodeSha256": "Jcet10Z89nGzu6mC/UrlkPreS1d8bEjBJqk3tXxQijQ="
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
             }
           },
-          "DeleteTaskLambdaVersionbIxEVCZEfnNfNmF7C6APqdnRa2qGfa8uJbDu8LgXW0": {
+          "DeleteTaskLambdaVersionqp8ay4pJexWW1J750A2NF9KhOFRuR5n9yHhaNlFg": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DeleteTaskLambdaFunction"
               },
-              "CodeSha256": "Jcet10Z89nGzu6mC/UrlkPreS1d8bEjBJqk3tXxQijQ="
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
             }
           },
-          "ManageTimerLambdaVersionC6S83E8qe3dWiTU9VbMMgG77ou962v41HGAoSgzghOg": {
+          "ManageTimerLambdaVersionaudkDhVaKirTQLLyZjtxXk9pgsrtsBqP8uazwsD9cw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ManageTimerLambdaFunction"
               },
-              "CodeSha256": "Jcet10Z89nGzu6mC/UrlkPreS1d8bEjBJqk3tXxQijQ="
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
             }
           },
-          "UpdatePreferencesLambdaVersioni5HctCd5bCmzGE75DP4AXMDIxXfWqWLY5HnJgMGU": {
+          "UpdatePreferencesLambdaVersioncsZYLEJeykO8hKRQN4hvlQsIh4kDgcB3IUZDBZKUeQ": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdatePreferencesLambdaFunction"
               },
-              "CodeSha256": "Jcet10Z89nGzu6mC/UrlkPreS1d8bEjBJqk3tXxQijQ="
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
             }
           },
-          "GetMusicLambdaVersionAGbhi19HVk79KS2hVYQLrY4HuhO4As6VfyVaUlrk": {
+          "GetMusicLambdaVersionVqQygCeCuNnxHMJi0obwPvjTRZsP9REVNlvu2J5GbU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetMusicLambdaFunction"
               },
-              "CodeSha256": "Jcet10Z89nGzu6mC/UrlkPreS1d8bEjBJqk3tXxQijQ="
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
             }
           },
-          "UpdateBackgroundLambdaVersiongFcVopCo5kYCSelYvEKVfGn4pxaLVIjYrPviLUTM": {
+          "UpdateBackgroundLambdaVersionwAJqtAYT5eOKbrJ16s7y3CPFGOg6ihCeVrZNBlQVOvs": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdateBackgroundLambdaFunction"
               },
-              "CodeSha256": "Jcet10Z89nGzu6mC/UrlkPreS1d8bEjBJqk3tXxQijQ="
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
             }
           },
-          "Auth0AuthorizerLambdaVersionUMEDyDFlyLIyWSsK6xWjoOLLkQNiEtvaBzHSTree2Xw": {
+          "InitializeBackgroundsLambdaVersioneybuBOQ0Y2a9IR0UCCqtzQnBKvFEkwNkiS7gyksOVw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "InitializeBackgroundsLambdaFunction"
+              },
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
+            }
+          },
+          "GetBackgroundsLambdaVersionsG9FtFDezYUqCDh2WbxEu5ihqy51hRo0xrBlbsjbg": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetBackgroundsLambdaFunction"
+              },
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
+            }
+          },
+          "AddBackgroundLambdaVersion7bMcoxxyiYWfqEoZskSOOslA15VB7QyIYijQjcw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "AddBackgroundLambdaFunction"
+              },
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
+            }
+          },
+          "DeleteBackgroundLambdaVersionPydyzcZVAmWjiBqywxozOxZD4isOsEo4t7B7Yfhgc": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "DeleteBackgroundLambdaFunction"
+              },
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
+            }
+          },
+          "Auth0AuthorizerLambdaVersionBlagLmGlZ2GbFc2cXNNOwELNxoi96aCcTSnVXGrvNg": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "Auth0AuthorizerLambdaFunction"
               },
-              "CodeSha256": "Jcet10Z89nGzu6mC/UrlkPreS1d8bEjBJqk3tXxQijQ="
+              "CodeSha256": "NlY+S2DRHebo1Y0ejr395Jzcwbr9l3uILbwAhXcQ/uE="
             }
           },
           "ApiGatewayRestApi": {
@@ -727,6 +879,30 @@
               }
             }
           },
+          "ApiGatewayResourceBackgroundsUseridVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceBackgrounds"
+              },
+              "PathPart": "{userId}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceBackgroundsUseridVarInitialize": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceBackgroundsUseridVar"
+              },
+              "PathPart": "initialize",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayResourceAuth": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
@@ -782,8 +958,8 @@
                   {
                     "StatusCode": "200",
                     "ResponseParameters": {
-                      "method.response.header.Access-Control-Allow-Origin": "'http://localhost:5173'",
-                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Requested-With,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id,X-Requested-With'",
                       "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,POST'",
                       "method.response.header.Access-Control-Allow-Credentials": "'true'"
                     },
@@ -1460,6 +1636,190 @@
               "Auth0AuthorizerApiGatewayAuthorizer"
             ]
           },
+          "ApiGatewayMethodBackgroundsUseridVarInitializePost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBackgroundsUseridVarInitialize"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "InitializeBackgroundsLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "InitializeBackgroundsLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodBackgroundsUseridVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBackgroundsUseridVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetBackgroundsLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "GetBackgroundsLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodBackgroundsUseridVarPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBackgroundsUseridVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "AddBackgroundLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "AddBackgroundLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodBackgroundsUseridVarDelete": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "DELETE",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBackgroundsUseridVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "DeleteBackgroundLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "DeleteBackgroundLambdaPermissionApiGateway"
+            ]
+          },
           "ApiGatewayMethodAuthValidatePost": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -1541,7 +1901,7 @@
               "Type": "REQUEST"
             }
           },
-          "ApiGatewayDeployment1732392175738": {
+          "ApiGatewayDeployment1732598895104": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -1565,6 +1925,10 @@
               "ApiGatewayMethodPreferencesPut",
               "ApiGatewayMethodMusicGet",
               "ApiGatewayMethodBackgroundsPut",
+              "ApiGatewayMethodBackgroundsUseridVarInitializePost",
+              "ApiGatewayMethodBackgroundsUseridVarGet",
+              "ApiGatewayMethodBackgroundsUseridVarPost",
+              "ApiGatewayMethodBackgroundsUseridVarDelete",
               "ApiGatewayMethodAuthValidatePost"
             ]
           },
@@ -1901,6 +2265,154 @@
               }
             }
           },
+          "InitializeBackgroundsLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "InitializeBackgroundsLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetBackgroundsLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetBackgroundsLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "AddBackgroundLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "AddBackgroundLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "DeleteBackgroundLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "DeleteBackgroundLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
           "TasksTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
@@ -1947,10 +2459,29 @@
               ]
             }
           },
+          "UserBackgroundsTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "dev-user-backgrounds",
+              "BillingMode": "PAY_PER_REQUEST",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "userId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "userId",
+                  "KeyType": "HASH"
+                }
+              ]
+            }
+          },
           "AssetsBucket": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
-              "BucketName": "dev-focusflow-assets",
+              "BucketName": "dev-focusflow-assets-274552760074",
               "CorsConfiguration": {
                 "CorsRules": [
                   {
@@ -1984,7 +2515,7 @@
           "CreateTaskLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateTaskLambdaVersionk30cu9y50e5sOq8XtrIxMTWLhghYgNRK8RgZoEYIGYw"
+              "Ref": "CreateTaskLambdaVersionr31iKEaiHMFRxy2aZBdCT4aQ6iyyp6mgZqib90wJWM"
             },
             "Export": {
               "Name": "sls-backend-dev-CreateTaskLambdaFunctionQualifiedArn"
@@ -1993,7 +2524,7 @@
           "GetTaskLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetTaskLambdaVersiongXM56yZkGsQlnDb6WDCtOEDbduxrzUj1n6drT1Ds"
+              "Ref": "GetTaskLambdaVersion4NXsS0xIRDAAK02feRxKAow7h27Q3PYvYRqY4x2M"
             },
             "Export": {
               "Name": "sls-backend-dev-GetTaskLambdaFunctionQualifiedArn"
@@ -2002,7 +2533,7 @@
           "UpdateTaskLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdateTaskLambdaVersionLVQNXG4ycaaTjNA87jUZHr5KUky8EK3SL1Nnqxf8"
+              "Ref": "UpdateTaskLambdaVersionCPysptk9GVB6lyGbEYT2wJYoVwf6S47pClfrggVecoE"
             },
             "Export": {
               "Name": "sls-backend-dev-UpdateTaskLambdaFunctionQualifiedArn"
@@ -2011,7 +2542,7 @@
           "DeleteTaskLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DeleteTaskLambdaVersionbIxEVCZEfnNfNmF7C6APqdnRa2qGfa8uJbDu8LgXW0"
+              "Ref": "DeleteTaskLambdaVersionqp8ay4pJexWW1J750A2NF9KhOFRuR5n9yHhaNlFg"
             },
             "Export": {
               "Name": "sls-backend-dev-DeleteTaskLambdaFunctionQualifiedArn"
@@ -2020,7 +2551,7 @@
           "ManageTimerLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ManageTimerLambdaVersionC6S83E8qe3dWiTU9VbMMgG77ou962v41HGAoSgzghOg"
+              "Ref": "ManageTimerLambdaVersionaudkDhVaKirTQLLyZjtxXk9pgsrtsBqP8uazwsD9cw"
             },
             "Export": {
               "Name": "sls-backend-dev-ManageTimerLambdaFunctionQualifiedArn"
@@ -2029,7 +2560,7 @@
           "UpdatePreferencesLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdatePreferencesLambdaVersioni5HctCd5bCmzGE75DP4AXMDIxXfWqWLY5HnJgMGU"
+              "Ref": "UpdatePreferencesLambdaVersioncsZYLEJeykO8hKRQN4hvlQsIh4kDgcB3IUZDBZKUeQ"
             },
             "Export": {
               "Name": "sls-backend-dev-UpdatePreferencesLambdaFunctionQualifiedArn"
@@ -2038,7 +2569,7 @@
           "GetMusicLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetMusicLambdaVersionAGbhi19HVk79KS2hVYQLrY4HuhO4As6VfyVaUlrk"
+              "Ref": "GetMusicLambdaVersionVqQygCeCuNnxHMJi0obwPvjTRZsP9REVNlvu2J5GbU"
             },
             "Export": {
               "Name": "sls-backend-dev-GetMusicLambdaFunctionQualifiedArn"
@@ -2047,16 +2578,52 @@
           "UpdateBackgroundLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdateBackgroundLambdaVersiongFcVopCo5kYCSelYvEKVfGn4pxaLVIjYrPviLUTM"
+              "Ref": "UpdateBackgroundLambdaVersionwAJqtAYT5eOKbrJ16s7y3CPFGOg6ihCeVrZNBlQVOvs"
             },
             "Export": {
               "Name": "sls-backend-dev-UpdateBackgroundLambdaFunctionQualifiedArn"
             }
           },
+          "InitializeBackgroundsLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "InitializeBackgroundsLambdaVersioneybuBOQ0Y2a9IR0UCCqtzQnBKvFEkwNkiS7gyksOVw"
+            },
+            "Export": {
+              "Name": "sls-backend-dev-InitializeBackgroundsLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetBackgroundsLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetBackgroundsLambdaVersionsG9FtFDezYUqCDh2WbxEu5ihqy51hRo0xrBlbsjbg"
+            },
+            "Export": {
+              "Name": "sls-backend-dev-GetBackgroundsLambdaFunctionQualifiedArn"
+            }
+          },
+          "AddBackgroundLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "AddBackgroundLambdaVersion7bMcoxxyiYWfqEoZskSOOslA15VB7QyIYijQjcw"
+            },
+            "Export": {
+              "Name": "sls-backend-dev-AddBackgroundLambdaFunctionQualifiedArn"
+            }
+          },
+          "DeleteBackgroundLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "DeleteBackgroundLambdaVersionPydyzcZVAmWjiBqywxozOxZD4isOsEo4t7B7Yfhgc"
+            },
+            "Export": {
+              "Name": "sls-backend-dev-DeleteBackgroundLambdaFunctionQualifiedArn"
+            }
+          },
           "Auth0AuthorizerLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "Auth0AuthorizerLambdaVersionUMEDyDFlyLIyWSsK6xWjoOLLkQNiEtvaBzHSTree2Xw"
+              "Ref": "Auth0AuthorizerLambdaVersionBlagLmGlZ2GbFc2cXNNOwELNxoi96aCcTSnVXGrvNg"
             },
             "Export": {
               "Name": "sls-backend-dev-Auth0AuthorizerLambdaFunctionQualifiedArn"
@@ -2095,7 +2662,7 @@
     "custom": {
       "tableName": "dev-focusflow-tasks",
       "usersTableName": "dev-focusflow-users",
-      "bucketName": "dev-focusflow-assets"
+      "bucketName": "dev-focusflow-assets-274552760074"
     },
     "plugins": [
       "serverless-offline"
@@ -2150,7 +2717,7 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "CreateTaskLambdaVersionk30cu9y50e5sOq8XtrIxMTWLhghYgNRK8RgZoEYIGYw"
+        "versionLogicalId": "CreateTaskLambdaVersionr31iKEaiHMFRxy2aZBdCT4aQ6iyyp6mgZqib90wJWM"
       },
       "getTask": {
         "handler": "src/handlers/task/getTask.getTasks",
@@ -2160,19 +2727,19 @@
               "path": "tasks",
               "method": "get",
               "cors": {
-                "origin": "http://localhost:5173",
+                "origin": "*",
                 "methods": [
                   "OPTIONS",
                   "GET"
                 ],
                 "headers": [
                   "Content-Type",
-                  "Authorization",
-                  "X-Requested-With",
                   "X-Amz-Date",
+                  "Authorization",
                   "X-Api-Key",
                   "X-Amz-Security-Token",
-                  "X-Amz-User-Agent"
+                  "X-Amz-User-Agent",
+                  "X-Amzn-Trace-Id"
                 ],
                 "allowCredentials": false
               },
@@ -2187,7 +2754,6 @@
                 "identitySource": "method.request.header.Authorization",
                 "claims": []
               },
-              "allowCredentials": true,
               "integration": "AWS_PROXY"
             }
           }
@@ -2198,7 +2764,7 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "GetTaskLambdaVersiongXM56yZkGsQlnDb6WDCtOEDbduxrzUj1n6drT1Ds"
+        "versionLogicalId": "GetTaskLambdaVersion4NXsS0xIRDAAK02feRxKAow7h27Q3PYvYRqY4x2M"
       },
       "updateTask": {
         "handler": "src/handlers/task/updateTask.updateTask",
@@ -2246,7 +2812,7 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "UpdateTaskLambdaVersionLVQNXG4ycaaTjNA87jUZHr5KUky8EK3SL1Nnqxf8"
+        "versionLogicalId": "UpdateTaskLambdaVersionCPysptk9GVB6lyGbEYT2wJYoVwf6S47pClfrggVecoE"
       },
       "deleteTask": {
         "handler": "src/handlers/task/deleteTask.deleteTask",
@@ -2294,7 +2860,7 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "DeleteTaskLambdaVersionbIxEVCZEfnNfNmF7C6APqdnRa2qGfa8uJbDu8LgXW0"
+        "versionLogicalId": "DeleteTaskLambdaVersionqp8ay4pJexWW1J750A2NF9KhOFRuR5n9yHhaNlFg"
       },
       "manageTimer": {
         "handler": "src/handlers/timer/manageTimer.manageTimer",
@@ -2341,7 +2907,7 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "ManageTimerLambdaVersionC6S83E8qe3dWiTU9VbMMgG77ou962v41HGAoSgzghOg"
+        "versionLogicalId": "ManageTimerLambdaVersionaudkDhVaKirTQLLyZjtxXk9pgsrtsBqP8uazwsD9cw"
       },
       "updatePreferences": {
         "handler": "src/handlers/preferences/updatePreferences.updatePreferences",
@@ -2388,7 +2954,7 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "UpdatePreferencesLambdaVersioni5HctCd5bCmzGE75DP4AXMDIxXfWqWLY5HnJgMGU"
+        "versionLogicalId": "UpdatePreferencesLambdaVersioncsZYLEJeykO8hKRQN4hvlQsIh4kDgcB3IUZDBZKUeQ"
       },
       "getMusic": {
         "handler": "src/handlers/music/getMusic.getMusic",
@@ -2424,7 +2990,7 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "GetMusicLambdaVersionAGbhi19HVk79KS2hVYQLrY4HuhO4As6VfyVaUlrk"
+        "versionLogicalId": "GetMusicLambdaVersionVqQygCeCuNnxHMJi0obwPvjTRZsP9REVNlvu2J5GbU"
       },
       "updateBackground": {
         "handler": "src/handlers/background/updateBackground.updateBackground",
@@ -2471,7 +3037,83 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "UpdateBackgroundLambdaVersiongFcVopCo5kYCSelYvEKVfGn4pxaLVIjYrPviLUTM"
+        "versionLogicalId": "UpdateBackgroundLambdaVersionwAJqtAYT5eOKbrJ16s7y3CPFGOg6ihCeVrZNBlQVOvs"
+      },
+      "initializeBackgrounds": {
+        "handler": "src/handlers/backgrounds.initializeBackgrounds",
+        "events": [
+          {
+            "http": {
+              "path": "backgrounds/{userId}/initialize",
+              "method": "post",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-dev-initializeBackgrounds",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs20.x",
+        "vpc": {},
+        "versionLogicalId": "InitializeBackgroundsLambdaVersioneybuBOQ0Y2a9IR0UCCqtzQnBKvFEkwNkiS7gyksOVw"
+      },
+      "getBackgrounds": {
+        "handler": "src/handlers/backgrounds.getBackgrounds",
+        "events": [
+          {
+            "http": {
+              "path": "backgrounds/{userId}",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-dev-getBackgrounds",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs20.x",
+        "vpc": {},
+        "versionLogicalId": "GetBackgroundsLambdaVersionsG9FtFDezYUqCDh2WbxEu5ihqy51hRo0xrBlbsjbg"
+      },
+      "addBackground": {
+        "handler": "src/handlers/backgrounds.addBackground",
+        "events": [
+          {
+            "http": {
+              "path": "backgrounds/{userId}",
+              "method": "post",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-dev-addBackground",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs20.x",
+        "vpc": {},
+        "versionLogicalId": "AddBackgroundLambdaVersion7bMcoxxyiYWfqEoZskSOOslA15VB7QyIYijQjcw"
+      },
+      "deleteBackground": {
+        "handler": "src/handlers/backgrounds.deleteBackground",
+        "events": [
+          {
+            "http": {
+              "path": "backgrounds/{userId}",
+              "method": "delete",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-dev-deleteBackground",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs20.x",
+        "vpc": {},
+        "versionLogicalId": "DeleteBackgroundLambdaVersionPydyzcZVAmWjiBqywxozOxZD4isOsEo4t7B7Yfhgc"
       },
       "auth0Authorizer": {
         "handler": "src/handlers/auth/index.handler",
@@ -2507,7 +3149,7 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "Auth0AuthorizerLambdaVersionUMEDyDFlyLIyWSsK6xWjoOLLkQNiEtvaBzHSTree2Xw"
+        "versionLogicalId": "Auth0AuthorizerLambdaVersionBlagLmGlZ2GbFc2cXNNOwELNxoi96aCcTSnVXGrvNg"
       }
     },
     "resources": {
@@ -2558,10 +3200,29 @@
             ]
           }
         },
+        "UserBackgroundsTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "dev-user-backgrounds",
+            "BillingMode": "PAY_PER_REQUEST",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "userId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "userId",
+                "KeyType": "HASH"
+              }
+            ]
+          }
+        },
         "AssetsBucket": {
           "Type": "AWS::S3::Bucket",
           "Properties": {
-            "BucketName": "dev-focusflow-assets",
+            "BucketName": "dev-focusflow-assets-274552760074",
             "CorsConfiguration": {
               "CorsRules": [
                 {
@@ -2617,7 +3278,7 @@
     "artifact": "D:\\Projects\\Portfolio_Projects\\focusflow\\FocusFlow\\backend\\.serverless\\backend.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/backend/dev/1732392193211-2024-11-23T20:03:13.211Z",
+    "artifactDirectoryName": "serverless/backend/dev/1732598908435-2024-11-26T05:28:28.435Z",
     "artifact": "backend.zip"
   }
 }

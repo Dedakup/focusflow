@@ -12,6 +12,7 @@
   "dependencies": {
     "aws-sdk": "^2.1692.0",
     "dotenv": "^16.4.5",
+    "jwks-rsa": "^3.1.0",
     "prop-types": "^15.8.1",
     "request": "^2.88.2"
   },

@@ -1,12 +1,12 @@
 # FocusFlow: Pomodoro & To-Do List Application
+
 https://focusflow-zeta.vercel.app/
 
-<img src="./public/FocusFlow-banner.png" alt="Banner" style="width:100%;"/>
+<img src="./docs/images/FocusFlow-banner.png" alt="Banner" style="width:100%;"/>
 <p align="center">
   <img src="./public/mobile-preview.jpg" alt="Phone Preview" style="height:350px; margin-right: 10px;""/>
   <img src="./public/desktop-preview.jpg" alt="Desktop Preview" style="height:350px;"/> 
 </p>
-
 
 ## Overview
 
@@ -19,16 +19,19 @@ Check out the live demo of the application [here](https://focusflow-zeta.vercel.
 ### Features
 
 #### To-Do List:
+
 - Add, edit, and delete tasks.
 - Mark tasks as completed.
 - Filter tasks by status (All, Completed, Incomplete).
 
 #### Pomodoro Timer:
+
 - Simple and intuitive Pomodoro timer.
 - Customizable session and break lengths.
 - Visual and audio cues to start and stop sessions.
 
 #### Beautiful Design:
+
 - Modern and clean user interface.
 - Cozy and calming background theme to enhance focus.
 - **Lo-Fi Music**: Built-in lo-fi music player to create a soothing environment for productivity.
@@ -47,26 +50,23 @@ Follow these steps to set up the project on your local machine.
 
 1. **Clone the Repository**:
 
-    ```bash
-    git clone https://github.com/dedakup/focusflow.git
-    cd focusflow
-    ```
-
+   ```bash
+   git clone https://github.com/dedakup/focusflow.git
+   cd focusflow
+   ```
 2. **Install Dependencies**:
 
-    ```bash
-    npm install
-    ```
-
+   ```bash
+   npm install
+   ```
 3. **Start the Development Server**:
 
-    ```bash
-    npm run dev
-    ```
-
+   ```bash
+   npm run dev
+   ```
 4. **Open the Application**:
 
-    Visit `http://localhost:5173` in your browser to view the application.
+   Visit `http://localhost:5173` in your browser to view the application.
 
 ## Usage
 
@@ -86,6 +86,7 @@ Follow these steps to set up the project on your local machine.
 We welcome contributions! If you'd like to contribute to the project, please fork the repository and use a feature branch. Pull requests are warmly welcome.
 
 # Branch Naming Conventions
+
 - `main`: Production-ready code.
 - `develop`: Latest integrated development work.
 - `feature/<feature-name>`: For new features.

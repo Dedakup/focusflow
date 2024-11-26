@@ -18,7 +18,7 @@ const Dashboard = () => {
     return (
         isAuthenticated && (
             <Provider store={store}>
-                <div className="relative flex flex-col h-screen overflow-hidden">
+                <div className="relative flex flex-col h-screen overflow-hidden bg-gray-800">
                     <VideoBackground />
 
                     <div className="h-25">
