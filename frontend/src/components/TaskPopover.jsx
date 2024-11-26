@@ -29,6 +29,7 @@ import { toast } from "react-toastify";
 import { API_BASE_URL } from "../config/config";
 import { useAuth0 } from '@auth0/auth0-react';
 import PropTypes from 'prop-types';
+import SkeletonLoader from "./skeletons/SkeletonLoader";
 
 /**
  * TaskPopover Component
@@ -344,11 +345,7 @@ const TaskPopover = ({ isActive, isVisible }) => {
                     </div>
 
                     <div className="flex-grow overflow-y-auto space-y-2">
-                        {isLoading ? ( //during load
-                            <div className="flex justify-center items-center h-full">
-                                <div>Loading tasks...</div>
-                            </div>
-                        ) : tasks.length === 0 ? ( //if there is 0 tasks
+                        {isLoading ? <SkeletonLoader rows={5} /> : tasks.length === 0 ? ( //if there is 0 tasks
                             <div className="text-center text-gray-400">No tasks available</div>
                         ) : (
                             //rendering tasks

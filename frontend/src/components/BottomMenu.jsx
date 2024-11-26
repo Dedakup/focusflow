@@ -9,16 +9,17 @@ import Alert from '@material-tailwind/react';
 import { ambientSoundsData } from '../assets/sounds'; // Import sound data
 import videos from '../assets/musicData';
 import Loading from './Loading';
+import PropTypes from 'prop-types'; // Import PropTypes
 
 const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
   const [isMenuHidden, setIsMenuHidden] = useState(false);
   const [volume, setVolume] = useState(100);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [error, setError] = useState(null);
   const playerRef = useRef(null);
   const soundRefs = useRef({});
   const [ambientSounds, setAmbientSounds] = useState(ambientSoundsData);
+  const [error, setError] = useState(null);
 
   let activityTimer;
 
@@ -27,7 +28,7 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
     setIsMenuHidden(false);
     activityTimer = setTimeout(() => {
       setIsMenuHidden(true);
-    }, 6000);
+    }, 1500);
   };
 
   const hoverEffect = (event, listener) => {
@@ -192,7 +193,7 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
       className="fixed bottom-0 left-0 right-0 z-50 flex items-center flex-col md:flex-row transition-all"
       style={{ height: 'auto' }}
     >
-      {/* {error && (
+      {error && (
         <Alert
           color="red"
           onClose={() => setError(null)}
@@ -200,7 +201,7 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
         >
           {error}
         </Alert>
-      )} */}
+      )}
 
       {/* Hidden audio elements for ambient sounds */}
       {ambientSounds.map((sound) => (
@@ -283,6 +284,12 @@ const BottomMenu = ({ onBackgroundChange, backgrounds }) => {
       />
     </div>
   );
+};
+
+// Add prop types validation
+BottomMenu.propTypes = {
+  onBackgroundChange: PropTypes.func.isRequired, // Validate onBackgroundChange
+  backgrounds: PropTypes.array.isRequired, // Validate backgrounds
 };
 
 export default BottomMenu;
