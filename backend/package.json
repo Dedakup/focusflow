@@ -4,22 +4,41 @@
   "description": "<!-- title: 'AWS Simple HTTP Endpoint example in NodeJS' description: 'This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.' layout: Doc framework: v4 platform: AWS language: nodeJS authorLink: 'https://github.com/serverless' authorName: 'Serverless, Inc.' authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4' -->",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node -r tsconfig-paths/register dist/index.js",
+    "dev": "serverless offline start",
+    "build": "tsc",
+    "deploy": "serverless deploy",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@sentry/serverless": "^7.114.0",
     "aws-sdk": "^2.1692.0",
     "dotenv": "^16.4.5",
     "jwks-rsa": "^3.1.0",
     "prop-types": "^15.8.1",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.0",
+    "@types/swagger-ui-express": "^4.1.7",
+    "@types/yamljs": "^0.2.34",
+    "esbuild": "^0.24.0",
     "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "jest": "^29.7.0",
-    "prettier": "^3.3.3",
-    "serverless-offline": "^14.3.4"
+    "prettier": "^3.4.1",
+    "serverless-esbuild": "^1.54.6",
+    "serverless-offline": "^14.3.4",
+    "serverless-plugin-typescript": "^2.1.5",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }

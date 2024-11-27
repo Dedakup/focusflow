@@ -1,0 +1,50 @@
+[
+    {
+        "id": "rain",
+        "label": "Rain",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/sounds/rain-in-forest-birds-nature.mp3",
+        "volume": 0
+    },
+    {
+        "id": "birds",
+        "label": "Birds",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/sounds/singing-birds-nature-atmo.mp3",
+        "volume": 0
+    },
+    {
+        "id": "cafe-noise",
+        "label": "Cafe Noise",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/sounds/cafe-noise.mp3",
+        "volume": 0
+    },
+    {
+        "id": "fire",
+        "label": "Fire",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/sounds/fire.mp3",
+        "volume": 0
+    },
+    {
+        "id": "keyboard",
+        "label": "Keyboard",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/sounds/keyboard.mp3",
+        "volume": 0
+    },
+    {
+        "id": "light-rain",
+        "label": "Light Rain",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/sounds/light-rain.mp3",
+        "volume": 0
+    },
+    {
+        "id": "morning-birds",
+        "label": "Morning Birds",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/sounds/morning-birds.mp3",
+        "volume": 0
+    },
+    {
+        "id": "rain-and-thunder",
+        "label": "Rain and Thunder",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/sounds/rain-and-thunder.mp3",
+        "volume": 0
+    }
+]

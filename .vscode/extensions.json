@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint", // ESLint for linting JavaScript/TypeScript
+    "esbenp.prettier-vscode", // Prettier for code formatting
+    "eamodio.gitlens", // GitLens for enhanced Git support
+    "ms-vscode.vscode-typescript-next", // TypeScript support for newer features
+    "streetsidesoftware.code-spell-checker", // Spell checker for typos
+    "ms-playwright.playwright" // Playwright for E2E testing
+  ]
+}

@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+    title: FocusFlow API
+    description: API documentation for FocusFlow
+    version: 1.0.0
+servers:
+    - url: https://{stage}.focusflow.com
+      variables:
+          stage:
+              default: dev
+paths:
+    /login:
+        post:
+            summary: User login
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+            responses:
+                200:
+                    description: Successful login
+                400:
+                    description: Invalid input
+    /register:
+        post:
+            summary: User registration
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                password:
+                                    type: string
+            responses:
+                201:
+                    description: User registered
+                400:
+                    description: Invalid input

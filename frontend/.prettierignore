@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+*.lock
+coverage/
+*.test.js
+*.spec.js
+*.test.ts
+*.spec.ts

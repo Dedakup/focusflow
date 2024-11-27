@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/h"
+npm run test --prefix frontend && npm run test --prefix backend

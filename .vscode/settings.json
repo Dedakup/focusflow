@@ -1,0 +1,17 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // Use Prettier as the default formatter
+  "editor.tabSize": 2, // Enforce 2-space indentation
+  "files.exclude": {
+    "dist/": true,
+    "node_modules/": true,
+    ".serverless/": true
+  },
+  "eslint.alwaysShowStatus": true, // Show ESLint status in the bottom bar
+  "typescript.tsserver.log": "verbose", // Useful for debugging TypeScript issues
+  "gitlens.hovers.enabled": true, // Enable GitLens hover features
+  "extensions.required": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ]
+}

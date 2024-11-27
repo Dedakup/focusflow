@@ -6,6 +6,24 @@ service: backend
 
 plugins:
   - serverless-offline
+  - serverless-plugin-typescript
+  - serverless-esbuild
+
+custom:
+  esbuild:
+    bundle: true       # Bundle your code and dependencies
+    minify: true       # Minify the output
+    sourcemap: true    # Generate source maps
+    target: 'node18'   # Target the Node.js runtime
+    external:          # Exclude AWS SDK (it's included in the Lambda runtime)
+      - aws-sdk
+    alias:             # Define path aliases for imports
+      "@handlers": "./src/handlers"
+      "@utils": "./src/utils"
+      "@models": "./src/layers/models"
+      "@schemas": "./src/layers/schemas"
+  typescript:
+    tsConfigFile: tsconfig.json
 
 provider:
   name: aws
@@ -105,6 +123,13 @@ resources:
               MaxAge: 3000
 
 functions:
+  # Swagger UI
+  apiDocs:
+    handler: src/utils/swagger.handler
+    events:
+      - http:
+          path: api-docs
+          method: get
   # Task Management
   createTask:
     handler: src/handlers/task/createTask.createTask
@@ -127,6 +152,7 @@ functions:
             type: REQUEST
             identitySource: method.request.header.Authorization
             name: auth0Authorizer
+
   getTask:
     handler: src/handlers/task/getTask.getTasks
     events:
@@ -138,6 +164,7 @@ functions:
             type: REQUEST
             identitySource: method.request.header.Authorization
             name: auth0Authorizer
+
   updateTask:
     handler: src/handlers/task/updateTask.updateTask
     events:
@@ -159,6 +186,7 @@ functions:
             identitySource: method.request.header.Authorization
             name: auth0Authorizer
           allowCredentials: true
+
   deleteTask:
     handler: src/handlers/task/deleteTask.deleteTask
     events:
@@ -180,6 +208,7 @@ functions:
             identitySource: method.request.header.Authorization
             name: auth0Authorizer
           allowCredentials: true
+
   # Pomodoro Timer
   manageTimer:
     handler: src/handlers/timer/manageTimer.manageTimer
@@ -231,28 +260,24 @@ functions:
       - http:
           path: music
           method: get
-          cors:
-            origin: "*" # Use '*' for all origins or specify 'http://localhost:5173' for development
-            headers:
-              - Content-Type
-              - Authorization
-              - X-Requested-With
-              - X-Amz-Date
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-
-  initializeBackgrounds:
-    handler: src/handlers/backgrounds/initializeBackgrounds.initializeBackgrounds
-    events:
-      - http:
-          path: backgrounds/{userId}/initialize
-          method: post
           authorizer:
             type: REQUEST
             identitySource: method.request.header.Authorization
             name: auth0Authorizer
 
+  # Sounds
+  getSounds:
+    handler: src/handlers/sounds/getSounds.getSounds
+    events:
+      - http:
+          path: sounds
+          method: get
+          authorizer:
+            type: REQUEST
+            identitySource: method.request.header.Authorization
+            name: auth0Authorizer
+
+  #backgrounds
   getBackgrounds:
     handler: src/handlers/backgrounds/getBackgrounds.getBackgrounds
     events:
@@ -286,6 +311,7 @@ functions:
             identitySource: method.request.header.Authorization
             name: auth0Authorizer
 
+  #custom auth
   auth0Authorizer:
     handler: src/handlers/auth/index.handler
     events:

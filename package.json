@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "serverless-esbuild": "^latest_version",
+    "esbuild": "^latest_version"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}

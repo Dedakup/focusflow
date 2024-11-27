@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "esnext",
+        "jsx": "react-jsx",
+        "strict": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "baseUrl": "src",
+        "paths": {
+            "@/*": ["*"],
+            "@app/*": ["app/*"],
+            "@components/*": ["components/*"],
+            "@features/*": ["features/*"],
+            "@auth/*": ["features/auth/*"],
+            "@background/*": ["features/background/*"],
+            "@dashboard/*": ["features/dashboard/*"],
+            "@music/*": ["features/music/*"],
+            "@pomodoro/*": ["features/pomodoro/*"],
+            "@sounds/*": ["features/sounds/*"],
+            "@tasks/*": ["features/tasks/*"],
+            "@shared/*": ["shared/*"],
+            "@config/*": ["shared/config/*"],
+            "@hooks/*": ["shared/hooks/*"],
+            "@utils/*": ["shared/utils/*"],
+            "@styles/*": ["styles/*"]
+        }
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
+}

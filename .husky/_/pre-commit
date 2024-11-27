@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/h"
+
+# Add the linting commands directly
+npm run lint --prefix frontend && npm run lint --prefix backend

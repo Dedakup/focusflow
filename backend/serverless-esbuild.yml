@@ -1,0 +1,13 @@
+plugins:
+    - serverless-esbuild
+
+custom:
+    esbuild:
+        bundle: true
+        minify: true
+        sourcemap: true
+        exclude: ['aws-sdk']
+        alias:
+            '@handlers': './src/handlers'
+            '@utils': './src/utils'
+            '@models': './src/layers/models'

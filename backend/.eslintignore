@@ -1,0 +1,19 @@
+# Ignore node modules
+node_modules/
+
+# Ignore build artifacts
+dist/
+.serverless/
+
+# Ignore environment files
+.env
+.env.example
+
+# Ignore config files
+jest.config.js
+tsconfig.json
+.eslintrc.js
+
+# Ignore specific folders
+coverage/  # If using Jest for coverage reports
+logs/
