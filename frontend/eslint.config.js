@@ -47,8 +47,8 @@ export default [
                 MutationObserver: true,
                 CSS: true,
                 process: 'readonly',
-                __dirname: 'readonly'
-            }
+                __dirname: 'readonly',
+            },
         },
         plugins: {
             '@typescript-eslint': tseslintPlugin,

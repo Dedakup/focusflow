@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es6",
         "module": "esnext",
-        "jsx": "react-jsx",
+        "jsx": "preserve",
         "strict": true,
         "moduleResolution": "node",
         "esModuleInterop": true,
@@ -26,8 +26,19 @@
             "@hooks/*": ["shared/hooks/*"],
             "@utils/*": ["shared/utils/*"],
             "@styles/*": ["styles/*"]
-        }
+        },
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "noEmit": true,
+        "incremental": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ]
     },
-    "include": ["src"],
+    "include": ["src", "./build/types/**/*.ts"],
     "exclude": ["node_modules", "dist"]
 }

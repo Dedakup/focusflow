@@ -9,7 +9,7 @@ import {
 import { EyeIcon as EyeIconSolid } from '@heroicons/react/24/solid';
 import { EyeIcon as EyeIconOutline } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
-import { setBackgrounds, selectBackground } from '../redux/backgroundSlice';
+import { setBackgrounds, selectBackground } from '../store/backgroundSlice';
 import { useAuth0 } from '@auth0/auth0-react';
 import SkeletonLoader from './skeletons/SkeletonLoader';
 
