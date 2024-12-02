@@ -1,29 +1,11 @@
 # FocusFlow Serverless Configuration
 
-org: devquesting
-app: focusflow
+org: for-project
+app: focus-flow
 service: backend
 
 plugins:
   - serverless-offline
-  - serverless-plugin-typescript
-  - serverless-esbuild
-
-custom:
-  esbuild:
-    bundle: true       # Bundle your code and dependencies
-    minify: true       # Minify the output
-    sourcemap: true    # Generate source maps
-    target: 'node18'   # Target the Node.js runtime
-    external:          # Exclude AWS SDK (it's included in the Lambda runtime)
-      - aws-sdk
-    alias:             # Define path aliases for imports
-      "@handlers": "./src/handlers"
-      "@utils": "./src/utils"
-      "@models": "./src/layers/models"
-      "@schemas": "./src/layers/schemas"
-  typescript:
-    tsConfigFile: tsconfig.json
 
 provider:
   name: aws
@@ -32,11 +14,11 @@ provider:
   stage: dev
   environment:
     AUTH0_DOMAIN: dev-6zeb418i7xs8g1lc.us.auth0.com
-    AUTH0_AUDIENCE: focusflow-audience
+    AUTH0_AUDIENCE: focus-flow-audience
     AUTH0_ISSUER: https://dev-6zeb418i7xs8g1lc.us.auth0.com/
-    DYNAMODB_TASKS_TABLE: dev-focusflow-tasks
-    DYNAMODB_USERS_TABLE: dev-focusflow-users
-    S3_ASSETS_BUCKET: dev-focusflow-assets
+    DYNAMODB_TASKS_TABLE: dev-focus-flow-tasks
+    DYNAMODB_USERS_TABLE: dev-focus-flow-users
+    S3_ASSETS_BUCKET: dev-focus-flow-assets
   iam:
     role:
       statements:
@@ -62,9 +44,11 @@ provider:
             - arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-auth0Authenticator
 
 custom:
-  tableName: ${sls:stage}-focusflow-tasks
-  usersTableName: ${sls:stage}-focusflow-users
-  bucketName: ${sls:stage}-focusflow-assets-${aws:accountId}
+  tableName: ${sls:stage}-focus-flow-tasks
+  usersTableName: ${sls:stage}-focus-flow-users
+  bucketName: ${sls:stage}-focus-flow-assets-${aws:accountId}
+  serverless-offline:
+    httpPort: 4000
 
 resources:
   Resources:
@@ -209,7 +193,7 @@ functions:
             name: auth0Authorizer
           allowCredentials: true
 
-  # Pomodoro Timer
+  # Timer
   manageTimer:
     handler: src/handlers/timer/manageTimer.manageTimer
     events:

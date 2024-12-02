@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Typography } from '@material-tailwind/react';
-import LogoutButton from './LogoutButton';
+import LogoutButton from '@auth/components/LogoutButton';
+import Logo from '@public/Logo.png';
+import LoginButton from '@/features/auth/components/LoginButton';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const TopMenu = () => {
+    const { isAuthenticated } = useAuth0();
     const [isMenuHidden, setIsMenuHidden] = useState(false);
 
     // Timer for tracking user activity
-    let activityTimer;
+    let activityTimer: NodeJS.Timeout | undefined;
 
     useEffect(() => {
         const handleUserActivity = () => {
@@ -36,19 +40,23 @@ const TopMenu = () => {
             <div className="flex items-center justify-between h-full px-4 md:px-10">
                 <div className="flex items-center h-full px-4 md:px-10">
                     <img
-                        src="/Logo.png"
+                        src={Logo.src}
                         alt="logo"
                         className="mr-2 h-42 md:h-42"
                     />
                     <Typography
-                        as="span"
+                        placeholder="Focus Flow title"
                         variant="h6"
                         className={`font-semibold text-2xl hidden md:inline-block duration-500 ${isMenuHidden ? 'text-gray-400' : 'text-white'}`}
                     >
                         Focus Flow
                     </Typography>
                 </div>
-                <LogoutButton />
+
+                <div className="flex items-center">
+                    {!isAuthenticated && <LoginButton />}
+                    {isAuthenticated && <LogoutButton />}
+                </div>
             </div>
         </div>
     );

@@ -1,33 +1,38 @@
 {
     "compilerOptions": {
-        "target": "es6",
-        "module": "esnext",
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
         "jsx": "preserve",
         "strict": true,
-        "moduleResolution": "node",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "baseUrl": "src",
+        "baseUrl": ".",
         "paths": {
-            "@/*": ["*"],
-            "@app/*": ["app/*"],
-            "@components/*": ["components/*"],
-            "@features/*": ["features/*"],
-            "@auth/*": ["features/auth/*"],
-            "@background/*": ["features/background/*"],
-            "@dashboard/*": ["features/dashboard/*"],
-            "@music/*": ["features/music/*"],
-            "@pomodoro/*": ["features/pomodoro/*"],
-            "@sounds/*": ["features/sounds/*"],
-            "@tasks/*": ["features/tasks/*"],
-            "@shared/*": ["shared/*"],
-            "@config/*": ["shared/config/*"],
-            "@hooks/*": ["shared/hooks/*"],
-            "@utils/*": ["shared/utils/*"],
-            "@styles/*": ["styles/*"]
+            "@public/*": ["./public/*"],
+            "@app/*": ["./src/app/*"],
+            //features
+            "@auth": ["./src/features/auth"],
+            "@background": ["./src/features/background"],
+            "@dashboard": ["./src/features/dashboard"],
+            "@music": ["./src/features/music"],
+            "@sounds": ["./src/features/sounds"],
+            "@tasks": ["./src/features/tasks"],
+            "@timer": ["./src/features/timer"],
+            //shared
+            "@api": ["./src/shared/api"],
+            "@components/*": ["./src/shared/components/*"],
+            "@skeletons/*": ["./src/shared/components/skeletons/*"],
+            "@config/*": ["./src/shared/config/*"],
+            "@hooks": ["./src/shared/hooks"],
+            "@lib/*": ["./src/shared/lib/*"],
+            "@styles/*": ["./src/shared/styles/*"],
+            "@types/*": ["./src/shared/types/*"]
         },
-        "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
         "noEmit": true,
         "incremental": true,
@@ -37,8 +42,17 @@
             {
                 "name": "next"
             }
-        ]
+        ],
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true
     },
-    "include": ["src", "./build/types/**/*.ts"],
-    "exclude": ["node_modules", "dist"]
+    "include": [
+        "./build/types/**/*.ts",
+        "./next-env.d.ts",
+        "src",
+        "src/app/error.tsx",
+        ".next/types/**/*.ts"
+    ],
+    "exclude": ["node_modules"]
 }

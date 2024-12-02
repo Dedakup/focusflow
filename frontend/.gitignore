@@ -35,3 +35,6 @@ node_modules/
 
 .next
 next-env.d.ts
+
+# Source Maps
+*.map

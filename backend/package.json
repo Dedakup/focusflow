@@ -35,7 +35,6 @@
     "prettier": "^3.4.1",
     "serverless-esbuild": "^1.54.6",
     "serverless-offline": "^14.3.4",
-    "serverless-plugin-typescript": "^2.1.5",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",

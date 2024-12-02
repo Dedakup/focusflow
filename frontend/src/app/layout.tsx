@@ -1,9 +1,5 @@
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-    title: 'Focus Flow',
-    description: 'Focus Flow',
-};
+import '@styles/globals.css';
+import ClientLayout from '@components/ClientLayout';
 
 export default function RootLayout({
     children,
@@ -11,9 +7,9 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
-            <body>
-                <div id="root">{children}</div>
+        <html lang="en" suppressHydrationWarning>
+            <body suppressHydrationWarning>
+                <ClientLayout>{children}</ClientLayout>
             </body>
         </html>
     );

@@ -1,12 +1,10 @@
 # FocusFlow: Pomodoro & To-Do List Application
 
-https://focusflow-zeta.vercel.app/
+[https://focusflow-zeta.vercel.app/](https://focusflow-zeta.vercel.app/)
 
-<img src="./docs/images/FocusFlow-banner.png" alt="Banner" style="width:100%;"/>
-<p align="center">
-  <img src="./docs/images/mobile-preview.jpg" alt="Phone Preview" style="height:350px; margin-right: 10px;""/>
-  <img src="./docs/images/desktop-preview.jpg" alt="Desktop Preview" style="height:350px;"/> 
-</p>
+![Banner](./docs/images/FocusFlow-banner.png)
+
+![Phone Preview](./docs/images/mobile-preview.jpg) ![Desktop Preview](./docs/images/desktop-preview.jpg)
 
 ## Overview
 
@@ -18,19 +16,19 @@ Check out the live demo of the application [here](https://focusflow-zeta.vercel.
 
 ### Features
 
-#### To-Do List:
+#### To-Do List
 
 - Add, edit, and delete tasks.
 - Mark tasks as completed.
 - Filter tasks by status (All, Completed, Incomplete).
 
-#### Pomodoro Timer:
+#### Pomodoro Timer
 
 - Simple and intuitive Pomodoro timer.
 - Customizable session and break lengths.
 - Visual and audio cues to start and stop sessions.
 
-#### Beautiful Design:
+#### Beautiful Design
 
 - Modern and clean user interface.
 - Cozy and calming background theme to enhance focus.
@@ -52,18 +50,21 @@ Follow these steps to set up the project on your local machine.
 
    ```bash
    git clone https://github.com/dedakup/focusflow.git
-   cd focusflow
+   cd FocusFlow
    ```
+
 2. **Install Dependencies**:
 
    ```bash
    npm install
    ```
+
 3. **Start the Development Server**:
 
    ```bash
    npm run dev
    ```
+
 4. **Open the Application**:
 
    Visit `http://localhost:5173` in your browser to view the application.
@@ -85,7 +86,7 @@ Follow these steps to set up the project on your local machine.
 
 We welcome contributions! If you'd like to contribute to the project, please fork the repository and use a feature branch. Pull requests are warmly welcome.
 
-# Branch Naming Conventions
+## Branch Naming Conventions
 
 - `main`: Production-ready code.
 - `develop`: Latest integrated development work.
@@ -94,7 +95,7 @@ We welcome contributions! If you'd like to contribute to the project, please for
 - `release/<version>`: For preparing production releases.
 - `hotfix/<issue-id>`: For urgent fixes to production code.
 
-### Steps to Contribute:
+## Steps to Contribute
 
 1. Fork the repository.
 2. Create a new feature branch.

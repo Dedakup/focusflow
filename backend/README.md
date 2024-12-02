@@ -22,13 +22,13 @@ This template does not include any kind of persistence (database). For more adva
 
 In order to deploy the example, you need to run the following command:
 
-```
+```bash
 serverless deploy
 ```
 
 After running deploy, you should see output similar to:
 
-```
+```bash
 Deploying "serverless-http-api" to stage "dev" (us-east-1)
 
 ✔ Service deployed to stack serverless-http-api-dev (91s)
@@ -44,7 +44,7 @@ _Note_: In current form, after deployment, your API is public and can be invoked
 
 After successful deployment, you can call the created application via HTTP:
 
-```
+```bash
 curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
 ```
 
@@ -58,7 +58,7 @@ Which should result in response similar to:
 
 The easiest way to develop and test your function is to use the `dev` command:
 
-```
+```bash
 serverless dev
 ```
 

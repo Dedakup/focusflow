@@ -26,25 +26,34 @@ import {
 } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
 import { toast } from 'react-toastify';
-import { API_BASE_URL } from '../config/config';
-import { useAuth0 } from '@auth0/auth0-react';
+import { API_BASE_URL } from '@config/config';
+import { useAuth0, GetTokenSilentlyOptions } from '@auth0/auth0-react';
 import PropTypes from 'prop-types';
-import SkeletonLoader from './skeletons/SkeletonLoader';
+import SkeletonLoader from '@skeletons/SkeletonLoader';
 
-/**
- * TaskPopover Component
- *
- * @component
- * @param {Object} props - Component props
- * @param {boolean} props.isActive - Indicates if the component is active
- * @param {boolean} props.isVisible - Indicates if the component is visible
- * @returns {React.Component} TaskPopover component
- */
-const TaskPopover = ({ isActive, isVisible }) => {
+interface Task {
+    taskId: string;
+    title: string;
+    status: 'pending' | 'completed';
+    userId: string;
+}
+
+interface ExtendedGetTokenSilentlyOptions extends GetTokenSilentlyOptions {
+    audience?: string;
+}
+
+const AUDIENCE = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE || 'focusflow-audience';
+
+interface TaskPopoverProps {
+    isActive: boolean;
+    isVisible: boolean;
+}
+
+const TaskPopover: React.FC<TaskPopoverProps> = ({ isActive, isVisible }) => {
     // State declarations
-    const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useState<Task[]>([]);
     const [newTask, setNewTask] = useState('');
-    const [isEditing, setIsEditing] = useState(null);
+    const [isEditing, setIsEditing] = useState<string | null>(null);
     const [editTaskName, setEditTaskName] = useState('');
     const { getAccessTokenSilently, user } = useAuth0();
     const [isLoading, setIsLoading] = useState(false);
@@ -74,8 +83,8 @@ const TaskPopover = ({ isActive, isVisible }) => {
         setIsLoading(true);
         try {
             const token = await getAccessTokenSilently({
-                audience: 'focusflow-audience',
-            });
+                audience: AUDIENCE,
+            } as ExtendedGetTokenSilentlyOptions);
 
             //get tasks send userid and token
             const response = await fetch(
@@ -135,10 +144,10 @@ const TaskPopover = ({ isActive, isVisible }) => {
         const tempTaskId = crypto.randomUUID();
 
         // Add task to local state immediately
-        const tempTask = {
+        const tempTask: Task = {
             taskId: tempTaskId,
             title: newTask,
-            status: 'pending',
+            status: 'pending' as const,
             userId: user.sub,
         };
         setTasks((prev) => [...prev, tempTask]);
@@ -148,8 +157,8 @@ const TaskPopover = ({ isActive, isVisible }) => {
         try {
             //get token
             const token = await getAccessTokenSilently({
-                audience: 'focusflow-audience',
-            });
+                audience: AUDIENCE,
+            } as ExtendedGetTokenSilentlyOptions);
             //send add request with token and tasks body
             const response = await fetch(`${API_BASE_URL}/tasks`, {
                 method: 'POST',
@@ -195,7 +204,7 @@ const TaskPopover = ({ isActive, isVisible }) => {
      * @throws {Error} When the API request fails
      */
 
-    const handleDeleteTask = async (taskId) => {
+    const handleDeleteTask = async (taskId: string) => {
         const previousTasks = [...tasks]; // Save current state
         setTasks((prevTasks) =>
             prevTasks.filter((task) => task.taskId !== taskId),
@@ -203,8 +212,8 @@ const TaskPopover = ({ isActive, isVisible }) => {
 
         try {
             const token = await getAccessTokenSilently({
-                audience: 'focusflow-audience',
-            });
+                audience: AUDIENCE,
+            } as ExtendedGetTokenSilentlyOptions);
             const userId = user?.sub; // Retrieve the authenticated user's ID
 
             if (!userId) {
@@ -243,7 +252,7 @@ const TaskPopover = ({ isActive, isVisible }) => {
      * @param {string} taskId - ID of the task to toggle
      * @throws {Error} When the API request fails
      */
-    const toggleCompleteTask = async (taskId) => {
+    const toggleCompleteTask = async (taskId: string) => {
         const taskToToggle = tasks.find((task) => task.taskId === taskId);
         if (!taskToToggle) return;
 
@@ -262,7 +271,14 @@ const TaskPopover = ({ isActive, isVisible }) => {
      * @param {Object} updatedFields - Fields to update (e.g., title, status)
      * @throws {Error} When the API request fails
      */
-    const handleUpdateTask = async (taskId, updatedFields) => {
+    const handleUpdateTask = async (
+        taskId: string,
+        updatedFields: Partial<Task>,
+    ) => {
+        if (!user?.sub) {
+            toast.error('User not authenticated');
+            return;
+        }
         const previousTasks = [...tasks];
 
         // Optimistically update the local state with the updated fields
@@ -274,8 +290,8 @@ const TaskPopover = ({ isActive, isVisible }) => {
 
         try {
             const token = await getAccessTokenSilently({
-                audience: 'focusflow-audience',
-            });
+                audience: AUDIENCE,
+            } as ExtendedGetTokenSilentlyOptions);
 
             const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
                 method: 'PUT',
@@ -318,7 +334,7 @@ const TaskPopover = ({ isActive, isVisible }) => {
      * @function handleAddTaskSubmit
      * @param {Event} e - Keydown event
      */
-    const handleAddTaskSubmit = (e) => {
+    const handleAddTaskSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             handleAddTask();
@@ -338,7 +354,7 @@ const TaskPopover = ({ isActive, isVisible }) => {
             offset={{ mainAxis: 10 }}
             open={isPopoverOpen}
             handler={setIsPopoverOpen}
-            onClose={handlePopoverClose} // Reset state when the popover closes
+            dismiss={{ enabled: true }}
         >
             <PopoverHandler
                 className={`flex rounded-full items-center w-[40px] h-[40px] mr-[32px] transition-opacity duration-500 ${
@@ -346,6 +362,7 @@ const TaskPopover = ({ isActive, isVisible }) => {
                 } ${isVisible ? 'visible' : 'invisible'}`}
             >
                 <IconButton
+                    placeholder="Add new task"
                     variant="text"
                     className="rounded-full w-24 h-24 ml-[32px] transition-opacity duration-500"
                 >
@@ -353,11 +370,15 @@ const TaskPopover = ({ isActive, isVisible }) => {
                 </IconButton>
             </PopoverHandler>
             {isPopoverOpen && (
-                <PopoverContent className="w-80 h-auto max-h-96 p-4 bg-gray-700 text-white z-50 flex flex-col">
+                <PopoverContent
+                    placeholder="Task list content"
+                    className="w-80 h-auto max-h-96 p-4 bg-gray-700 text-white z-50 flex flex-col"
+                >
                     <div className="text-sm font-medium text-white flex justify-between">
                         <span>Tasks</span>
                         <button onClick={() => fetchTasks()}>Reload</button>
                         <IconButton
+                            placeholder="Close popover"
                             onClick={() => setIsPopoverOpen(false)}
                             variant="text"
                             className="rounded-full w-24 h-24 ml-[32px] transition-opacity duration-500"
@@ -369,7 +390,7 @@ const TaskPopover = ({ isActive, isVisible }) => {
                     <div className="flex-grow overflow-y-auto space-y-2">
                         {isLoading ? (
                             <SkeletonLoader rows={5} />
-                        ) : tasks.length === 0 ? ( //if there is 0 tasks
+                        ) : tasks.length === 0 ? (
                             <div className="text-center text-gray-400">
                                 No tasks available
                             </div>
@@ -395,6 +416,8 @@ const TaskPopover = ({ isActive, isVisible }) => {
                                         <input
                                             type="text"
                                             value={editTaskName}
+                                            placeholder="Edit task name"
+                                            aria-label="Edit task name"
                                             onChange={(e) =>
                                                 setEditTaskName(e.target.value)
                                             }
@@ -424,14 +447,17 @@ const TaskPopover = ({ isActive, isVisible }) => {
                                         </span>
                                     )}
                                     <button
-                                        onClick={() => {
-                                            setIsEditing(task.taskId);
-                                            setEditTaskName(task.title);
-                                        }}
+                                        title="Edit task"
+                                        aria-label="Edit task"
+                                        onClick={() =>
+                                            setIsEditing(task.taskId)
+                                        }
                                     >
                                         <PencilIcon className="w-5 h-5" />
                                     </button>
                                     <button
+                                        title="Delete task"
+                                        aria-label="Delete task"
                                         onClick={() =>
                                             handleDeleteTask(task.taskId)
                                         }
@@ -444,6 +470,7 @@ const TaskPopover = ({ isActive, isVisible }) => {
                     </div>
                     <div className="flex items-center mt-4">
                         <Input
+                            crossOrigin={undefined}
                             type="text"
                             placeholder="Add a new task"
                             className="text-white"
@@ -451,9 +478,13 @@ const TaskPopover = ({ isActive, isVisible }) => {
                             onChange={(e) => setNewTask(e.target.value)}
                             onKeyDown={handleAddTaskSubmit}
                         />
-                        <button onClick={handleAddTask}>
+                        <button
+                            onClick={handleAddTask}
+                            title="Add new task"
+                            aria-label="Add new task"
+                        >
                             <PlusCircleIcon className="w-6 h-6" />
-                        </button>
+                        </button>  
                     </div>
                 </PopoverContent>
             )}

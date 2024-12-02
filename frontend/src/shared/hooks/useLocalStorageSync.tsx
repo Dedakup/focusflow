@@ -6,4 +6,4 @@ const useLocalStorageSync = (key: string, value: any) => {
     }, [key, value]);
 };
 
-export default useLocalStorageSync;
+export { useLocalStorageSync };

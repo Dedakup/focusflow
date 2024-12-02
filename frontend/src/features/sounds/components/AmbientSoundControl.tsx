@@ -11,7 +11,7 @@ import {
     SignalIcon as SignalIconOutline,
 } from '@heroicons/react/24/outline';
 
-const AmbientSoundControl = ({ ambientSounds, handleAmbientSoundChange }) => {
+const AmbientSoundControl = () => {
     return (
         <Popover placement="top" offset={{ mainAxis: 10 }}>
             <PopoverHandler>

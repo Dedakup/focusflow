@@ -55,7 +55,7 @@ module.exports.authenticate = (params) => {
             const signingKey = key.publicKey || key.rsaPublicKey;
             return jwt.verify(token, signingKey, jwtOptions);
         })
-        .then((decoded) => ({ //reurn policy document
+        .then((decoded) => ({ //return policy document
             principalId: decoded.sub,
             policyDocument: getPolicyDocument('Allow', params.methodArn),
             context: { scope: decoded.scope }

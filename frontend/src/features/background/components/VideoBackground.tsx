@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '@hooks';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import { RootState } from '@app/store';
 
 const VideoBackground = () => {
-    const { selectedBackground } = useSelector((state) => state.background);
-    const [currentSrc, setCurrentSrc] = useState(null); // Currently displayed background
-    const [nextSrc, setNextSrc] = useState(null); // Next background being loaded
+    // Video Background only reads the state, it doesn't manage it
+    const { selectedBackground } = useAppSelector(
+        (state: RootState) => state.background,
+    );
+    // This is why we use local state to manage the video
+    const [currentSrc, setCurrentSrc] = useState<string | null>(null); // Currently displayed background
+    const [nextSrc, setNextSrc] = useState<string | null>(null); // Next background being loaded
     const [isNextLoaded, setIsNextLoaded] = useState(false); // Track if next background is ready
 
+    //And here we change the state, if the background changes
     useEffect(() => {
         if (selectedBackground?.src && selectedBackground.src !== currentSrc) {
             NProgress.start(); // Start the loading bar
@@ -50,6 +56,7 @@ const VideoBackground = () => {
     }, [isNextLoaded, nextSrc]);
 
     return (
+        
         <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0">
             {/* Currently displayed video */}
             {currentSrc && (
@@ -68,7 +75,7 @@ const VideoBackground = () => {
                     Your browser does not support the video tag.
                 </video>
             )}
-
+            
             {/* Next video being loaded */}
             {nextSrc && isNextLoaded && (
                 <video

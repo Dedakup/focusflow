@@ -1,1 +1,1 @@
-# Store reusable utilities like logging or database connection.
+# Store reusable utilities like logging or database connection
