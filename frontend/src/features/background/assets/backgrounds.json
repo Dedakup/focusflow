@@ -1,0 +1,146 @@
+[
+    {
+        "id": "ca59e3a9-2601-4e40-9715-d2bcc58813da",
+        "name": "Tiny Camp Fire",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Tiny-Camp-Fire.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Tiny-Camp-Fire.jpg"
+    },
+    {
+        "id": "0d54a69c-eafb-4ec2-9dfa-4eac43f5d1a8",
+        "name": "Apartment Night Rain",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/apartment-night-rain.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/apartment-night-rain.jpg"
+    },
+    {
+        "id": "975361b6-8387-4c32-ac02-ae4e50e4777c",
+        "name": "Study Room Sun Shower",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Study-Room-Sun-Shower.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Study-Room-Sun-Shower.jpg"
+    },
+    {
+        "id": "3fe19da8-f8e6-4644-91ca-659df66b682e",
+        "name": "90s Office",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/90s-Office.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/90-office.jpg"
+    },
+    {
+        "id": "fc47d477-5aa5-488a-beba-2975068d9aeb",
+        "name": "Astronaut Facing a Black Hole",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Astronaut-Facing-a-Black-Hole.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Astronaut-Facing-a-Black-Hole.jpg"
+    },
+    {
+        "id": "796414a9-263b-413d-8073-1722209ff2c1",
+        "name": "Bart Nirvana",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Bart-Nirvana.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Bart-Nirvana.jpg"
+    },
+    {
+        "id": "5a8ae57c-47e8-4441-8ed6-2446df3e9609",
+        "name": "Bedroom in Space",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Bedroom-in-Space.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Bedroom-in-Space.jpg"
+    },
+    {
+        "id": "21589f32-cddf-4579-a36a-76d35a497336",
+        "name": "Empty Classroom",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Empty-Classroom.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Empty-Classroom.jpg"
+    },
+    {
+        "id": "1a02012b-4636-468a-a5a0-04fde7156bdc",
+        "name": "Futuristic Room Apartment",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Futuristic-Room-Apartment.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Futuristic-Room-Apartment.jpg"
+    },
+    {
+        "id": "1779bafd-0612-46da-9a31-54053cfcced6",
+        "name": "Hacker Desk",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Hacker-Desk.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Hacker-Desk.jpg"
+    },
+    {
+        "id": "46ebd74b-5c62-4ba4-b0fb-170220ccd955",
+        "name": "Home Office",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Home-Office.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Home-Office.jpg"
+    },
+    {
+        "id": "716b022d-99fd-431b-b7d2-7ef48aa8e066",
+        "name": "Japanese Living Room Night",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Japanese-Living-Room-night.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Japanese-Living-Room-night.jpg"
+    },
+    {
+        "id": "3bf0dd5b-9eac-47c9-99c2-9292186ea97d",
+        "name": "Living Room Chill",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Living-Room-Chill.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Living-Room-Chill.jpg"
+    },
+    {
+        "id": "183ca9a8-c63b-4be2-bf68-acac58e7654d",
+        "name": "Modern Apartment Short",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Modern-Apartment-short.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Modern-Apartment-short.jpg"
+    },
+    {
+        "id": "08e071dc-e495-420c-907d-61f31137338c",
+        "name": "Neon City Sunrise",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Neon-City-Sunrise.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Neon-City-Sunrise.jpg"
+    },
+    {
+        "id": "0ca03821-caa0-487d-b637-c3d4fc869068",
+        "name": "Night Drive",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Night-Drive.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Night-Drive.jpg"
+    },
+    {
+        "id": "45f21b73-6ce6-45ea-b1a0-9f1c20776bba",
+        "name": "Pixel Night",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Pixel-Night.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Pixel-Night.jpg"
+    },
+    {
+        "id": "5777e579-ce87-43e8-ac61-9b3b14931f8c",
+        "name": "Pixel Room",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Pixel-Room.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Pixel-Room.jpg"
+    },
+    {
+        "id": "61c41a50-fa2f-4b01-b691-83d355667787",
+        "name": "Raining Outside",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Raining-Outside.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Raining-Outside.jpg"
+    },
+    {
+        "id": "0afac4f0-24d5-4e6b-b041-10eaa3f271b1",
+        "name": "Rainy Night Corner Store",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Rainy-Night-Corner-Store.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Rainy-Night-Corner-Store.jpg"
+    },
+    {
+        "id": "b186afc7-21e8-4b80-b494-1afa0b615dd0",
+        "name": "Retro Neon Car",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Retro-Neon-Car.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Retro-Neon-Car.jpg"
+    },
+    {
+        "id": "f2b1d56e-f59e-457a-966e-432a23b44b88",
+        "name": "Room in Space Earth",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Room-in-Space-earth.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Room-in-Space-earth.jpg"
+    },
+    {
+        "id": "f5f9f10b-8083-4ea3-87dc-e5edca05e7ab",
+        "name": "Space Apartment",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Space-Apartment.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Space-Apartment.jpg"
+    },
+    {
+        "id": "830b2cb3-533a-47a9-82aa-8e46264cccdd",
+        "name": "Space Bedroom",
+        "src": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/videos/Space-Bedroom.mp4",
+        "thumbnailSrc": "https://dev-focusflow-assets-274552760074.s3.us-east-1.amazonaws.com/backgrounds/thumbnail/Space-Bedroom.jpg"
+    }
+]

@@ -1,1 +1,1 @@
-export type { Background, BackgroundState } from './types';
+export type { BackgroundInterface, BackgroundState } from './types';

@@ -32,7 +32,7 @@ export const fetchTasks = createAsyncThunk(
         });
         if (!response.ok) throw new Error('Failed to fetch tasks');
         return response.json();
-    }
+    },
 );
 
 export const addTask = createAsyncThunk(
@@ -48,12 +48,20 @@ export const addTask = createAsyncThunk(
         });
         if (!response.ok) throw new Error('Failed to add task');
         return response.json();
-    }
+    },
 );
 
 export const updateTask = createAsyncThunk(
     'tasks/updateTask',
-    async ({ taskId, updates, token }: { taskId: string; updates: Partial<Task>; token: string }) => {
+    async ({
+        taskId,
+        updates,
+        token,
+    }: {
+        taskId: string;
+        updates: Partial<Task>;
+        token: string;
+    }) => {
         const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
             method: 'PUT',
             headers: {
@@ -64,21 +72,32 @@ export const updateTask = createAsyncThunk(
         });
         if (!response.ok) throw new Error('Failed to update task');
         return response.json();
-    }
+    },
 );
 
 export const deleteTask = createAsyncThunk(
     'tasks/deleteTask',
-    async ({ taskId, userId, token }: { taskId: string; userId: string; token: string }) => {
-        const response = await fetch(`${API_BASE_URL}/tasks/${taskId}?userId=${userId}`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${token}`,
+    async ({
+        taskId,
+        userId,
+        token,
+    }: {
+        taskId: string;
+        userId: string;
+        token: string;
+    }) => {
+        const response = await fetch(
+            `${API_BASE_URL}/tasks/${taskId}?userId=${userId}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             },
-        });
+        );
         if (!response.ok) throw new Error('Failed to delete task');
         return taskId;
-    }
+    },
 );
 
 const tasksSlice = createSlice({
@@ -106,18 +125,22 @@ const tasksSlice = createSlice({
             })
             // Update task
             .addCase(updateTask.fulfilled, (state, action) => {
-                const index = state.tasks.findIndex(task => task.taskId === action.payload.taskId);
+                const index = state.tasks.findIndex(
+                    (task) => task.taskId === action.payload.taskId,
+                );
                 if (index !== -1) {
                     state.tasks[index] = action.payload;
                 }
             })
             // Delete task
             .addCase(deleteTask.fulfilled, (state, action) => {
-                state.tasks = state.tasks.filter(task => task.taskId !== action.payload);
+                state.tasks = state.tasks.filter(
+                    (task) => task.taskId !== action.payload,
+                );
             });
     },
 });
 
 export const {} = tasksSlice.actions;
-export { tasksSlice };  // Export the whole slice
-export default tasksSlice;  // Instead of exporting tasksSlice.reducer
+export { tasksSlice }; // Export the whole slice
+export default tasksSlice; // Instead of exporting tasksSlice.reducer

@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useDispatch';
+import { useAppDispatch, useAppSelector } from '@hooks';
 import {
     startTimer,
     pauseTimer,
     resetTimer,
     updateTimeLeft,
     switchPhase,
-} from '@pomodoro/slices/pomodoroSlice';
+} from '@timer';
 
 interface TimerCircleProps {
     radius: number;
@@ -52,10 +52,13 @@ const TimerCircle: React.FC<TimerCircleProps> = ({ radius }) => {
         dispatch(pauseTimer());
     }, [dispatch]);
 
-    const handleResetTimer = useCallback((e: React.MouseEvent) => {
-        e.stopPropagation(); // Prevent triggering toggle
-        dispatch(resetTimer());
-    }, [dispatch]);
+    const handleResetTimer = useCallback(
+        (e: React.MouseEvent) => {
+            e.stopPropagation(); // Prevent triggering toggle
+            dispatch(resetTimer());
+        },
+        [dispatch],
+    );
 
     return (
         <div

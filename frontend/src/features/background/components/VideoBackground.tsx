@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useAppSelector } from '@hooks';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import { RootState } from '@app/store';
+import { useSelector } from 'react-redux';
+import { selectSelectedBackground } from '@background';
+import { toast } from '../../../shared/lib/toastUtils';
 
 const VideoBackground = () => {
     // Video Background only reads the state, it doesn't manage it
-    const { selectedBackground } = useAppSelector(
-        (state: RootState) => state.background,
-    );
-    // This is why we use local state to manage the video
+    const selectedBackground = useSelector(selectSelectedBackground);
     const [currentSrc, setCurrentSrc] = useState<string | null>(null); // Currently displayed background
     const [nextSrc, setNextSrc] = useState<string | null>(null); // Next background being loaded
     const [isNextLoaded, setIsNextLoaded] = useState(false); // Track if next background is ready
@@ -25,20 +23,37 @@ const VideoBackground = () => {
             videoPreloader.src = selectedBackground.src;
             videoPreloader.preload = 'metadata';
 
-            videoPreloader.oncanplaythrough = () => {
-                setIsNextLoaded(true); // Mark the new video as ready
-                NProgress.done(); // Complete the loading bar
+            const handleError = () => {
+                console.error('Failed to load video:', selectedBackground.src);
+                setIsNextLoaded(false);
+                setNextSrc(null); // Clear the failed video
+                NProgress.done();
+                toast.error('Failed to load background video. Please try another background.');
+                
+                // Keep the current background if loading the new one failed
+                if (!currentSrc) {
+                    // If no current background, just clear everything
+                    setCurrentSrc(null);
+                }
             };
 
-            videoPreloader.onerror = () => {
-                console.error('Failed to load video:', selectedBackground.src);
-                setIsNextLoaded(false); // Handle error gracefully
-                NProgress.done();
+            const handleLoad = () => {
+                if (videoPreloader.readyState >= 3) { // ENOUGH_DATA
+                    setIsNextLoaded(true);
+                    NProgress.done();
+                }
             };
+
+            videoPreloader.addEventListener('canplaythrough', handleLoad);
+            videoPreloader.addEventListener('error', handleError);
+            // Add timeout for slow connections
+            const timeoutId = setTimeout(handleError, 15000); // 15 second timeout
 
             return () => {
-                videoPreloader.oncanplaythrough = null;
-                videoPreloader.onerror = null;
+                videoPreloader.removeEventListener('canplaythrough', handleLoad);
+                videoPreloader.removeEventListener('error', handleError);
+                clearTimeout(timeoutId);
+                NProgress.done();
             };
         }
     }, [selectedBackground?.src, currentSrc]);
@@ -56,7 +71,6 @@ const VideoBackground = () => {
     }, [isNextLoaded, nextSrc]);
 
     return (
-        
         <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0">
             {/* Currently displayed video */}
             {currentSrc && (
@@ -75,7 +89,7 @@ const VideoBackground = () => {
                     Your browser does not support the video tag.
                 </video>
             )}
-            
+
             {/* Next video being loaded */}
             {nextSrc && isNextLoaded && (
                 <video

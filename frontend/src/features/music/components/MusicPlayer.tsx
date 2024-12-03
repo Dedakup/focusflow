@@ -11,7 +11,9 @@ interface MusicSource {
 
 const MusicPlayer: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { selectedMusicSource, isPlaying, volume } = useAppSelector((state) => state.music);
+    const { selectedMusicSource, isPlaying, volume } = useAppSelector(
+        (state) => state.music,
+    );
 
     const handlePlayPause = () => {
         dispatch(setIsPlaying(!isPlaying));

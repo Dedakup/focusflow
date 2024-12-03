@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { setBackgrounds } from '@background';
-import { Background } from '@background';
+import { setBackgrounds } from '../store/backgroundSlice';
 import { useAuth } from '@auth';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -49,4 +48,4 @@ export const useBackgrounds = (isPopoverOpen: boolean) => {
     }, [dispatch, userId, getAuthHeader, isPopoverOpen]);
 
     return { isLoading };
-}; 
+};

@@ -484,7 +484,7 @@ const TaskPopover: React.FC<TaskPopoverProps> = ({ isActive, isVisible }) => {
                             aria-label="Add new task"
                         >
                             <PlusCircleIcon className="w-6 h-6" />
-                        </button>  
+                        </button>
                     </div>
                 </PopoverContent>
             )}

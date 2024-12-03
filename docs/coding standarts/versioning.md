@@ -48,7 +48,7 @@ During MVP development, you’ll likely stick to `0.x.x` versions since the app 
 
 In Git, you can create **tags** to mark specific commits as versioned releases.
 
-#### **How to Tag a Version in Git**:
+#### **How to Tag a Version in Git**
 
 1. Commit your changes:
 
@@ -69,15 +69,16 @@ In Git, you can create **tags** to mark specific commits as versioned releases.
    git push origin v0.1.0
    ```
 
-#### **Viewing All Tags**:
+#### **Viewing All Tags**
 
 ```bash
 git tag
 ```
 
-#### **Annotate Tags for Additional Context**:
+#### **Annotate Tags for Additional Context**
 
 You can add annotations to explain the purpose of the version:
+
 ```bash
 git tag -a v0.1.0 -m "Initial MVP release with login and dashboard features"
 git push origin v0.1.0
@@ -88,8 +89,10 @@ git push origin v0.1.0
 ### **3. Automate Versioning with Tools**
 
 If you want to automate version management, use tools like:
+
 - **Semantic Release**: Automatically determines the next version based on commit messages.
 - **npm Versioning**: If you’re building an npm-based app, use `npm version`:
+
   ```bash
   npm version minor
   ```
@@ -99,6 +102,7 @@ If you want to automate version management, use tools like:
 ### **4. Maintain a CHANGELOG**
 
 Document changes in a `CHANGELOG.md` file to provide a clear history of updates. Use this format:
+
 ```markdown
 # Changelog
 
@@ -119,11 +123,12 @@ Document changes in a `CHANGELOG.md` file to provide a clear history of updates.
 ### **5. Consider Pre-Release Tags**
 
 If the MVP isn’t ready for production but has testable versions, use **pre-release tags**:
+
 - Examples: `0.1.0-alpha`, `0.1.0-beta`.
 - **Alpha**: Early, unstable versions for internal testing.
 - **Beta**: More stable but still in testing phase.
 
-#### **How to Tag a Pre-Release Version in Git**:
+#### **How to Tag a Pre-Release Version in Git**
 
 ```bash
 git tag v0.1.0-alpha
@@ -135,6 +140,7 @@ git push origin v0.1.0-alpha
 ### **6. Version APIs Separately**
 
 If your MVP includes a backend API, consider versioning it independently using URL-based versioning:
+
 - Example: `https://api.example.com/v1/`
 
 ---

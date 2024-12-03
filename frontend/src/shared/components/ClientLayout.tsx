@@ -1,10 +1,10 @@
 'use client';
 
 import { Auth0Provider } from '@auth0/auth0-react';
-import TopMenu from '@dashboard/components/TopMenu';
+import { TopMenu } from '@dashboard';
 import NProgress from 'nprogress';
 import { useEffect, useState } from 'react';
-import { ReduxProvider } from '@components/common/ReduxProvider';
+import { ReduxProvider } from '@components';
 
 export default function ClientLayout({
     children,
@@ -28,7 +28,9 @@ export default function ClientLayout({
                 domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN || ''}
                 clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID || ''}
                 authorizationParams={{
-                    redirect_uri: process.env.NEXT_PUBLIC_AUTH0_CALLBACK_URL || '',
+                    redirect_uri:
+                        process.env.NEXT_PUBLIC_AUTH0_CALLBACK_URL || '',
+                    audience: process.env.NEXT_PUBLIC_AUTH0_AUDIENCE, // API audience
                 }}
             >
                 <div id="root">

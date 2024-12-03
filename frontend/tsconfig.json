@@ -25,11 +25,12 @@
             "@timer": ["./src/features/timer"],
             //shared
             "@api": ["./src/shared/api"],
-            "@components/*": ["./src/shared/components/*"],
+            "@components": ["./src/shared/components"],
             "@skeletons/*": ["./src/shared/components/skeletons/*"],
             "@config/*": ["./src/shared/config/*"],
             "@hooks": ["./src/shared/hooks"],
             "@lib/*": ["./src/shared/lib/*"],
+            "@store": ["./src/shared/store"],
             "@styles/*": ["./src/shared/styles/*"],
             "@types/*": ["./src/shared/types/*"]
         },

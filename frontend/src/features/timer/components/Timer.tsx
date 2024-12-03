@@ -29,7 +29,9 @@ const Timer = () => {
     const [notificationMessage, setNotificationMessage] = useState(null);
 
     useEffect(() => {
-        const storedTasks = JSON.parse(window.localStorage.getItem('tasks') || '[]');
+        const storedTasks = JSON.parse(
+            window.localStorage.getItem('tasks') || '[]',
+        );
         const storedSettings = JSON.parse(
             window.localStorage.getItem('timerSettings') || '{}',
         );
@@ -49,9 +51,7 @@ const Timer = () => {
             setLongBreakTime(
                 storedSettings.longBreakTime || defaultLongBreakTime,
             );
-            setTimeLeft(
-                (storedSettings.time || defaultTime) * 60,
-            );
+            setTimeLeft((storedSettings.time || defaultTime) * 60);
         } else {
             setTime(defaultTime);
             setShortBreakTime(defaultShortBreakTime);

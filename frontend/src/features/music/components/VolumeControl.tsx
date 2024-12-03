@@ -27,7 +27,12 @@ interface VolumeControlProps {
     handleVolumeChange: (value: number) => void;
 }
 
-const VolumeControl = ({ isPlaying, handlePlayPause, volume, handleVolumeChange }: VolumeControlProps) => {
+const VolumeControl = ({
+    isPlaying,
+    handlePlayPause,
+    volume,
+    handleVolumeChange,
+}: VolumeControlProps) => {
     return (
         <div className="flex items-center space-x-4 md:pl-16 pr-6">
             <IconButton
@@ -35,8 +40,6 @@ const VolumeControl = ({ isPlaying, handlePlayPause, volume, handleVolumeChange 
                 variant="text"
                 className="rounded-full w-24 h-24 group"
                 onClick={handlePlayPause}
-                onPointerEnterCapture={() => {}}
-                onPointerLeaveCapture={() => {}}
             >
                 {isPlaying ? (
                     <>
@@ -57,8 +60,6 @@ const VolumeControl = ({ isPlaying, handlePlayPause, volume, handleVolumeChange 
                         placeholder="Volume control"
                         variant="text"
                         className="rounded-full w-24 h-24 group"
-                        onPointerEnterCapture={() => {}}
-                        onPointerLeaveCapture={() => {}}
                     >
                         {volume === 0 ? (
                             <>
@@ -73,23 +74,21 @@ const VolumeControl = ({ isPlaying, handlePlayPause, volume, handleVolumeChange 
                         )}
                     </IconButton>
                 </PopoverHandler>
-                <PopoverContent 
-                    placeholder="Volume control popup" 
+                <PopoverContent
+                    placeholder="Volume control popup"
                     className="w-36 p-4 bg-gray-700 text-white z-50 -rotate-90 ml-8 md:ml-0"
-                    onPointerEnterCapture={() => {}}
-                    onPointerLeaveCapture={() => {}}
                 >
                     <div className="w-full">
                         <Slider
                             placeholder="Volume slider"
                             defaultValue={volume}
-                            onChange={(e) => handleVolumeChange(parseInt(e.target.value, 10))}
+                            onChange={(e) =>
+                                handleVolumeChange(parseInt(e.target.value, 10))
+                            }
                             min={0}
                             max={100}
                             size="md"
                             className="!min-w-10"
-                            onPointerEnterCapture={() => {}}
-                            onPointerLeaveCapture={() => {}}
                         />
                     </div>
                 </PopoverContent>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Typography } from '@material-tailwind/react';
-import LogoutButton from '@auth/components/LogoutButton';
+import { LogoutButton } from '@auth';
 import Logo from '@public/Logo.png';
-import LoginButton from '@/features/auth/components/LoginButton';
+import { LoginButton } from '@auth';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const TopMenu = () => {

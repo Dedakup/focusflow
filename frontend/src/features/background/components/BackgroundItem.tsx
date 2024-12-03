@@ -26,4 +26,4 @@ export const BackgroundItem: React.FC<BackgroundItemProps> = ({
         />
         <div className="absolute inset-0 bg-black opacity-0 hover:opacity-30 transition-opacity" />
     </div>
-); 
+);

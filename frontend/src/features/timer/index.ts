@@ -7,9 +7,8 @@ export { default as TimerCircle } from './components/TimerCircle';
 export {
     timerSlice,
     startTimer,
-    pauseTimer, 
+    pauseTimer,
     resetTimer,
     updateTimeLeft,
-    switchPhase
+    switchPhase,
 } from './slices/timerSlice';
-

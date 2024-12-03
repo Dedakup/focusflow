@@ -15,14 +15,17 @@ interface MusicState {
 const initialState: MusicState = {
     selectedMusicSource: null,
     isPlaying: false,
-    volume: 50
+    volume: 50,
 };
 
 const musicSlice = createSlice({
     name: 'music',
     initialState,
     reducers: {
-        setSelectedMusicSource: (state, action: PayloadAction<MusicSource | null>) => {
+        setSelectedMusicSource: (
+            state,
+            action: PayloadAction<MusicSource | null>,
+        ) => {
             state.selectedMusicSource = action.payload;
         },
         setIsPlaying: (state, action: PayloadAction<boolean>) => {
@@ -30,10 +33,11 @@ const musicSlice = createSlice({
         },
         setVolume: (state, action: PayloadAction<number>) => {
             state.volume = action.payload;
-        }
-    }
+        },
+    },
 });
 
-export const { setSelectedMusicSource, setIsPlaying, setVolume } = musicSlice.actions;
+export const { setSelectedMusicSource, setIsPlaying, setVolume } =
+    musicSlice.actions;
 export { musicSlice };
 export default musicSlice;

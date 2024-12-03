@@ -1,1 +1,3 @@
-Pop over that cointains list of tasks. Parses list from server and maps them
+# Tasks
+
+Pop over that contains list of tasks. Parses list from server and maps them

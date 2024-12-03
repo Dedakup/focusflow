@@ -11,7 +11,10 @@ interface SettingsPopoverProps {
     isVisible: boolean;
 }
 
-const SettingsPopover: React.FC<SettingsPopoverProps> = ({ isActive, isVisible }) => {
+const SettingsPopover: React.FC<SettingsPopoverProps> = ({
+    isActive,
+    isVisible,
+}) => {
     const [time, setTime] = useState(25);
     const [shortBreakTime, setShortBreakTime] = useState(5);
     const [longBreakTime, setLongBreakTime] = useState(15);
@@ -65,7 +68,10 @@ const SettingsPopover: React.FC<SettingsPopoverProps> = ({ isActive, isVisible }
                     </svg>
                 </IconButton>
             </PopoverHandler>
-            <PopoverContent placeholder="Settings menu" className="w-80 h-auto p-4 bg-gray-700 text-white z-50">
+            <PopoverContent
+                placeholder="Settings menu"
+                className="w-80 h-auto p-4 bg-gray-700 text-white z-50"
+            >
                 <div className="flex flex-col space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-white">

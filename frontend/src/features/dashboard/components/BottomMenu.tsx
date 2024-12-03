@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import MusicPlayer from '@music/components/MusicPlayer';
-import VolumeControl from '@music/components/VolumeControl';
-import MusicSelection from '@music/components/MusicSelection';
-import AmbientSoundControl from '@sounds/components/AmbientSoundControl';
-import BackgroundSelector from '@background/components/BackgroundSelector';
+import { MusicPlayer } from '@music';
+import { VolumeControl } from '@music';
+import { MusicSelection } from '@music';
+import { AmbientSoundControl } from '@sounds';
+import { BackgroundSelector } from '@background';
 
 const BottomMenu = () => {
-    // PROBLEM: Bottomm menu shouldn't manage chield's state and side effects
+    // PROBLEM: Bottom menu shouldn't manage chield's state and side effects
     const [isMenuHidden, setIsMenuHidden] = useState(true);
 
     return (

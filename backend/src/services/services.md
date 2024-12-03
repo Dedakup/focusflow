@@ -1,1 +1,1 @@
-# Business logic lives here. They should not directly interact with the database.
+# Business logic lives here. They should not directly interact with the database

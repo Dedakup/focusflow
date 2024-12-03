@@ -6,4 +6,8 @@ export { default as VolumeControl } from './components/VolumeControl';
 
 export { default as musicSlice } from './store/musicSlice';
 
-export { setSelectedMusicSource, setIsPlaying, setVolume } from './store/musicSlice';
+export {
+    setSelectedMusicSource,
+    setIsPlaying,
+    setVolume,
+} from './store/musicSlice';

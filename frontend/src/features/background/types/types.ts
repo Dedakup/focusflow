@@ -1,10 +1,11 @@
-export interface Background {
+export interface BackgroundInterface {
+    id: string;
     name: string;
     src: string;
     thumbnailSrc: string;
 }
 
 export interface BackgroundState {
-    backgrounds: Background[];
-    selectedBackground: Background | null;
-} 
+    backgrounds: BackgroundInterface[];
+    selectedBackground: BackgroundInterface | null;
+}

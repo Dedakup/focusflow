@@ -1,6 +1,7 @@
 'use client';
 
-import BottomMenu from '@dashboard/components/BottomMenu';
+import { ProtectedRoute } from '@auth';
+import { BottomMenu } from '@dashboard';
 
 export default function DashboardLayout({
     children,
@@ -9,8 +10,10 @@ export default function DashboardLayout({
 }) {
     return (
         <>
-            {children}
-            <BottomMenu />
+            <ProtectedRoute>
+                {children}
+                <BottomMenu />
+            </ProtectedRoute>
         </>
     );
 }

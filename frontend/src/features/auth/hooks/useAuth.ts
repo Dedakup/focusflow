@@ -11,17 +11,21 @@ interface UseAuthReturn {
 }
 
 export const useAuth = (): UseAuthReturn => {
-    const { user, getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0();
+    const { user, getAccessTokenSilently, isAuthenticated, isLoading } =
+        useAuth0();
     const [error, setError] = useState<Error | null>(null);
-    
+
     const getAuthHeader = useCallback(async () => {
         try {
             const token = await getAccessTokenSilently();
             return {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
             };
         } catch (err) {
-            const error = err instanceof Error ? err : new Error('Failed to get auth token');
+            const error =
+                err instanceof Error
+                    ? err
+                    : new Error('Failed to get auth token');
             setError(error);
             toast.error('Authentication error');
             throw error;
@@ -33,6 +37,6 @@ export const useAuth = (): UseAuthReturn => {
         getAuthHeader,
         isAuthenticated,
         isLoading,
-        error
+        error,
     };
-}; 
+};
